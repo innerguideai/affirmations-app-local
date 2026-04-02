@@ -1,0 +1,248 @@
+/* public/css/auth.css
+   Auth-specific layout + glass card for login / signup / forgot
+*/
+
+/* =========================
+   Glass-card layout (login, future signup)
+   ========================= */
+
+/* Main wrapper inside .theme-bg / .ig-shell */
+.auth-main {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;               /* vertical center */
+  justify-content: center;           /* horizontal center */
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) 16px 32px;
+}
+
+/* Glass card container */
+.auth-card {
+  width: min(100% - 32px, 420px);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 24px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  padding: 20px 18px 22px;
+}
+
+/* Title + subtitle */
+.auth-title {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 6px;
+  
+}
+
+.auth-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.65);
+  margin-bottom: 14px;
+}
+
+/* Form spacing */
+.auth-form {
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+/* Submit + guest buttons */
+.auth-submit {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+/*.auth-guest-btn {*/
+/*  margin-top: 2px;*/
+/*  margin-bottom: 10px;*/
+/*}*/
+
+/* Links row under buttons */
+.auth-links-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .auth-card {
+    width: min(100% - 20px, 420px);
+    padding: 18px 14px 20px;
+  }
+
+  .auth-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .auth-links-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* =========================
+   Existing auth styles kept
+   (signup, reset, success)
+   ========================= */
+
+/* Auth pages use centered layout when body.auth-page is used
+   (older signup/reset screens). Keeping for compatibility. */
+body.auth-page {
+  max-width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f4;
+}
+
+/* Signup form polish (mobile) */
+#signupForm {
+  box-sizing: border-box;
+  padding: 8px 12px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+#signupForm * { box-sizing: border-box; }
+
+/* Consistent field spacing */
+#signupForm .field { margin: 10px 0 14px; }
+
+/* Input/select/textarea sizing for signup */
+#signupForm input[type="text"],
+#signupForm input[type="email"],
+#signupForm input[type="password"],
+#signupForm input[type="date"],
+#signupForm select,
+#signupForm textarea {
+  width: 100%;
+  display: block;
+  height: 44px;
+  padding: 10px 12px;
+  line-height: 22px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.2);
+  background: #fff;
+  outline: none;
+}
+
+/* Checkbox rows */
+#signupForm .check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin: 10px 0 12px;
+  white-space: normal;
+}
+#signupForm .check-row input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+}
+#signupForm .check-row label {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* reset.html helpers */
+.card-center {
+  max-width: 420px;
+  margin: 8vh auto;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+.page-title { text-align: center; margin-bottom: 1rem; }
+.status.note  { margin-top: 0.75rem; text-align: center; }
+.status.ok    { color: #116611; }
+.status.error { color: #b00020; }
+
+/* success.html */
+.success-container {
+  max-width: 600px;
+  margin: 5rem auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.success-container iframe {
+  width: 100%;
+  height: 400px;
+  border: none;
+  margin-top: 1rem;
+}
+
+/* Header inside auth card */
+.auth-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.auth-appname {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+/* Provider buttons + guest link */
+.auth-provider-group {
+  margin-bottom: 10px;
+}
+
+.auth-provider-btn {
+  margin-bottom: 8px;
+}
+
+/*.auth-guest-link {*/
+/*  display: block;*/
+/*  width: 100%;*/
+/*  text-align: center;*/
+/*  background: transparent;*/
+/*  border: 0;*/
+/*  padding: 4px 0 2px;*/
+/*  font-size: 0.9rem;*/
+/*  color: var(--lnk);*/
+/*  cursor: pointer;*/
+/*}*/
+
+/* Separator for 'Other login options' */
+.auth-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 10px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+}
+
+.auth-separator-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.auth-separator-label {
+  white-space: nowrap;
+}

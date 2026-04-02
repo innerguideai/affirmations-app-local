@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>First affirmation</title>
+
+    <!-- Global styling -->
+    <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+
+    <!-- Onboarding layout styling -->
+    <link rel="stylesheet" href="/css/onboarding.css" />
+  </head>
+
+  <!-- Use onboarding base so body isn't flex-centered by global CSS -->
+  <body class="ig-screen">
+    <!-- Safe-area padded shell -->
+    <div class="ig-shell">
+      <!-- Transparent card (no white page background) -->
+      <section class="ig-card">
+        <!-- Top-aligned content (no vertical centering) -->
+        <div class="ig-content ig-content--top">
+          <!-- Heading -->
+          <h1 class="ig-title">Here’s something for today</h1>
+
+          <!-- Subtext (per your request) -->
+          <p style="margin: 0 0 12px">Pick a feeling to start.</p>
+
+          <!-- Chips (JS will render buttons inside this) -->
+          <div id="faChips" class="emotion-bubbles"></div>
+
+          <!-- Affirmation section (hidden until user picks a feeling) -->
+          <div id="faAffSection" style="display: none; margin-top: 18px">
+            <!-- White affirmation card -->
+            <div class="ig-affirm-card">
+              <!-- Big affirmation text -->
+              <div class="ig-affirm-text" id="faText"></div>
+            </div>
+
+            <!-- Congrats message (now BELOW the white card) -->
+            <div
+              id="faCongrats"
+              class="ig-congrats"
+              style="margin-top: 12px; display: none"
+              role="button"
+              tabindex="0"
+            >
+              🎉 Congrats — your first personalized affirmation is ready.
+            </div>
+          </div>
+
+
+        <!-- Sticky footer button (same style as other onboarding pages) -->
+        <footer class="ig-footer">
+          <div class="ig-footer-stack">
+            <button id="firstContinue" class="btn btn-primary" type="button">
+              Continue
+            </button>
+          </div>
+        </footer>
+      </section>
+    </div>
+
+    <script src="js/firstaffirmation.js"></script>
+    <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

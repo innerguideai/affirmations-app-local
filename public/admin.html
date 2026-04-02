@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    h2 {
+      margin-top: 2rem;
+    }
+    button {
+      margin: 1rem 1rem 0 0;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre {
+      background: #fff;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      max-height: 300px;
+    }
+    .rating {
+      display: inline-block;
+      color: #ccc;
+    }
+    .rating .star {
+      font-size: 1.2rem;
+    }
+    .highlight {
+      color: gold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <div>
+    <button onclick="fetchData('users')">👤 View Users</button>
+    <button onclick="fetchData('emotions')">📊 View Emotions</button>
+    <button onclick="fetchData('affirmations')">📝 View Affirmations</button>
+    <button onclick="fetchData('mock')">🧪 Insert Mock Data</button>
+    <button onclick="fetchData('clearSingleUserData')">Delete Single User Data</button>
+    <button onclick="fetchData('clearAllData')">Clear All Data</button>
+  </div>
+
+  <h2 id="section-title"></h2>
+  <pre id="output">Click a button above to load data.</pre>
+
+  <script>
+    async function fetchData(type) {
+      const titleMap = {
+        users: 'All Users',
+        emotions: 'Emotion Logs (latest 100)',
+        affirmations: 'Affirmations (latest 100)',
+        mock: 'Mock Insert Result'
+      };
+      document.getElementById("section-title").innerText = titleMap[type] || '';
+      document.getElementById("output").innerText = 'Loading...';
+
+      try {
+        const res = await fetch(`/admin/${type}`);
+        const data = await res.json();
+
+        if (type === 'affirmations') {
+          document.getElementById("output").innerHTML = data.map(item => {
+            const stars = [...Array(5)].map((_, i) => `
+              <span class="star ${i < item.rating ? 'highlight' : ''}">&#9733;</span>`).join('');
+            return `
+              <div><strong>${item.emotion}</strong> - ${item.text}<br/>
+              <div class="rating">${stars}</div><br/>
+              <small>User: ${item.userId} | Created: ${new Date(item.createdAt).toLocaleString()}</small>
+              </div><hr/>`;
+          }).join('');
+        } else if (type === 'emotions') {
+          document.getElementById("output").innerHTML = data.map(item => {
+            return `
+              <div><strong>${item.emotion}</strong> | User: ${item.userId} | ${new Date(item.createdAt).toLocaleString()}</div><hr/>`;
+          }).join('');
+        } else {
+          document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+        }
+      } catch (err) {
+        document.getElementById("output").innerText = '❌ Error fetching data';
+        console.error(err);
+      }
+    }
+  </script>
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up • InnerGuide AI</title>
+
+  <!-- Fonts + Global CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css?v=2025-10-24-2" />
+
+  <!-- Signup-only centering (no global CSS changes) -->
+  <style>
+    body.centered-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px
+               calc(env(safe-area-inset-bottom, 0px) + 16px);
+    }
+
+    body.centered-page .signup-center {
+      width: min(92vw, 420px);
+      margin: 0 auto;
+    }
+  </style>
+
+  <!-- Prevent caching -->
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+</head>
+
+<body class="centered-page">
+  <main class="container signup-center">
+    <h1>Create your account</h1>
+
+    <!-- Status / errors -->
+    <p id="signupStatus" class="status note" style="margin:10px 0 14px;"></p>
+
+    <form id="signupForm" novalidate autocomplete="off">
+      <div class="field">
+        <label for="firstName">First name*</label>
+        <input id="firstName" type="text" required />
+      </div>
+
+      <div class="field">
+        <label for="lastName">Last name*</label>
+        <input id="lastName" type="text" required />
+      </div>
+
+      <div class="field">
+        <label for="dob">Date of birth</label>
+        <input id="dob" type="date" />
+      </div>
+
+      <div class="field">
+        <label for="gender">Gender</label>
+        <select id="gender">
+          <option value="Prefer not to say">Prefer not to say</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Non-binary">Non-binary</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="email">Email*</label>
+        <input id="email" type="email" autocomplete="email" required />
+      </div>
+
+      <div class="field">
+        <label for="password">Password* (min 8 chars)</label>
+        <input id="password" type="password" autocomplete="new-password" required />
+      </div>
+      <label for="confirmPassword">Confirm password</label>
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        type="password"
+        autocomplete="new-password"
+        required
+      />
+
+      <button id="signupBtn" type="submit" class="btn btn-primary">
+        Sign up
+      </button>
+    </form>
+
+    <p class="note" style="text-align:center;margin-top:14px;">
+      Already have an account? <a href="/login.html">Sign in</a>
+    </p>
+  </main>
+
+  <!-- Modular JS -->
+  <script src="/js/signup.js?v=2025-10-24-1" defer></script>
+  <script src="/js/signup.password-toggle.js"></script>
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

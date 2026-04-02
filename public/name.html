@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI AFFIRM • Name</title>
+
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/onboarding.css" />
+</head>
+
+<body class="ig-screen">
+  <div class="ig-shell">
+    <!-- Form page => use ig-surface -->
+    <section class="ig-card">
+      <!-- Centered content block -->
+      <div class="ig-content">
+        <h1 class="ig-title">What should we call you?</h1>
+
+  
+        <input
+          id="displayName"
+          name="name"
+          type="text"
+          autocomplete="given-name"
+          inputmode="text"
+          placeholder="Your name"
+        />
+      </div>
+
+      <!-- Footer pinned to bottom (same pattern as welcome) -->
+      <footer class="ig-footer">
+        <div class="ig-footer-stack">
+          <button id="nameContinue" type="button" class="btn btn-primary">
+            Continue
+          </button>
+
+          <!-- Optional: keep only if you truly want it. Otherwise delete this block. -->
+          <div class="ig-link-center">
+            <a class="ig-link" href="pathselection.html">Skip</a>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <script src="/js/name.js"></script>
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

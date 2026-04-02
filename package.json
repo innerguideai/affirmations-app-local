@@ -1,0 +1,32 @@
+{
+  "name": "affirmations-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "inject:cap": "node tools/inject-capacitor-bundle.js",
+    "cap:ios": "npm run inject:cap && npx cap copy ios",
+    "cap:android": "npm run inject:cap && npx cap copy android"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/app": "^8.0.1",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/ios": "^8.0.1",
+    "@capacitor/local-notifications": "^8.0.1",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "openai": "^5.10.2"
+  },
+  "devDependencies": {
+    "webdriverio": "^9.27.0"
+  }
+}

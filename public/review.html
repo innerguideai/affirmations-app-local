@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Review · AI Affirm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+  <link rel="stylesheet" href="/css/profile.css?v=2026-01-01-2" />
+  <link rel="stylesheet" href="/css/emotion-dashboard.css" />
+  <style>
+    .review-page { padding: 10px 0 18px; }
+
+    .review-card {
+      margin-top: 10px;
+      padding: 14px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .review-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .review-sub {
+      font-size: 0.9rem;
+      color: rgba(0,0,0,0.65);
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    .stars {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 6px;
+      user-select: none;
+    }
+
+    .star-btn {
+      font-size: 30px;
+      line-height: 1;
+      border: 0;
+      background: transparent;
+      padding: 6px;
+      cursor: pointer;
+      opacity: 0.35;
+      transform: translateY(0);
+    }
+
+    .star-btn.is-on { opacity: 1; }
+    .star-btn:active { transform: translateY(1px); }
+
+    .rating-line {
+      text-align: center;
+      font-size: 0.85rem;
+      color: rgba(0,0,0,0.7);
+      margin-bottom: 12px;
+      min-height: 18px;
+    }
+
+    .msg {
+      width: 100%;
+      min-height: 110px;
+      resize: none;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.85);
+      padding: 12px 12px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      line-height: 1.35;
+      color: rgba(0,0,0,0.85);
+      outline: none;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .btn-lite {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.08);
+      color: rgba(0,0,0,0.85);
+      font-weight: 600;
+      width: 48%;
+    }
+
+    .btn-lite.primary { background: rgba(0,0,0,0.12); }
+
+    .toast {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: rgba(0,0,0,0.7);
+      min-height: 18px;
+    }
+  </style>
+</head>
+
+<body class="profile-page emotion-dashboard-page ig-theme-default">
+  <div class="ig-theme-bg" aria-hidden="true"></div>
+
+  <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
+    <header class="emotion-dashboard-header">
+      <a
+        href="/account.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Back to account"
+        title="Back to account"
+      >
+        <span aria-hidden="true">←</span>
+      </a>
+
+      <div class="emotion-dashboard-header-copy">
+        <p class="emotion-dashboard-kicker"></p>
+        <h1 class="emotion-dashboard-title">Leave us a review</h1>
+        <p class="emotion-dashboard-subtitle">
+          Quick feedback helps us improve the app.
+        </p>
+      </div>
+
+      <a
+        href="/profile.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Go to home"
+        title="Go to home"
+      >
+        <img
+          src="/images/icons/homeicon.png"
+          alt="Home"
+          class="emotion-dashboard-home-icon"
+        />
+      </a>
+    </header>
+
+    <main class="review-page">
+      <div class="review-card">
+          <div class="review-title">Leave us a review</div>
+          <div class="review-sub">
+            Quick feedback helps. This sends an email to innerguideai@gmail.com.
+          </div>
+
+          <div class="stars" aria-label="Star rating">
+            <button type="button" class="star-btn" data-star="1" aria-label="1 star">★</button>
+            <button type="button" class="star-btn" data-star="2" aria-label="2 stars">★</button>
+            <button type="button" class="star-btn" data-star="3" aria-label="3 stars">★</button>
+            <button type="button" class="star-btn" data-star="4" aria-label="4 stars">★</button>
+            <button type="button" class="star-btn" data-star="5" aria-label="5 stars">★</button>
+          </div>
+
+          <div class="rating-line" id="ratingLine">Tap a star</div>
+
+          <textarea
+            id="reviewMsg"
+            class="msg"
+            maxlength="500"
+            placeholder="Optional: What worked? What didn’t?"
+          ></textarea>
+
+          <div class="actions">
+            <button id="clearBtn" type="button" class="btn-lite">Clear</button>
+            <button id="submitBtn" type="button" class="btn-lite primary">Submit</button>
+          </div>
+
+          <div class="toast" id="toast"></div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="/js/theme.apply.js?v=2" defer></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var selected = 0;
+
+      var back = document.getElementById("backToAccount");
+      var starBtns = Array.prototype.slice.call(document.querySelectorAll(".star-btn"));
+      var ratingLine = document.getElementById("ratingLine");
+      var msg = document.getElementById("reviewMsg");
+      var toast = document.getElementById("toast");
+      var clearBtn = document.getElementById("clearBtn");
+      var submitBtn = document.getElementById("submitBtn");
+
+      function setToast(text) { toast.textContent = text || ""; }
+
+      function renderStars() {
+        starBtns.forEach(function (b) {
+          var n = parseInt(b.getAttribute("data-star"), 10);
+          if (n <= selected) b.classList.add("is-on");
+          else b.classList.remove("is-on");
+        });
+
+        ratingLine.textContent = selected ? (selected + " / 5") : "Tap a star";
+      }
+
+      if (back) {
+        back.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "/account.html";
+        });
+      }
+
+      starBtns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          selected = parseInt(b.getAttribute("data-star"), 10);
+          setToast("");
+          renderStars();
+        });
+      });
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", function () {
+          selected = 0;
+          msg.value = "";
+          renderStars();
+          setToast("Cleared");
+        });
+      }
+
+      if (submitBtn) {
+        submitBtn.addEventListener("click", function () {
+          setToast("");
+
+          if (!selected) {
+            setToast("Pick a star rating first");
+            return;
+          }
+
+          var message = (msg.value || "").trim();
+
+          var subject = encodeURIComponent("AI Affirm — Review (" + selected + "/5)");
+          var body = encodeURIComponent(
+            "Rating: " + selected + "/5\n\n" +
+            "Message:\n" + (message ? message : "(no message)") + "\n\n" +
+            "Sent from: Review page\n" +
+            "Time: " + new Date().toISOString() + "\n"
+          );
+
+          window.location.href =
+            "mailto:innerguideai@gmail.com?subject=" + subject + "&body=" + body;
+
+          setToast("Opening email…");
+        });
+      }
+
+      renderStars();
+    });
+  </script>
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>
+

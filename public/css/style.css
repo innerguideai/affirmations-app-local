@@ -1,0 +1,1092 @@
+/* public/css/style.css — global styles (shared across pages) */
+
+/* =======================
+   1) Brand tokens
+   ======================= */
+:root {
+  --peach:    #F1C09D;
+  --celadon:  #B7D4AB;
+  --coolgray: #8094A4;
+  --green:    #476B38;
+  --gunmetal: #192632;
+
+  --honeydew: #DCEAD7;
+
+  /* Global tokens */
+  --bg:       var(--honeydew);
+  --text:     var(--gunmetal);
+  --lnk:      #5791C7;
+  --input-bg: #F4F4F4;
+  --radius:   12px;
+  --shadow:   0 6px 12px rgba(0,0,0,.08);
+
+  --profile-affirm-text: var(--honeydew);
+    --theme-surface-dark: rgba(25, 38, 50, 0.78);
+  --theme-surface-light: rgba(255, 255, 255, 0.78);
+  --theme-accent: #B7D4AB;
+  --theme-accent-strong: #476B38;
+  --theme-border-soft: rgba(0, 0, 0, 0.10);
+  --theme-glow: rgba(71, 107, 56, 0.35);
+  --streak-complete-bg: var(--theme-accent-strong);
+  --streak-complete-glow: var(--theme-glow);
+}
+
+/* =======================
+   2) Reset + base
+   ======================= */
+* { box-sizing: border-box; margin: 1px; padding: 0; }
+
+html, body {
+  height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+}
+/* only pages that want centered layout */
+body.centered-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* Headings */
+h1, h2, h3 { font-weight: 700; }
+h1 { text-align: center; font-size: 1.75rem; }
+h2 { text-align: center; }
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; padding: 0 .5rem; word-break: break-word; }
+}
+
+/* Links */
+.link-sm { font-size: 0.9rem; color: var(--lnk); }
+.footer-link { font-size: 1rem; color: var(--text); }
+
+/* Utilities (JS relies on .hidden) */
+.hidden { display: none !important; }
+
+/* Simple text-link style used across onboarding */
+.ig-link-row { margin-top: 12px; text-align: center; }
+.ig-link { text-decoration: underline; font-size: 14px; opacity: 0.9; }
+
+/* =======================
+   3) Page themes (profile)
+   ======================= */
+html.ig-theme-default {
+  --theme-surface-dark: rgba(40, 77, 77, 0.90);
+  --theme-surface-light: rgba(255, 255, 255, 0.78);
+  --theme-accent: #B7D4AB;
+  --theme-accent-strong: #476B38;
+  --theme-border-soft: rgba(0, 0, 0, 0.10);
+  --theme-glow: rgba(71, 107, 56, 0.35);
+}
+
+html.ig-theme-winter {
+  --theme-surface-dark: rgba(38, 61, 84, 0.9);
+  --theme-surface-light: rgba(241, 247, 252, 0.82);
+  --theme-accent: #AFC7D9;
+  --theme-accent-strong: #5F86A1;
+  --theme-border-soft: rgba(40, 60, 80, 0.14);
+  --theme-glow: rgba(95, 134, 161, 0.34);
+}
+
+html.ig-theme-spring {
+  --theme-surface-dark: rgba(45, 74, 53, 0.92);
+  --theme-surface-light: rgba(244, 250, 242, 0.92);
+  --theme-accent: #BFDDB3;
+  --theme-accent-strong: #5E8A57;
+  --theme-border-soft: rgba(50, 80, 50, 0.18);
+  --theme-glow: rgba(94, 138, 87, 0.34);
+}
+
+html.ig-theme-cblossom {
+  --theme-surface-dark: rgba(96, 45, 77, 0.9);
+  --theme-surface-light: rgba(255, 244, 248, 0.84);
+  --theme-accent: #E9C7D8;
+  --theme-accent-strong: #B76E95;
+  --theme-border-soft: rgba(110, 60, 90, 0.14);
+  --theme-glow: rgba(183, 110, 149, 0.34);
+}
+body.profile-page.ig-theme-default {
+  background: url("/images/default.jpg") center top / cover no-repeat;
+}
+body.profile-page.ig-theme-winter {
+  background: url("/images/winter.jpg") center top / cover no-repeat;
+}
+body.profile-page.ig-theme-spring {
+  background: url("/images/spring.jpg") center top / cover no-repeat;
+}
+body.profile-page.ig-theme-cblossom {
+  background: url("/images/cblossom.jpg") center top / cover no-repeat;
+}
+html.ig-theme-default body.profile-page {
+  background: url("/images/default.jpg") center top / cover no-repeat;
+}
+html.ig-theme-winter body.profile-page {
+  background: url("/images/winter.jpg") center top / cover no-repeat;
+}
+html.ig-theme-spring body.profile-page {
+  background: url("/images/spring.jpg") center top / cover no-repeat;
+}
+html.ig-theme-cblossom body.profile-page {
+  background: url("/images/cblossom.jpg") center top / cover no-repeat;
+}
+/* Profile page overrides global centered body layout */
+body.profile-page {
+  display: block;
+  align-items: initial;
+  justify-content: initial;
+  padding: 0;
+}
+/* =======================
+   Profile fixed theme background layer (iOS paint-safe)
+   ======================= */
+body.profile-page .ig-theme-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;              /* behind the overlay (::before is -1) */
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/* Map body theme class -> background image on the fixed layer */
+body.profile-page.ig-theme-default .ig-theme-bg {
+  background-image: url("/images/default.jpg");
+}
+body.profile-page.ig-theme-winter .ig-theme-bg {
+  background-image: url("/images/winter.jpg");
+}
+body.profile-page.ig-theme-spring .ig-theme-bg {
+  background-image: url("/images/spring.jpg");
+}
+body.profile-page.ig-theme-cblossom .ig-theme-bg {
+  background-image: url("/images/cblossom.jpg");
+}
+/* =======================
+   4) Layout helpers (onboarding)
+   ======================= */
+
+/* If you want a consistent top offset on selected pages:
+   add class="page top-30" to <main> */
+.page.top-30 {
+  padding-top: calc(env(safe-area-inset-top) + 30px);
+}
+
+/* Sticky footer support */
+.page--with-footer {
+  min-height: calc(100vh - 88px);
+  padding-bottom: 88px;
+}
+
+.ig-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  /* You tuned this recently */
+  padding: 13px 16px calc(13px + env(safe-area-inset-bottom));
+  background: transparent;
+}
+
+.ig-footer .btn { width: 100%; }
+
+/* =======================
+   5) Containers / cards
+   ======================= */
+
+/* Keep existing .container for compatibility */
+.container {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+/* Add .card because you use it on onboarding pages */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+/* =======================
+   6) Forms + inputs
+   ======================= */
+input, select, textarea {
+  width: 100%;
+  padding: .85rem .9rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1.5px solid #e6ded7;
+  background: var(--input-bg);
+  margin-bottom: 1rem;
+}
+
+/* =======================
+   7) Buttons
+   ======================= */
+.btn {
+  width: 100%;
+  display: inline-block;
+  padding: .9rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: filter .18s ease;
+}
+
+.btn:hover { filter: brightness(.96); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.btn-primary   { background: var(--green);   color: #fff; }
+.btn-secondary { background: var(--celadon); color: #3a2a1a; }
+.btn-logout    { background: #e53935;        color: #fff; }
+
+
+/* ===========================
+   First affirmation card
+   =========================== */
+
+.ig-affirm-card {
+  margin-top: 20px;
+  color: rgba(0,0,0,0.7);
+  background: var(--theme-surface-dark);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 16px;
+border: 1px solid var(--theme-border-soft);
+}
+
+/* Bigger affirmation text */
+.ig-affirm-text {
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+  line-height: 1.2;
+  font-weight: 800;
+  color:var(--honeydew)
+}
+
+/* Congrats banner (tap to dismiss) */
+.ig-congrats {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 242, 200, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.82);
+  font-weight: 800;
+}
+/* =======================
+   9) Media
+   ======================= */
+.banner-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  margin: 1rem 0;
+}
+
+/* =======================
+   10) Components
+   ======================= */
+
+/* Affirmation box */
+.affirmation-box {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+}
+
+
+
+/* Stars */
+#starRating {
+  display: flex;
+  gap: 6px;
+  margin-top: .8rem;
+  font-size: 1.2rem;
+}
+#starRating .star {
+  cursor: pointer;
+  color: #cfcfcf;
+  transition: color .15s ease;
+  font-size: 1.5rem;
+}
+#starRating .star.active,
+#starRating .star.hover { color: gold; }
+
+/* Top emotions / carousel */
+#topemotlabel { font-weight: 700; margin-bottom: .5rem; }
+.top-emotions-section { margin-top: 1.5rem; }
+
+.carousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.carousel::-webkit-scrollbar { display: none; }
+
+.carousel-card {
+  flex: 0 0 80%;
+  min-width: clamp(160px, 20vw, 220px);
+  scroll-snap-align: start;
+  background: #fafafa;
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,.05);
+  text-align: center;
+  transition: transform .2s ease;
+}
+.carousel-card:hover { transform: translateY(-3px); }
+.carousel-card.highlight { outline: 2px solid var(--peach); }
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: .5rem;
+}
+.carousel-indicators .dot {
+  width: 8px;
+  height: 8px;
+  margin: 0 3px;
+  border-radius: 50%;
+  background: #bdbdbd;
+}
+.carousel-indicators .dot.active { background: var(--green); }
+
+/* Support banner */
+.support-banner {
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  background: #fff8e6;
+  border: 1px solid #f5d78c;
+  color: #4b3d2b;
+  border-radius: var(--radius);
+  padding: .875rem 1rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity .18s, transform .18s;
+}
+.support-banner.show { opacity: 1; transform: none; pointer-events: auto; }
+.support-banner__close {
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 8px;
+  padding: .25rem .4rem;
+}
+.support-banner__close:hover { background: rgba(0,0,0,.05); }
+
+/* Daily streak row */
+#streakRow { justify-content: flex-start; gap: 8px; }
+#streakRow .foot-value { margin-left: 0; }
+
+/* Reminders settings: one-line title + subtitle */
+.setting-line {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: baseline;
+}
+
+/* Prevent subtitle wrapping under title on small screens */
+.setting-title,
+.setting-subtitle {
+  display: inline;
+  white-space: nowrap;
+}
+
+/* If space gets tight, let the subtitle truncate */
+.setting-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60vw;
+  opacity: 0.8;
+}
+/* =========================
+   Reminders (settings mode)
+   ========================= */
+
+/* Give settings page space so fixed footer doesn't cover fields */
+#remindersSettingsView {
+  padding-bottom: 120px;
+}
+
+/* Card wrapper (keep your glass feel, but tighter + cleaner) */
+#remindersSettingsView .glass-card {
+  padding: 18px 16px;
+  border-radius: 18px;
+}
+
+/* Each reminder block becomes a "card" like the reference */
+#remindersSettingsView .setting-block {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 14px 14px 12px;
+  margin: 14px 0;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+}
+
+/* Header row (title + toggle) */
+#remindersSettingsView .setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* Title/subtitle on one line, like you asked */
+#remindersSettingsView .setting-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+#remindersSettingsView .setting-title {
+  font-size: 18px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+#remindersSettingsView .setting-subtitle {
+  font-size: 14px;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 52vw;
+}
+
+/* Controls area */
+#remindersSettingsView .setting-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Field row layout: label left, control right (like the reference) */
+#remindersSettingsView .field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Label */
+#remindersSettingsView .field-label {
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.85;
+  width: 92px;          /* keeps fields aligned */
+  flex: 0 0 92px;
+}
+
+/* Control sizing: stop "full width" look */
+#remindersSettingsView input[type="time"],
+#remindersSettingsView select {
+  width: 160px;         /* key fix: no longer huge */
+  max-width: 160px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+/* Two-col block for Start/End: label left, time right, stacked as separate rows */
+#remindersSettingsView .two-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Preview text */
+#remindersSettingsView .preview-text {
+  font-size: 15px;
+  opacity: 0.85;
+  line-height: 1.25;
+  text-align: right;
+  max-width: 60%;
+}
+
+/* Buttons inside cards */
+#remindersSettingsView .btn.secondary {
+  border-radius: 14px;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+/* Status/helper lines */
+#remindersSettingsView .status-text,
+#remindersSettingsView .helper-text {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+/* Make toggles look proportional in settings cards */
+#remindersSettingsView .ig-toggle-wrap {
+  transform: scale(0.95);
+  transform-origin: right center;
+}
+
+/* Back link spacing */
+#remindersSettingsView .page-header {
+  margin-bottom: 12px;
+}
+
+/* Mobile tweak: allow subtitle to show a bit more */
+@media (max-width: 420px) {
+  #remindersSettingsView .setting-subtitle {
+    max-width: 46vw;
+  }
+  #remindersSettingsView input[type="time"],
+  #remindersSettingsView select {
+    width: 150px;
+    max-width: 150px;
+  }
+}
+#remindersSettingsView .setting-subtitle {
+  min-width: 0;
+}
+/* Focus modal (force overlay) */
+#igFocusModal {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.40) !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 999999;
+}
+
+#igFocusModal .ig-modal-card {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+
+#igFocusModal .ig-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 14px 10px;
+}
+
+#igFocusModal .ig-modal-title {
+  font-size: 18px;
+  font-weight: 750;
+}
+
+#igFocusModal .ig-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  padding: 4px 8px;
+  opacity: 0.75;
+}
+
+#igFocusModal .ig-modal-body {
+  padding: 0 14px 12px;
+}
+
+#igFocusModal .ig-modal-section {
+  padding: 10px 0;
+}
+
+#igFocusModal .ig-modal-step-title {
+  font-weight: 750;
+  margin-bottom: 6px;
+}
+
+#igFocusModal .ig-modal-step {
+  opacity: 0.9;
+  line-height: 1.35;
+}
+
+#igFocusModal .ig-modal-note {
+  margin-top: 10px;
+  opacity: 0.75;
+  font-size: 13px;
+}
+
+#igFocusModal .ig-modal-footer {
+  padding: 12px 14px 14px;
+}
+/* ---- AI Affirm: Signup show/hide password toggle ---- */
+
+/* Wraps the password input so we can place the eye button inside the field. */
+.ig-password-wrap {
+  position: relative;                 /* Makes the button position relative to this box. */
+  width: 100%;                        /* Matches input width in responsive layouts. */
+}
+
+/* Adds space so the text doesn’t sit under the eye button. */
+.ig-password-wrap input {
+  padding-right: 44px;                /* Leaves room for the toggle button. */
+}
+
+/* The eye button itself. */
+.ig-password-toggle {
+  position: absolute;                 /* Places it inside the input box area. */
+  top: 50%;                           /* Vertically centers. */
+  right: 10px;                        /* Aligns to the right edge. */
+  transform: translateY(-50%);        /* True vertical centering. */
+
+  border: 0;                          /* Clean UI. */
+  background: transparent;            /* Looks like an input affordance. */
+  padding: 6px;                       /* Easy to tap on mobile. */
+  margin: 0;
+
+  font-size: 18px;                    /* Legible icon size. */
+  line-height: 1;                     /* Keeps the button tight. */
+  cursor: pointer;                    /* Desktop pointer. */
+}
+
+/* Helps iOS avoid odd tap highlight and keeps the feel consistent. */
+.ig-password-toggle:focus {
+  outline: none;                      /* Avoids a big focus ring; optional. */
+}
+/* Icon sizing inside the toggle button */
+.ig-password-toggle .ig-eye-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* =========================
+Support Page Layout
+========================= */
+
+/* Keep SAME profile footer but pin to bottom */
+body.support-page .profile-main{
+  min-height: 100vh;
+  display: flex;
+}
+
+body.support-page .content-narrow{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Push footer to bottom */
+body.support-page .profile-footer{
+  margin-top: auto;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+}
+
+/* Prevent blown-up look on wide screens */
+body.support-page .content-narrow{
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+/* Notch safe area spacing */
+body.support-page .ig-support-header{
+  padding-top: calc(env(safe-area-inset-top) + 18px);
+}
+
+/* =========================
+Footer layout
+========================= */
+
+body.support-page .profile-footer #igSupportDaysRow{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+#igSupportDaysRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:6px;
+}
+
+/* =========================
+Support icons
+========================= */
+
+.ig-support-home{
+  position: absolute;
+  top: 0;
+  right: 14px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.65);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 10px 26px rgba(0,0,0,.10);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.ig-support-icon-btn{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.75);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.ig-support-icon{
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* =========================
+Next button
+========================= */
+
+.ig-support-next-btn{
+  width: 56px;
+  height: 44px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--green);
+  box-shadow: 0 10px 26px rgba(0,0,0,.10);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Next button PNG */
+.ig-support-next-img{
+  width: 100px;
+  height: 40px;
+  display: inline-block;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  background-image: url("/images/icons/next.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+
+/* =========================
+Weekly streak circles
+========================= */
+
+.ig-day-circle{
+  width:26px;
+  height:26px;
+  border-radius:999px;
+  background:rgba(255,255,255,.35);
+  border:1px solid rgba(0,0,0,.08);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  font-weight:700;
+  transition:all .18s ease;
+}
+.ig-day{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-size:12px;
+}
+
+.ig-day-circle.today{
+  border:2px solid rgba(0,0,0,.25);
+  transform:scale(1.08);
+}
+
+.ig-day-label{
+  margin-top:6px;
+  font-weight:800;
+}
+
+
+/* =========================
+   Streak celebration
+   ========================= */
+
+.ig-day-circle.complete {
+  animation: ig-streak-celebrate 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ig-day-circle.complete {
+  background: var(--streak-complete-bg);
+  color: #fff;
+  box-shadow: 0 0 8px var(--streak-complete-glow);
+}
+
+@keyframes ig-streak-celebrate {
+  0% {
+    transform: scale(0.55);
+    background: var(--theme-surface-light);
+    box-shadow: 0 0 0 0 rgba(0,0,0,0);
+    opacity: 0.55;
+  }
+
+  25% {
+    transform: scale(1.35);
+    background: var(--theme-accent);
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--theme-glow) 45%, transparent),
+      0 0 18px var(--theme-glow);
+    color: #fff;
+    opacity: 1;
+  }
+
+  52% {
+    transform: scale(0.92);
+    background: var(--theme-accent-strong);
+    box-shadow:
+      0 0 0 10px color-mix(in srgb, var(--theme-glow) 20%, transparent),
+      0 0 14px var(--theme-glow);
+    color: #fff;
+  }
+
+  72% {
+    transform: scale(1.08);
+    background: var(--streak-complete-bg);
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--theme-glow) 15%, transparent),
+      0 0 10px var(--streak-complete-glow);
+    color: #fff;
+  }
+
+  100% {
+    transform: scale(1);
+    background: var(--streak-complete-bg);
+    box-shadow: 0 0 8px var(--streak-complete-glow);
+    color: #fff;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   CONTEXT OVERLAY
+   ============================================================ */
+
+.context-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:24px;
+
+  background:rgba(0, 0, 0, 0.27);
+  backdrop-filter:blur(1.5px);
+}
+
+
+/* ============================================================
+   CARD
+   ============================================================ */
+
+.context-card{
+  position:relative;
+  width:min(92vw,420px);
+  max-width:420px;
+  padding:28px 26px 32px;
+  border-radius:22px;
+  background: var(--theme-surface-dark);  
+  backdrop-filter:blur(14px);
+  text-align:center;
+  color:var(--honeydew);
+  box-shadow:0 16px 40px rgba(0,0,0,.45);
+    border: 1px solid var(--theme-border-soft);
+
+}
+
+
+/* ============================================================
+   EMOTION
+   ============================================================ */
+
+.context-emotion{
+  font-size:24px;
+  color:var(--peach);
+  margin-bottom:6px;
+  letter-spacing:.4px;
+}
+
+
+/* ============================================================
+   CLOSE BUTTON
+   ============================================================ */
+
+.context-close{
+  position:absolute;
+  top:14px;
+  right:16px;
+
+  border:none;
+  background:transparent;
+  appearance:none;
+  -webkit-appearance:none;
+
+  font-size:28px;
+  line-height:1;
+
+  color:var(--honeydew);
+  cursor:pointer;
+  padding:0;
+}
+
+.contextCloseBtn {
+  background: transparent;   /* remove white background */
+  border: none;              /* remove default border */
+  font-size: 22px;           /* make X larger */
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: var(--honeydew)
+}
+/* ============================================================
+   QUESTION
+   ============================================================ */
+
+.context-question{
+  width:100%;
+  font-size:16px;
+  font-weight:500;
+  line-height:1.45;
+  margin:10px 0 16px;
+}
+
+
+/* ============================================================
+   OPTIONS CONTAINER
+   ============================================================ */
+
+.context-options{
+  flex:1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin-top:14px;
+}
+
+/* ============================================================
+   OPTION PILLS
+   ============================================================ */
+
+.context-options button{
+  appearance:none;
+  -webkit-appearance:none;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:10px 18px;
+
+  font-size:16px;
+  line-height:1;
+
+  border-radius:20px;
+
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);
+
+  color:var(--honeydew);
+
+  cursor:pointer;
+  transition:all .15s ease;
+}
+
+.context-options button:hover{
+  background:rgba(255,255,255,.16);
+}
+
+
+/* ============================================================
+   ACTIVE OPTION
+   ============================================================ */
+
+.context-option-active{
+  background:var(--celadon);
+  border:1px solid var(--celadon);
+  color:var(--gunmetal);
+}
+
+
+/* ============================================================
+   EMPTY ELEMENT CLEANUP
+   ============================================================ */
+
+.context-question:empty{
+  display:none;
+}
+
+.context-options:empty{
+  display:none;
+}
+
+.context-question-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.context-option{
+  padding:4px 4px;
+  font-size:12px;
+  border-radius:18px;
+}

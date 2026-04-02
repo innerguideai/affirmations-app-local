@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login • AI AFFIRM</title>
+
+  <!-- Fonts + Global CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+
+  <!-- Login-only centering (no global CSS changes) -->
+  <style>
+    /* Center the login card vertically */
+    body.centered-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 16px);
+    }
+
+    /* Keep the card at a sane width */
+    body.centered-page .login-center {
+      width: min(92vw, 420px);
+      margin: 0 auto;
+    }
+  </style>
+
+  <!-- Prevent caching -->
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+</head>
+
+<!-- IMPORTANT: class must be EXACTLY "centered-page" -->
+
+<body class="centered-page">
+  <main class="container login-center">
+
+    <!-- Brand header -->
+    <header style="margin-bottom:14px; text-align:center;">
+      <h1 style="margin:0 0 6px;">AI AFFIRM</h1>
+      <div class="note" style="opacity:0.9; margin:0;">by InnerGuide</div>
+    </header>
+
+    <!-- Status / errors -->
+    <p id="loginStatus" class="status note" style="margin:10px 0 14px;"></p>
+
+    <!-- Show-after-signup banner (hidden by default) -->
+    <div id="signupSuccess" class="notice success" style="display:none; margin-bottom:12px;" role="status"
+      aria-live="polite">
+      🎉 Registration successful! You can log in below.
+    </div>
+
+    <!-- Email login is visible by default -->
+    <section style="margin-top:6px;">
+      <h2 style="font-size:16px; margin:0 0 10px; text-align:center;">Login with Email</h2>
+
+      <form id="loginForm" novalidate>
+        <input id="email" type="email" placeholder="Email" autocomplete="email" required />
+        <input id="password" type="password" placeholder="Password" autocomplete="current-password" required />
+
+        <button id="loginBtn" type="submit" class="btn btn-primary" style="width:100%;">
+          Login
+        </button>
+      </form>
+
+      <div
+        style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px;flex-wrap:wrap;">
+        <a class="link-sm" href="/forgot.html">Forgot password?</a>
+        <span class="link-sm">Don’t have an account? <a href="/signup.html">Sign Up</a></span>
+      </div>
+    </section>
+
+  </main>
+  <script>
+
+    console.log("[BOOT] login.html loaded", {
+      href: window.location.href,
+      ts: new Date().toISOString()
+    });
+
+    (async function () {
+      try {
+        const token = localStorage.getItem("authToken") || "";
+        if (!token) return;
+
+        const r = await fetch("https://api.innerguideai.com/api/me", {
+          method: "GET",
+          cache: "no-store",
+          headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        if (r.ok) {
+          // already authenticated → skip login screen
+          window.location.replace("/profile.html?v=1");
+        }
+      } catch (_) { }
+    })();
+  </script>
+
+  <!-- Guest + login behavior -->
+  <script src="/js/login-guest.js?v=2026-01-01-2" defer></script>
+  <script src="/js/login.js?v=2026-01-01-3" defer></script>
+
+  <script>
+    // =========================
+    // Guest login (frontend-only)
+    // =========================
+    document.addEventListener("DOMContentLoaded", function () {
+      var btn = document.getElementById("guestLoginButton");
+      if (!btn) return;
+
+      btn.addEventListener("click", function () {
+        try {
+          var guestId = "guest-" + Date.now();
+
+          localStorage.setItem("currentUserId", guestId);
+
+          localStorage.setItem(
+            "currentUser",
+            JSON.stringify({
+              id: guestId,
+              _id: guestId,
+              role: "guest",
+              firstName: "Guest"
+            })
+          );
+
+          localStorage.setItem("ig_is_guest", "true");
+        } catch (e) {
+          console.warn("[guest] failed to set guest state:", e);
+        }
+
+        window.location.href = "/profile.html";
+      });
+    });
+  </script>
+
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+
+</html>

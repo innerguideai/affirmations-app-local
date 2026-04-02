@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Daytime reset • AI Affirm</title>
+
+  <link rel="stylesheet" href="/css/style.css" />
+      <link rel="stylesheet" href="/css/profile.css?v=2026-01-06-3" />
+</head>
+  <!-- Default fallback on body so background never goes blank -->
+  <body class="profile-page">
+      <div class="ig-theme-bg" aria-hidden="true"></div>
+
+   <main class="profile-main">
+      <section class="content-narrow">
+        <!-- Header row (menu + greeting) -->
+           <!-- Top right home (keeps your look) -->
+
+        <div class="profile-header">
+          <button
+            type="button"
+            class="profile-menu-button"
+            aria-label="Home"
+            onclick="window.location.href='/profile.html'"
+            style="position: fixed; top: calc(env(safe-area-inset-top) + 14px); right: 14px; z-index: 50; text-decoration:none; background: transparent; border: 0; padding: 0;"
+          >
+            <span
+              style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background: rgba(255,255,255,.65); border: 1px solid rgba(0,0,0,.06); box-shadow: 0 10px 26px rgba(0,0,0,.10);"
+            >
+              <img
+                src="images/icons/homeicon.png"
+                alt="Home"
+                style="width:22px; height:22px; object-fit:contain;"
+              />
+            </span>
+          </button>
+        </div>
+
+
+        <!-- Welcome block -->
+        <div class="welcome-block">
+          <div class="welcome-sub">Daytime reset</div>
+          <div class="welcome-hint">10 seconds. One line. Back to your life.</div>
+        </div>
+
+      <!-- Main card -->
+      <section class="ig-affirm-card">
+        <div id="supportStatus" style="font-size:14px; opacity:.8; margin-bottom:10px;"></div>
+
+        <div id="supportLine" class="ig-affirm-text" style="text-align:center;">
+          Loading…
+        </div>
+
+        <!-- Controls row -->
+        <div style="display:flex; align-items:center; justify-content:space-between; gap: 12px; margin-top: 16px;">
+          <button id="btnHideLine" type="button" aria-label="Don’t show this again" class="ig-support-icon-btn">
+            <img src="images/icons/do_not_show.png" alt="Don't show" class="ig-support-icon" />
+          </button>
+
+          <!-- Uses your existing star CSS (#starRating) -->
+          <div id="starRating" style="margin-top:0;">
+            <span class="star" data-v="1">★</span>
+            <span class="star" data-v="2">★</span>
+            <span class="star" data-v="3">★</span>
+            <span class="star" data-v="4">★</span>
+            <span class="star" data-v="5">★</span>
+          </div>
+
+            <button id="btnNextLine" type="button" class="ig-support-next-img" aria-label="Next"></button>
+        </div>
+
+        <div style="margin-top: 14px; font-size: 14px; opacity: .85;">
+          <div style="font-weight: 800; margin-bottom: 4px;">Why this line?</div>
+          <div id="supportWhy">Based on what’s been showing up lately</div>
+        </div>
+      </section>
+
+      <!-- Footer zone (pinned look via profile-footer structure) -->
+      <!-- Footer zone (pinned look via profile-footer structure) -->
+      <div class="profile-footer">
+
+        <!-- Daily streak row -->
+        <div class="foot-row" id="streakRow">
+          <div class="foot-label">Daily streak:</div>
+          <div class="foot-value" id="streakLine">—</div>
+        </div>
+
+        <!-- Weekly activity row -->
+        <div class="foot-row" style="margin-top:8px;">
+          <div id="igSupportDaysRow" style="display:flex; gap:8px; align-items:flex-end; justify-content:center; width:100%;">
+
+            <!-- Sunday -->
+            <div class="ig-day-col" style="width:34px; text-align:center;">
+              <div class="ig-day-circle" data-day="0"></div>
+              <div class="ig-day-label">S</div>
+            </div>
+
+            <!-- Monday -->
+            <div class="ig-day-col" style="width:34px; text-align:center;">
+              <div class="ig-day-circle" data-day="1"></div>
+              <div class="ig-day-label">M</div>
+            </div>
+
+            <!-- Tuesday -->
+            <div class="ig-day-col" style="width:34px; text-align:center;">
+              <div class="ig-day-circle" data-day="2"></div>
+              <div class="ig-day-label">T</div>
+            </div>
+
+            <!-- Wednesday -->
+            <div class="ig-day-col" style="width:34px; text-align:center;">
+              <div class="ig-day-circle" data-day="3"></div>
+              <div class="ig-day-label">W</div>
+            </div>
+
+            <!-- Thursday -->
+            <div class="ig-day-col" style="width:34px; text-align:center;">
+              <div class="ig-day-circle" data-day="4"></div>
+              <div class="ig-day-label">R</div>
+            </div>
+
+            <!-- Friday -->
+            <div class="ig-day-col" style="width:34px; text-align:center;">
+              <div class="ig-day-circle" data-day="5"></div>
+              <div class="ig-day-label">F</div>
+            </div>
+
+            <!-- Saturday -->
+            <div class="ig-day-col" style="width:34px; text-align:center;">
+              <div class="ig-day-circle" data-day="6"></div>
+              <div class="ig-day-label">S</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer meta -->
+        <div class="foot-meta">
+          <div id="todayLine" class="welcome-date">—</div>
+
+          <div class="foot-meta-right">
+            <div class="ig-topbar foot-version">AI Affirm · v1.5.1</div>
+            <div class="ig-build" id="igBuildTag"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+<!-- Bundle + page logic -->
+<script src="/js/theme.apply.js?v=2026-01-06-4" defer></script>
+<script src="/js/profile.api.js?v=1" defer></script>
+<script src="/js/profile.init.js?v=1" defer></script>
+
+<script src="/js/capacitor.bundle.js"></script>
+<script src="/js/support.js"></script>
+</body>
+</html>

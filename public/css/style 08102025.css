@@ -1,0 +1,426 @@
+/* public/css/style.css */
+
+/* === Root Variables === */
+:root {
+  --primary-color: #3db8ff;
+  --bg-color: #f5f7fa;
+  --input-bg: #e9ecef;
+  --text-color: #000;
+  --font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* === Global Styles === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color); /* keep this for consistency */
+  font-family: var(--font-family);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-y: auto;
+  padding: 2rem 1rem;
+}
+
+@media screen and (max-width: 600px) {
+  h2 {
+    font-size: 0.8rem;
+    padding: 0 0.5rem;
+    text-align: center;
+    word-break: break-word;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* === Auth Container === */
+.container {
+  background: rgba(244, 236, 229, 0.942);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 360px;
+  width: 100%;
+  margin:auto;
+}
+
+/* === Headings === */
+h2 {
+  text-align: center;
+  font-weight: 400;
+  /*margin-bottom: 1.5rem; */
+  margin: 0;
+}
+
+/* === Form Fields === */
+input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background-color: var(--input-bg);
+  font-size: 1rem;
+}
+
+/* === Buttons === */
+button {
+  display: inline-block;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background-color: var(--primary-color);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #00b2e2;
+}
+
+/* === Footer Links === */
+.footer-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+/* === Refined Button Variants === */
+.btn {
+  display: inline-block;
+  width: 100%;
+  padding: 0.85rem;
+  background-color: var(--primary-color); /* fallback, overridden by variants */
+  color: #000;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 60px; /* more rounded buttons */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-family: var(--font-family);
+  letter-spacing: 0.3px;
+}
+
+/* Primary: blue */
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #000;
+}
+
+.btn-primary:hover {
+  background-color: #3db8ff;
+  color: white;
+  width: 100%;
+}
+.btn-logout {
+ background-color: red;
+  color: white;
+  width: 100%;
+}
+/* Secondary: light gray */
+.btn-secondary {
+  background-color: #e5e7eb; /* tailwind gray-200ish */
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db; /* slightly darker on hover */
+}
+
+.footer-link a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+/* Signup card */
+.form-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Headline */
+.form-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+/* Labels and inputs */
+.form-card label {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-card input,
+.form-card select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #f0f4ff;
+}
+
+/* Button */
+.form-card button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #32aaff;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+
+.form-card button:hover {
+  background-color: #2598e4;
+}
+
+/* Sign-in link */
+.small-text {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 1rem;
+}
+
+.small-text a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.small-text a:hover {
+  text-decoration: underline;
+}
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+/* === Profile Page Specific Styles === */
+
+/* Banner */
+.banner-image img {
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Emotion Input Section */
+.emotion-input-section {
+  margin-bottom: 2rem;
+}
+
+.emotion-input-section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.emotion-input-section p {
+  margin-bottom: 1rem;
+}
+
+#emotionInput {
+  width: calc(100% - 140px);
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+#submitEmotion {
+  width: 100%;
+  display: inline-block;
+}
+
+/* Affirmation display box */
+.affirmation-box {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Carousel section */
+.top-emotions-section {
+  margin-top: 1.5rem;
+}
+
+
+/* Swipe-friendly horizontal carousel */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+
+  scroll-snap-type: x mandatory;       /* snap horizontally */
+  scroll-behavior: smooth;              /* smooth programmatic scroll */
+  -webkit-overflow-scrolling: touch;    /* momentum scrolling on iOS */
+}
+
+/* Each card is a snap point */
+.carousel-card {
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 1rem;
+
+  /* Responsive width for mobile → desktop */
+  min-width: clamp(160px, 20vw, 160px);
+  /* flex-shrink: 3; */
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+
+  scroll-snap-align: start;             /* snap the card’s start edge */
+    text-align: center;
+  font-size: 0.95rem;
+}
+
+.carousel-card:hover {
+  transform: translateY(-4px);
+}
+
+.carousel-card.highlight {
+  border: 2px solid #3db8ff;
+}
+
+/* Emotion image */
+.emotion-img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+/* Carousel indicators (dots) */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.dot {
+  height: 8px;
+  width: 8px;
+  margin: 0 3px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.active {
+  background-color: var(--primary-color);
+}
+
+
+
+/* ========== Error Page ========== */
+
+.error-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  margin: auto;
+  margin-top: 15vh;
+}
+
+.error-card h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.error-card p {
+  margin-bottom: 1.5rem;
+  color: #555;
+  font-size: 1rem;
+}
+
+.error-btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0.5rem;
+}
+
+.error-btn.secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.error-btn:hover {
+  opacity: 0.95;
+}
+/* ⭐️ Star Rating Styles */
+#starRating {
+  margin-top: 1rem;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.star {
+    font-size: 1.5rem;
+  cursor: pointer;
+  color: #ccc; /* default gray */
+  transition: color 0.3s ease;
+}
+
+.star.unselected {
+  color: #ccc; /* default gray */
+}
+
+.star.active {
+  color: gold; /* selected stars should turn gold */
+}
+
+.star.hover,
+.star.selected {
+  color: gold;
+}
+
+/* Support banner */
+#support-Banner {
+  background-color: #f4f8ff;
+  border-left: 4px solid #3db8ff;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI AFFIRM • Frequency</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/onboarding.css" />
+</head>
+
+<body class="ig-screen">
+  <div class="ig-shell">
+    <section class="ig-card">
+      <div class="ig-content">
+        <h1 class="ig-title">How often do you want to check in?</h1>
+        <p style="margin:0 0 14px;">This helps set reminders later. You can skip.</p>
+
+        <div class="ig-frequency-options">
+          <button type="button" class="btn btn-secondary" data-frequency="daily">
+            Daily
+          </button>
+          <button type="button" class="btn btn-secondary" data-frequency="few_times_week">
+            A few times a week
+          </button>
+          <button type="button" class="btn btn-secondary" data-frequency="weekly">
+            Weekly
+          </button>
+        </div>
+      </div>
+
+      <footer class="ig-footer">
+        <div class="ig-link-center">
+          <a class="ig-link" href="reminders.html?mode=onboarding" id="frequencySkipLink">Skip</a>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <script src="/js/frequency.js"></script>
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

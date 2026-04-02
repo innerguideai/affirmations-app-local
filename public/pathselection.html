@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI AFFIRM • Choose your path</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/onboarding.css" />
+</head>
+
+<body class="ig-screen">
+  <div class="ig-shell">
+    <section class="ig-card">
+      <div class="ig-content">
+        <h1 style="margin:0 0 10px;">Continue your way</h1>
+
+        <p style="margin:0 0 16px;">
+          Start fast, or create an account for backup and cross-device use.
+        </p>
+
+        <!-- Button row (side-by-side, stacks on small screens) -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <button id="chooseGuest" type="button" class="btn btn-primary" style="width:100%;">
+            Guest
+          </button>
+
+          <button id="chooseAccount" type="button" class="btn btn-primary" style="width:100%;">
+            Account
+          </button>
+        </div>
+
+        <!-- Stack on very small screens -->
+        <style>
+          @media (max-width: 360px) {
+            .ig-content > div[style*="grid-template-columns"] {
+              grid-template-columns: 1fr !important;
+            }
+          }
+        </style>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/guest.trial.js"></script>
+  <script src="/js/pathselection.js"></script>
+
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

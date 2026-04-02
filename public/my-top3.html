@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Top 3 Emotions • AI affirm</title>
+
+    <!-- Match your working profile styling -->
+    <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+    <link rel="stylesheet" href="/css/profile.css?v=2026-01-01-2" />
+
+    <style>
+      /* Minimal page layout */
+      .ig-page {
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      .ig-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 8px 0 12px;
+      }
+      .ig-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+      }
+      .ig-btn {
+        border-radius: 12px;
+        padding: 10px 12px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+        cursor: pointer;
+      }
+      .ig-card {
+        border-radius: 14px;
+        padding: 14px;
+        margin: 12px 0;
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(6px);
+      }
+      .ig-muted {
+        opacity: 0.75;
+        font-size: 13px;
+        line-height: 1.35;
+        margin: 8px 0 0;
+      }
+      .ig-error {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 240, 240, 0.9);
+        border: 1px solid rgba(180, 0, 0, 0.15);
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      /* Simple card list that matches your carousel feel */
+      .top3-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 10px;
+      }
+      .top3-item {
+        border-radius: 14px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .top3-item__title {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0 0 6px;
+      }
+      .top3-item__meta {
+        font-size: 13px;
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+
+  <!-- Reuse profile-page background/theme -->
+  <body class="profile-page">
+    <main class="ig-page">
+      <div class="ig-topbar">
+        <h1 class="ig-title">My Top 3 emotions</h1>
+        <button class="ig-btn" id="backBtn" type="button">Back</button>
+      </div>
+
+      <!-- Logged-in gate -->
+      <div id="authGateCard" class="ig-card hidden">
+        <div class="ig-error">
+          <div style="font-weight: 700; margin-bottom: 6px;">Sign in required</div>
+          <div class="ig-muted">
+            This page is available for registered users only. Please sign in, then try again.
+          </div>
+          <div style="margin-top: 10px;">
+            <button class="ig-btn" id="goLoginBtn" type="button">Go to Login</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div id="contentCard" class="ig-card hidden">
+        <div id="statusMsg" class="ig-muted">Loading…</div>
+        <div id="top3List" class="top3-list"></div>
+
+        <p class="ig-muted">
+          This reflects your last 30 days (based on your backend aggregation).
+        </p>
+      </div>
+    </main>
+
+    <script>
+      "use strict";
+
+      // Backend base
+      const API = "https://api.innerguideai.com";
+
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      function titleCase(s) {
+        if (!s || typeof s !== "string") return "";
+        return s.charAt(0).toUpperCase() + s.slice(1);
+
+<script src="/js/capacitor.bundle.js"></script>

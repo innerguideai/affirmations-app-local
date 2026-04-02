@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>My Streaks • AI Affirm</title>
+
+    <link rel="stylesheet" href="/css/style.css?v=2026-01-16-2" />
+    <link rel="stylesheet" href="/css/profile.css?v=2026-01-16-2" />
+    <link rel="stylesheet" href="/css/emotion-dashboard.css?v=2026-03-25-1" />
+    <link rel="stylesheet" href="/css/utils.css?v=2026-03-25-1" />
+    <style>
+      .ig-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+      }
+
+      .ig-dt {
+        opacity: 0.85;
+      }
+
+      .ig-dd {
+        margin: 0;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body class="profile-page emotion-dashboard-page ig-theme-default">
+    <div class="ig-theme-bg" aria-hidden="true"></div>
+
+    <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
+      <header class="emotion-dashboard-header">
+        <a
+          href="/account.html"
+          class="emotion-dashboard-icon-btn"
+          aria-label="Back to account"
+          title="Back to account"
+        >
+          <span aria-hidden="true">←</span>
+        </a>
+
+        <div class="emotion-dashboard-header-copy">
+          <p class="emotion-dashboard-kicker"></p>
+          <h1 class="emotion-dashboard-title">My streaks</h1>
+          <p class="emotion-dashboard-subtitle">
+            A simple view of your current streak activity.
+          </p>
+        </div>
+
+        <a
+          href="/profile.html"
+          class="emotion-dashboard-icon-btn"
+          aria-label="Go to home"
+          title="Go to home"
+        >
+          <img
+            src="/images/icons/homeicon.png"
+            alt="Home"
+            class="emotion-dashboard-home-icon"
+          />
+        </a>
+      </header>
+
+      <div id="streaksCard" hidden>
+        <dl style="margin: 12px 0 0 0;">
+          <div class="ig-row">
+            <dt class="ig-dt">Daily streak</dt>
+            <dd id="dailyStreakVal" class="ig-dd">—</dd>
+          </div>
+
+          <div class="ig-row">
+            <dt class="ig-dt">Longest streak</dt>
+            <dd id="longestStreakVal" class="ig-dd">—</dd>
+          </div>
+
+          <div class="ig-row">
+            <dt class="ig-dt">Last streak date</dt>
+            <dd id="lastDateVal" class="ig-dd">—</dd>
+          </div>
+        </dl>
+
+        <p
+          style="
+            opacity: 0.85;
+            font-size: 13px;
+            line-height: 1.35;
+            margin: 10px 0 0 0;
+          "
+        >
+          Your streak updates when you submit an emotion, not on page load.
+        </p>
+
+        <section class="streak-month-card" aria-labelledby="monthTitle">
+          <div class="streak-month-header">
+            <button
+              id="prevMonthBtn"
+              type="button"
+              class="emotion-dashboard-icon-btn"
+              aria-label="Previous month"
+              title="Previous month"
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+
+            <h2 id="monthTitle" class="streak-month-title">Month Year</h2>
+
+            <button
+              id="nextMonthBtn"
+              type="button"
+              class="emotion-dashboard-icon-btn"
+              aria-label="Next month"
+              title="Next month"
+            >
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div class="streak-weekdays" aria-hidden="true">
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+            <div>Sun</div>
+          </div>
+
+          <div
+            id="monthCalendarGrid"
+            class="streak-month-grid"
+            aria-label="Monthly streak calendar"
+          ></div>
+        </section>
+      </div>
+
+      <div id="authGateCard" hidden>
+        <p
+          style="
+            margin: 14px 0 0 0;
+            font-size: 14px;
+            line-height: 1.45;
+            opacity: 0.9;
+          "
+        >
+          Sign in to view your streak details.
+        </p>
+
+        <button
+          id="goLoginBtn"
+          type="button"
+          class="emotion-dashboard-icon-btn"
+          style="margin-top: 12px; width: auto; min-width: 120px; padding: 0 14px;"
+        >
+          Log in
+        </button>
+      </div>
+
+      <p
+        id="statusLine"
+        style="opacity: 0.8; font-size: 12px; margin: 12px 0 0 0;"
+        hidden
+      >
+        Loading…
+      </p>
+    </main>
+
+    <script src="/js/theme.apply.js?v=2026-01-16-2"></script>
+    <script src="/js/profile.api.js"></script>
+    <script src="/js/my-streaks.js?v=2026-01-16-2" defer></script>
+    <script src="/js/capacitor.bundle.js"></script>
+  </body>
+</html>

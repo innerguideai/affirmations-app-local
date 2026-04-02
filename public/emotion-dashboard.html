@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" class="ig-theme-default">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emotion Insights • InnerGuide AI</title>
+
+  <!-- Early theme apply for first paint -->
+  <script>
+    (function () {
+      try {
+        var saved = (localStorage.getItem("ig_theme") || "ig-theme-default").trim();
+        var allowed = ["ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom"];
+        if (!allowed.includes(saved)) saved = "ig-theme-default";
+        document.documentElement.classList.remove(
+          "ig-theme-default",
+          "ig-theme-winter",
+          "ig-theme-spring",
+          "ig-theme-cblossom"
+        );
+        document.documentElement.classList.add(saved);
+      } catch (e) {
+        document.documentElement.classList.add("ig-theme-default");
+      }
+    })();
+  </script>
+
+  <!-- Shared app CSS -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+  <link rel="stylesheet" href="/css/emotion-dashboard.css" />
+</head>
+
+<body class="profile-page emotion-dashboard-page ig-theme-default">
+  <!-- Fixed theme background layer -->
+  <div class="ig-theme-bg" aria-hidden="true"></div>
+<main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
+  <header class="emotion-dashboard-header">
+      <a
+        href="/account.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Back to account"
+        title="Back to account"
+      >
+        <span aria-hidden="true">←</span>
+      </a>
+
+      <div class="emotion-dashboard-header-copy">
+        <p class="emotion-dashboard-kicker">This month</p>
+        <h1 class="emotion-dashboard-title">Top 10 emotions</h1>
+        <p class="emotion-dashboard-subtitle">
+          A simple view of what showed up most.
+        </p>
+      </div>
+
+      <a
+        href="/profile.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Go to home"
+        title="Go to home"
+      >
+        <img
+          src="/images/icons/homeicon.png"
+          alt="Home"
+          class="emotion-dashboard-home-icon"
+        />
+      </a>
+    </header>
+
+    <section id="emotionDashboardLoadingCard" class="emotion-dashboard-card emotion-dashboard-loading-card">
+      <div class="emotion-dashboard-loading-title">Loading your emotion insights…</div>
+      <div class="emotion-dashboard-loading-subtitle">Pulling this month’s patterns now.</div>
+    </section>
+
+    <section id="emotionDashboardErrorCard" class="emotion-dashboard-card emotion-dashboard-error-card hidden">
+      <div class="emotion-dashboard-error-title">We couldn’t load your insights.</div>
+      <p id="emotionDashboardErrorText" class="emotion-dashboard-error-text">
+        Please try again.
+      </p>
+      <button id="emotionDashboardRetryBtn" class="emotion-dashboard-primary-btn" type="button">
+        Try again
+      </button>
+    </section>
+
+    <section id="emotionDashboardContent" class="hidden">
+      <!-- KPI row -->
+      <section class="emotion-dashboard-kpi-grid" aria-label="Emotion summary">
+        <article class="emotion-dashboard-kpi-card emotion-dashboard-kpi-card--felt">
+          <div class="emotion-dashboard-kpi-label">Most Felt</div>
+          <div id="kpiMostFeltValue" class="emotion-dashboard-kpi-value">—</div>
+          <div id="kpiMostFeltMeta" class="emotion-dashboard-kpi-meta">0 check-ins</div>
+        </article>
+
+        <article class="emotion-dashboard-kpi-card emotion-dashboard-kpi-card--range">
+          <div class="emotion-dashboard-kpi-label">Range</div>
+          <div id="kpiRangeValue" class="emotion-dashboard-kpi-value">
+            <span class="emotion-dashboard-kpi-number">—</span>
+            <span class="emotion-dashboard-kpi-word">emotions</span>
+          </div>
+          <div class="emotion-dashboard-kpi-meta">distinct this month</div>
+        </article>
+
+        <article class="emotion-dashboard-kpi-card emotion-dashboard-kpi-card--peak">
+          <div class="emotion-dashboard-kpi-label">Top Emotion Peak</div>
+          <div id="kpiPeakValue" class="emotion-dashboard-kpi-value">—</div>
+          <div id="kpiPeakMeta" class="emotion-dashboard-kpi-meta">for —</div>
+        </article>
+      </section>
+
+      <!-- Top 10 chart -->
+      <section class="emotion-dashboard-card">
+        <div class="emotion-dashboard-section-head">
+          <div>
+            <h2 class="emotion-dashboard-section-title">What showed up most</h2>
+            <p id="top10Summary" class="emotion-dashboard-section-subtitle">
+              —
+            </p>
+          </div>
+        </div>
+
+        <div id="top10Chart" class="emotion-dashboard-top10-chart" aria-label="Top 10 emotions chart">
+          <!-- injected -->
+        </div>
+      </section>
+
+      <!-- Trend chart -->
+      <section class="emotion-dashboard-card">
+        <div class="emotion-dashboard-section-head">
+          <div>
+            <h2 class="emotion-dashboard-section-title">Your top emotion over time</h2>
+            <p id="trendSummary" class="emotion-dashboard-section-subtitle">
+              —
+            </p>
+          </div>
+        </div>
+
+        <div class="emotion-dashboard-line-wrap">
+          <svg
+            id="emotionTrendSvg"
+            class="emotion-dashboard-line-svg"
+            viewBox="0 0 340 170"
+            preserveAspectRatio="none"
+            aria-label="Trend chart"
+          ></svg>
+        </div>
+      </section>
+
+      <!-- Heatmap -->
+      <section class="emotion-dashboard-card">
+        <div class="emotion-dashboard-section-head">
+          <div>
+            <h2 class="emotion-dashboard-section-title">Your weekly emotion pattern</h2>
+            <p id="heatmapSummary" class="emotion-dashboard-section-subtitle">
+              —
+            </p>
+          </div>
+        </div>
+
+        <div id="emotionHeatmap" class="emotion-dashboard-heatmap" aria-label="Weekly heatmap">
+          <!-- injected -->
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Shared theme + shared api -->
+  <script src="/js/theme.apply.js"></script>
+  <script src="/js/profile.api.js"></script>
+
+  <!-- Page logic -->
+  <script src="/js/emotion-dashboard.js"></script>
+</body>
+</html>

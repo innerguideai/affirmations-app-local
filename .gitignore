@@ -1,0 +1,83 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+
+# Mongo data (if any local dump)
+dump/
+.env
+
+# macOS / Xcode user state
+.DS_Store
+**/xcuserdata/
+**/*.xcuserstate
+
+# CocoaPods
+ios/App/Pods/
+ios/App/Podfile.lock
+
+# Backups / junk
+*.bak
+*.bak.*
+*copy*
+ios_backup_*/
+ios.bak_*/
+public_backup_*/
+ios_App_public_backup_*/
+
+# Logs
+*.log
+
+# iOS generated web bundle (synced from /public)
+ios/App/App/public/
+
+
+# macOS
+.DS_Store
+
+# Xcode user state (never commit)
+xcuserdata/
+*.xcuserstate
+
+# Local backups (never commit)
+_backups/
+backups/
+*.tgz
+
+# ----------------------------
+# iOS bundle hygiene (TEMP)
+# Source of truth is /public
+# ----------------------------
+ios/App/App/public/
+
+# Xcode user / shared data (local machine noise)
+ios/App/App.xcodeproj/xcshareddata/
+**/xcuserdata/
+.DS_Store
+
+# Local archives
+archive/
+*.tar.gz
+
+# iOS generated web bundle (synced from /public)
+ios/App/App/public/
+
+# Local archives
+*.tar.gz
+
+android/keystore.properties
+android/keystores/*.jks
+
+users.json
+appium-*.xml
+appium-*.js
+appium.md

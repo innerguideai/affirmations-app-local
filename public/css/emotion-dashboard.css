@@ -1,0 +1,439 @@
+/* public/css/emotion-dashboard.css */
+"use strict";
+
+/* ============================================================
+   Emotion dashboard page
+   Uses shared theme tokens from style.css
+   ============================================================ */
+
+body.emotion-dashboard-page {
+  min-height: 100vh;
+  color: var(--text);
+}
+.emotion-dashboard-home-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+.emotion-dashboard-shell {
+  width: 100%;
+  max-width: 430px;
+  margin: 40px auto;
+  padding:
+    calc(env(safe-area-inset-top) + 16px)
+    16px
+    calc(env(safe-area-inset-bottom) + 28px);
+}
+
+.emotion-dashboard-header {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+.emotion-dashboard-header-copy {
+  text-align: center;
+  padding-top: 2px;
+}
+
+.emotion-dashboard-kicker {
+  margin: 0 0 4px 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-accent-strong);
+  opacity: 0.95;
+}
+
+.emotion-dashboard-title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.05;
+  font-weight: 800;
+  color: var(--theme-accent-strong);
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.emotion-dashboard-subtitle {
+  margin: 6px 0 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--theme-surface-dark);
+  opacity: 0.92;
+}
+
+.emotion-dashboard-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--theme-surface-light);
+  border: 1px solid var(--theme-border-soft);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.10);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gunmetal);
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 700;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.emotion-dashboard-card {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.14) 45%,
+    rgba(255, 248, 238, 0.28) 72%,
+    rgba(255, 246, 232, 0.44) 100%
+  );
+  border: 1px solid var(--theme-border-soft);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 26px;
+  padding: 16px 14px 18px;
+    margin-bottom: 14px;
+}
+
+.emotion-dashboard-loading-card,
+.emotion-dashboard-error-card {
+  text-align: center;
+  padding: 22px 18px;
+}
+
+.emotion-dashboard-loading-title,
+.emotion-dashboard-error-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gunmetal);
+}
+
+.emotion-dashboard-loading-subtitle,
+.emotion-dashboard-error-text {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgba(25, 38, 50, 0.74);
+}
+
+.emotion-dashboard-primary-btn {
+  margin-top: 14px;
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  background: var(--theme-accent-strong);
+  cursor: pointer;
+}
+
+.emotion-dashboard-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.emotion-dashboard-kpi-card {
+  min-height: 116px;
+  border-radius: 22px;
+  padding: 14px 12px;
+  border: 1px solid var(--theme-border-soft);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.emotion-dashboard-kpi-card--felt {
+  background: color-mix(in srgb, var(--theme-accent) 42%, rgba(255,255,255,0.70));
+}
+
+.emotion-dashboard-kpi-card--range {
+  background: color-mix(in srgb, var(--theme-surface-light) 72%, var(--theme-accent) 28%);
+}
+
+.emotion-dashboard-kpi-card--peak {
+  background: color-mix(in srgb, var(--theme-accent) 22%, rgba(220, 234, 215, 0.85));
+}
+
+.emotion-dashboard-kpi-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(25, 38, 50, 0.72);
+  line-height: 1.2;
+}
+
+.emotion-dashboard-kpi-value {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.05;
+  font-weight: 800;
+  color: var(--gunmetal);
+  word-break: break-word;
+}
+
+.emotion-dashboard-kpi-meta {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: rgba(25, 38, 50, 0.68);
+}
+
+.emotion-dashboard-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.emotion-dashboard-section-title {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--gunmetal);
+  text-align: left;
+}
+
+.emotion-dashboard-section-subtitle {
+  margin: 6px 0 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: rgba(25, 38, 50, 0.70);
+}
+
+/* ============================================================
+   Top 10 chart
+   ============================================================ */
+
+.emotion-dashboard-top10-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  min-height: 240px;
+  padding-top: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.emotion-dashboard-top10-chart::-webkit-scrollbar {
+  display: none;
+}
+
+.emotion-dashboard-bar-col {
+  flex: 1 0 44px;
+  min-width: 44px;
+  max-width: 44 px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.emotion-dashboard-bar-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--gunmetal);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--theme-border-soft);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.emotion-dashboard-bar-col.is-top .emotion-dashboard-bar-badge {
+  background: var(--theme-accent-strong);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--theme-glow) 18%, transparent);
+}
+
+.emotion-dashboard-bar {
+  width: 100%;
+  border-radius: 18px 18px 12px 12px;
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--theme-accent-strong) 18%, transparent);
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--theme-surface-light) 80%, #ffffff 20%),
+      color-mix(in srgb, var(--theme-accent) 42%, rgba(255,255,255,0.52))
+    );
+  min-height: 70px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+  overflow: hidden;
+}
+
+.emotion-dashboard-bar-col.is-top .emotion-dashboard-bar {
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--theme-accent) 54%, #ffffff 10%),
+      var(--theme-accent-strong)
+    );
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.emotion-dashboard-bar-label {
+  position: absolute;
+  inset: 8px 4px 10px 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-align: center;
+  color: rgba(25, 38, 50, 0.84);
+
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+.emotion-dashboard-bar-col.is-top .emotion-dashboard-bar-label {
+  color: #fff;
+}
+
+/* ============================================================
+   Trend chart
+   ============================================================ */
+
+.emotion-dashboard-line-wrap {
+  width: 100%;
+  border-radius: 18px;
+  padding: 10px 8px 0;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.emotion-dashboard-line-svg {
+  width: 100%;
+  height: 180px;
+  display: block;
+}
+
+/* ============================================================
+   Heatmap
+   ============================================================ */
+
+.emotion-dashboard-heatmap {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.emotion-dashboard-heatmap::-webkit-scrollbar {
+  display: none;
+}
+
+.emotion-dashboard-heatmap-grid {
+  min-width: 100%;
+}
+
+.emotion-dashboard-heatmap-head,
+.emotion-dashboard-heatmap-row {
+  display: grid;
+  grid-template-columns: 72px repeat(7, minmax(24px, 1fr));
+  gap: 8px;
+  align-items: center;
+}
+
+.emotion-dashboard-heatmap-head {
+  margin-bottom: 10px;
+}
+
+.emotion-dashboard-heatmap-day-head {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(25, 38, 50, 0.62);
+}
+
+.emotion-dashboard-heatmap-row {
+  margin-bottom: 10px;
+}
+
+.emotion-dashboard-heatmap-emotion {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gunmetal);
+  line-height: 1.2;
+}
+
+.emotion-dashboard-heatmap-row.is-top .emotion-dashboard-heatmap-emotion {
+  color: var(--theme-accent-strong);
+}
+
+.emotion-dashboard-heatmap-cell {
+  height: 28px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.emotion-dashboard-heatmap-empty {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(25, 38, 50, 0.68);
+  padding: 8px 4px;
+}
+
+@media (max-width: 390px) {
+  .emotion-dashboard-shell {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .emotion-dashboard-title {
+    font-size: 25px;
+  }
+
+  .emotion-dashboard-kpi-grid {
+    gap: 8px;
+  }
+
+  .emotion-dashboard-kpi-card {
+    padding: 12px 10px;
+  }
+
+  .emotion-dashboard-kpi-value {
+    font-size: 18px;
+  }
+
+  .emotion-dashboard-bar-col {
+      min-width: 42px;
+      max-width: 42px;
+      flex-basis: 42px;
+    }
+
+  .emotion-dashboard-heatmap-head,
+  .emotion-dashboard-heatmap-row {
+    grid-template-columns: 66px repeat(7, minmax(22px, 1fr));
+    gap: 6px;
+  }
+}
+
+.emotion-dashboard-kpi-number,
+.emotion-dashboard-kpi-word {
+  display: block;
+}

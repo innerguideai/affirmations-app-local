@@ -1,0 +1,694 @@
+/* ======================================
+   Profile page (mobile-first)
+   ====================================== */
+
+
+/* outer container */
+.theme-bg {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Maintain ~80% vertical height for main glass area */
+.profile-main {
+  min-height: 70vh;                 /* occupy at least 80% of screen */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;      /* start content at top */
+  flex: 1;
+}
+
+/* =========================
+   Glass card
+   ========================= */
+.content-narrow {
+  width: min(100% - 24px, 380px);
+  min-height: calc(100vh - 56px);
+  margin: calc(env(safe-area-inset-top, 0px) + 36px) auto 20px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.14) 45%,
+    rgba(255, 248, 238, 0.28) 72%,
+    rgba(255, 246, 232, 0.44) 100%
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 26px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  padding: 16px 14px 18px;
+  overflow: hidden;
+  font-size: 0.78rem;
+  line-height: 0.9;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* top bar inside card */
+.ig-topbar {
+  text-align: center;
+  font-size: 0.72rem;
+  color: rgba(0,0,0,0.48);
+  margin-bottom: 6px;
+}
+
+/* =========================
+   Welcome block
+   ========================= */
+.welcome-block {
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+.welcome-title {
+    text-align: left;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.welcome-date {
+    text-align: left;
+  font-size: 0.68rem;
+  color: rgba(0,0,0,0.45);
+  margin-bottom: 10px;
+}
+/* Guest trial hint under greeting */
+.profile-guest-note {
+  font-size: 0.75rem;
+  color: rgba(45, 32, 21, 0.7);
+  margin-top: 0.15rem;
+}
+.welcome-sub {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.welcome-hint {
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.55);
+  margin-top: 8px;
+}
+
+/* rating under affirmation */
+.rating-row,
+#starRating {
+  display: flex;
+  gap: 6px;
+  margin: 1.5rem auto 0;
+  max-width: 120px;
+  justify-content: center;
+}
+#starRating .star {
+  cursor: pointer;
+  color: #cfcfcf;
+  font-size: 1.4rem;
+}
+#starRating .star.active,
+#starRating .star.hover { color: gold; }
+/* wrapper so buttons can be absolutely placed */
+.affirmation-wrapper {
+  position: relative;
+  width: 92%;
+  margin: 1rem auto 0;
+}
+
+/* your existing box will stay same but is now inside wrapper */
+.affirmation-box {
+  position: relative;
+  padding-right: 2.6rem; /* room for right buttons */
+}
+.affirmation-actions{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  margin-top:10px;
+}
+/* small round right-side buttons */
+/* Next Affirmation button (small round, right side) */
+.next-btn {
+  position: absolute;
+  right: -14px;
+  top: 62%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(147, 183, 123, 0.95);
+  color: #fff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.next-btn:hover {
+  background: rgba(147, 183, 123, 1);
+}
+
+/* second button (AI) sits a bit lower */
+.ai-btn {
+  top: calc(50% + 38px);          /* below the next button */
+  background: rgba(87, 145, 255, 0.95);
+}
+body.profile-page.ig-theme-spring .profile-main .welcome-block {
+  margin-top: 18px;
+}
+/* =========================
+   Buttons – unified
+   ========================= */
+.profile-page .btn,
+.profile-page .btn-secondary,
+.profile-page .affirm-btn,
+.profile-page .logout-narrow,
+#logoutBtn {
+  display: block;
+  width: 88%;           /* all buttons aligned */
+  max-width: 280px;
+  margin: 0.6rem auto 0;
+  border-radius: 9999px;
+  font-size: 1rem;
+  line-height: 2;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* logout style */
+#logoutBtn,
+.profile-page .btn-logout,
+.profile-page .logout-narrow {
+  background: #c94d3e;
+  color: #fff;
+}
+
+/* =========================
+   Top emotions carousel
+   ========================= */
+.top-emotions-section {
+  margin-top: 1.1rem;
+}
+.topemotlabel {
+  font-weight: 600;
+  font-size: 0.82rem;
+  margin-bottom: 0.4rem;
+}
+.carousel {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding-bottom: 0.6rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.carousel::-webkit-scrollbar { display: none; }
+.carousel-card {
+  flex: 0 0 88%;
+  max-width: 88%;
+  background: #fff;
+  border-radius: 16px;
+  padding: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,.04);
+  scroll-snap-align: start;
+}
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.carousel-indicators .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #bdbdbd;
+}
+.carousel-indicators .dot.active {
+  background: #476B38;
+}
+
+
+/* =========================
+   Footer
+   ========================= */
+.profile-footer {
+  margin-top: auto;
+  border-top: 1px solid rgba(0,0,0,0.03);
+  padding-top: 12px;
+}
+.foot-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+.foot-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.foot-value {
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.5);
+}
+.ig-btn {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.03);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.82rem;
+}
+
+/* Top 3 footer chips are now redundant with the cards, so hide them */
+.top3-footer {
+  display: none;
+}
+
+
+.top3-chip {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.72rem;
+    line-height: 1;
+    color: #1d1d1d;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.top3-chip:nth-child(1) {
+  background: rgba(147, 183, 123, 0.38);
+}
+.top3-chip:nth-child(2) {
+  background: rgba(171, 202, 150, 0.38);
+}
+.top3-chip:nth-child(3) {
+  background: rgba(195, 210, 180, 0.38);
+}
+
+
+/* =========================
+   Wider screens
+   ========================= */
+@media (min-width: 720px) {
+  .content-narrow {
+    width: 420px;
+  }
+}
+
+/* force "Other" input to match controls */
+body.profile-page .other-feeling-block input[type="text"],
+body.profile-page .otherEmotionInput input[type="text"],
+body.profile-page input.other-input {
+  height: 30px !important;
+  line-height: 1.1 !important;
+  font-size: 16px !important;
+  padding: 4px 10px !important;
+  border-radius: 14px !important;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+/* input takes most of that 280px */
+.other-emotion-row .other-input,
+#feelingInput.other-input,
+#feelingInput {
+  flex: 0 0 220px;           /* fixed-ish width */
+  max-width: 220px;
+}
+
+/* small circle button on right (same family as card buttons) */
+.feeling-ai-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(87, 145, 255, 0.95);
+  color: #fff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+/* Selected emotion */
+/* .emotion-chip.selected{
+  background-color: var(--celadon);
+  border: 2px solid var(--green);
+  color: var(--gunmetal);
+  transform: scale(1.05);
+} */
+/* center the whole other block inside the card */
+.other-feeling-block {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;   /* <-- centers it */
+}
+
+/* keep it narrow and align button vertically */
+.other-emotion-row {
+  display: flex;
+  align-items: center;       /* <-- button same height as input */
+  gap: 8px;
+  max-width: 280px;
+}
+
+
+/* Build marker: shows which CSS/JS version is loaded */
+.ig-build {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+/* ================================
+   Build marker (cache-bust sanity)
+   Hidden by default (inspect-only)
+   ================================ */
+#igBuildTag {
+  display: none !important;
+}
+
+.profile-menu-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+}
+
+.profile-menu-line {
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(45, 32, 21, 0.9);
+  margin: 2px 0;
+}
+
+/* Greeting spacing: push down from header a bit */
+.profile-greeting-block {
+  margin-top: 18px;
+}
+
+/* Theme pill / Default button */
+.profile-theme-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.85);
+  color: rgba(45, 32, 21, 0.9);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.profile-theme-pill:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Top emotions carousel layout (v2) ===== */
+
+/* Label inside card */
+.carousel-card .emotion-label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* Rating row */
+.carousel-card .stars {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* Highlighted card on tap */
+.carousel-card.highlight {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* Dots under the carousel */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* =========================
+   Footer spacing without giant empty gap
+   ========================= */
+
+/* Remove the “push footer to bottom with huge empty space” behavior */
+/*.content-narrow {
+/*  display: block;          /* undo flex column */
+/*  min-height: auto;        /* undo full-viewport height */
+/*}*/
+
+/* Keep a clean gap above footer */
+/*.profile-footer {
+/*  margin-top: 24px;        /* small separation from bubbles/content */
+/*  padding-top: 80px;        /* light breathing room */
+/*}*/
+
+/* ======================================
+   Profile emotion grid (3-4-3 rows)
+   ====================================== */
+
+body.profile-page .profile-emotion-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+body.profile-page .profile-emotion-grid .emotion-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+body.profile-page .profile-emotion-grid .emotion-chip {
+  width: 82px;
+  height: 82px;
+  max-width: 82px;
+  aspect-ratio: auto;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px;
+  text-align: center;
+  line-height: 1;
+  white-space: normal;
+  word-break: break-word;
+  font-weight: 600;
+font-size:0.86rem;
+  background: var(--theme-accent);
+  border: 1px solid var(--theme-border-soft);
+  color: var(--gunmetal);
+
+  box-shadow:
+    inset 4px 4px 10px rgba(255, 255, 255, 0.35),
+    inset -4px -4px 10px rgba(0, 0, 0, 0.12),
+    5px 10px 15px rgba(0, 0, 0, 0.18);
+
+  --float-x: 0px;
+  --float-y: 3px;
+  --float-speed: 4.2s;
+  --float-delay: 0s;
+
+  animation: igEmotionFloat var(--float-speed) ease-in-out infinite;
+  animation-delay: var(--float-delay);
+}
+
+body.profile-page .profile-emotion-grid .emotion-chip.is-active,
+body.profile-page .profile-emotion-grid .emotion-chip.active,
+body.profile-page .profile-emotion-grid .emotion-chip--active {
+  background: var(--theme-accent-strong);
+  border: 1px solid var(--theme-accent-strong);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 0 0 2px var(--theme-glow),
+    0 8px 20px rgba(0,0,0,0.18);
+}
+
+body.profile-page .profile-emotion-grid .emotion-chip--other {
+  width: auto;
+  height: auto;
+  max-width: none;
+  padding: 12px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+
+  background: var(--theme-surface-light);
+  border: 1px solid var(--theme-border-soft);
+  color: var(--gunmetal);
+}
+
+@keyframes igEmotionFloat {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  35% {
+    transform: translate(var(--float-x), calc(-1 * var(--float-y)));
+  }
+
+  70% {
+    transform: translate(calc(-1 * var(--float-x)), calc(-0.5 * var(--float-y)));
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+body.profile-page .profile-emotion-grid .emotion-row .emotion-chip:nth-child(3n + 1) {
+  --float-x: 1px;
+  --float-y: 2px;
+  --float-speed: 3.6s;
+  --float-delay: -0.4s;
+}
+
+body.profile-page .profile-emotion-grid .emotion-row .emotion-chip:nth-child(3n + 2) {
+  --float-x: -2px;
+  --float-y: 4px;
+  --float-speed: 4.8s;
+  --float-delay: -1.1s;
+}
+
+body.profile-page .profile-emotion-grid .emotion-row .emotion-chip:nth-child(3n) {
+  --float-x: 2px;
+  --float-y: 3px;
+  --float-speed: 4.1s;
+  --float-delay: -0.7s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.profile-page .profile-emotion-grid .emotion-chip {
+    animation: none !important;
+  }
+}
+
+/* =========================
+   Header greeting (top of page)
+   ========================= */
+
+.profile-header {
+  display: grid;
+  grid-template-columns: 34px 1fr 34px; /* left menu, centered greeting, right spacer */
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.profile-header-spacer {
+  width: 30px;
+  height: 30px;
+}
+
+.profile-header-greeting {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.88);
+  line-height: 1.15;
+  padding: 0 6px;
+}
+
+/* Keep guest note tight under the header */
+.profile-guest-note {
+  text-align: center;
+  margin: 2px 0 10px;
+}
+/* =========================
+   Footer meta (date + version at bottom)
+   ========================= */
+
+.foot-meta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 6px;
+}
+
+.foot-meta .welcome-date {
+  margin: 0;
+  font-size: 0.68rem;
+  color: rgba(0,0,0,0.45);
+  text-align: left;
+}
+
+.foot-meta-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.foot-version {
+  margin: 0;
+  font-size: 0.68rem;
+  color: rgba(0,0,0,0.45);
+  text-align: right;
+}
+
+/* Small screens: stack meta nicely */
+@media (max-width: 360px) {
+  .foot-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .foot-meta-right {
+    align-items: flex-start;
+  }
+  .foot-version {
+    text-align: left;
+  }
+}
+/* AI pill button */
+.ai-pill-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+  border-radius: 999px; /* safe even if image changes */
+}
+
+.ai-pill-btn:active {
+  box-shadow: 0 6px 14px rgba(0,0,0,0.16);
+  transform: translateY(1px);
+}
+
+.ai-pill-btn img{
+  height:32px;   /* controls size */
+  width:auto;
+  display:block;
+}

@@ -1,0 +1,192 @@
+/* public/css/onboarding.css
+   Reusable onboarding layout (safe-area aware)
+*/
+
+/* Onboarding screen base: overrides global body flex-centering */
+body.ig-screen {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: block; /* overrides global body { display:flex } */
+}
+
+/* Same top/bottom spacing across onboarding */
+.ig-shell {
+  --ig-top: 30px;
+  --ig-bottom: 30px;
+
+  min-height: 100vh;
+  padding-top: calc(env(safe-area-inset-top, 0px) + var(--ig-top));
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ig-bottom));
+  padding-left: 12px;
+  padding-right: 12px;
+
+  display: flex;
+  justify-content: center;
+}
+.ig-shell {
+  align-items: stretch; /* makes the card layout consistent across pages */
+}
+
+
+/* Card wrapper */
+.ig-card {
+  width: min(100%, 420px);
+  border-radius: 16px;
+  overflow: hidden;
+
+  /* IMPORTANT: default is NOT white */
+  background: transparent;
+
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - (env(safe-area-inset-top, 0px) + var(--ig-top)) - (env(safe-area-inset-bottom, 0px) + var(--ig-bottom)));
+}
+
+/* Use this class only on form pages (name/login/etc.) */
+.ig-card.ig-surface {
+  background: #fff;
+}
+
+/* Center the main welcome content so you don't get the ugly middle gap */
+.ig-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* this is what removes the awkward empty middle */
+  padding: 16px;
+}
+/* Welcome hero image sizing (smaller like your target) */
+.ig-hero {
+  width: 100%;
+  display: block;
+  margin: -10px auto 14px;
+  max-height: 40vh;
+  object-fit: contain;
+}
+/* Utility: add 30px top padding inside content */
+.ig-pt-30 {
+  padding-top: 30px;
+}
+
+/* Title inside onboarding cards (not centered like global h1) */
+.ig-title {
+  text-align: left;
+  margin: 0 0 6px;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+/* Footer pinned to bottom, with SAFE padding so nothing hides behind home indicator */
+.ig-footer {
+  margin-top: auto;
+  padding: 0 16px calc(env(safe-area-inset-bottom, 0px) + 30px);
+}
+
+.ig-footer-inner {
+  padding: 0 16px 0;
+}
+
+.ig-footer-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
+/* Center link row */
+.ig-link-center {
+  text-align: center;
+}
+/* Frequency page grid layout */
+.ig-frequency-options {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.ig-frequency-options .btn {
+  width: 100%;
+}
+
+/* =========================
+   Reminders UI (reusable)
+   ========================= */
+
+/* A compact row: time input (75%) + toggle (right) */
+.ig-time-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ig-time-input {
+  flex: 0 0 75%;
+  max-width: 75%;
+  margin: 0; /* stop global input margin-bottom from creating weird gaps */
+}
+
+.ig-toggle-wrap {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* iOS-like switch */
+.ig-switch {
+  position: relative;
+  width: 54px;
+  height: 32px;
+  display: inline-block;
+}
+
+.ig-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ig-switch-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.18);
+  border-radius: 999px;
+  transition: 0.18s ease;
+}
+
+.ig-switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 26px;
+  width: 26px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+  transition: 0.18s ease;
+}
+
+.ig-switch input:checked + .ig-switch-slider {
+  background: rgba(71,107,56,0.75); /* your green */
+}
+
+.ig-switch input:checked + .ig-switch-slider::before {
+  transform: translateX(22px);
+}
+
+/* Helper note under the row */
+.ig-note {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+/* If a page wants content top-aligned (not vertically centered), use this */
+.ig-content--top {
+  justify-content: flex-start;
+}
+

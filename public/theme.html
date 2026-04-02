@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theme • AI AFFIRM</title>
+
+  <link rel="stylesheet" href="/css/style.css?v=2026-03-25-2" />
+  <link rel="stylesheet" href="/css/profile.css?v=2026-03-25-2" />
+  <link rel="stylesheet" href="/css/emotion-dashboard.css?v=2026-03-25-2" />
+
+  <script src="/js/theme.apply.js"></script>
+
+  <style>
+    .theme-page-shell {
+      padding-bottom: 110px;
+    }
+
+    .theme-page-body {
+      display: grid;
+      gap: 14px;
+    }
+
+    .theme-page-intro {
+      padding: 0 2px;
+    }
+
+    .theme-page-intro-title {
+      margin: 0 0 4px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-strong, #1f2937);
+    }
+
+    .theme-page-intro-copy {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      color: var(--text-muted, rgba(0, 0, 0, 0.65));
+    }
+
+    .theme-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .theme-tile {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+      min-height: 152px;
+    }
+
+    .theme-img {
+      width: 100%;
+      height: 152px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .theme-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.48) 0%,
+        rgba(0, 0, 0, 0.18) 48%,
+        rgba(0, 0, 0, 0.04) 100%
+      );
+    }
+
+    .theme-text {
+      min-width: 0;
+      color: #fff;
+    }
+
+    .theme-name {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .theme-desc {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      line-height: 1.35;
+      opacity: 0.95;
+    }
+
+    .theme-action {
+      flex-shrink: 0;
+      min-width: 92px;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.88);
+      color: #1f2937;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+      cursor: pointer;
+    }
+
+    .theme-action.selected {
+      background: rgba(147, 183, 123, 0.95);
+      color: #fff;
+    }
+
+    .theme-action:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 640px) {
+      .theme-overlay {
+        padding: 14px;
+      }
+
+      .theme-name {
+        font-size: 1.08rem;
+      }
+
+      .theme-desc {
+        font-size: 0.84rem;
+      }
+
+      .theme-action {
+        min-width: 84px;
+        padding: 9px 14px;
+        font-size: 0.86rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="profile-page emotion-dashboard-page ig-theme-default">
+  <div class="ig-theme-bg" aria-hidden="true"></div>
+
+  <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell theme-page-shell">
+    <header class="emotion-dashboard-header">
+      <a
+        href="/account.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Back to account"
+        title="Back to account"
+      >
+        <span aria-hidden="true">←</span>
+      </a>
+
+      <div class="emotion-dashboard-header-copy">
+        <p class="emotion-dashboard-kicker"></p>
+        <h1 class="emotion-dashboard-title">Themes</h1>
+        <p class="emotion-dashboard-subtitle">
+          Pick the look you want across the app.
+        </p>
+      </div>
+
+      <a
+        href="/profile.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Go to home"
+        title="Go to home"
+      >
+        <img
+          src="/images/icons/homeicon.png"
+          alt="Home"
+          class="emotion-dashboard-home-icon"
+        />
+      </a>
+    </header>
+
+    <section class="theme-page-body">
+      <section class="theme-list" aria-label="Theme options">
+        <article class="theme-tile" data-theme="ig-theme-default">
+          <img
+            class="theme-img"
+            src="/images/default.jpg"
+            alt="Default theme preview"
+          />
+          <div class="theme-overlay">
+            <div class="theme-text">
+              <p class="theme-name">Default</p>
+              <p class="theme-desc">Soft and balanced</p>
+            </div>
+            <button class="theme-action" type="button" data-use="ig-theme-default">
+              Use
+            </button>
+          </div>
+        </article>
+
+        <article class="theme-tile" data-theme="ig-theme-winter">
+          <img
+            class="theme-img"
+            src="/images/winter.jpg"
+            alt="Winter theme preview"
+          />
+          <div class="theme-overlay">
+            <div class="theme-text">
+              <p class="theme-name">Winter</p>
+              <p class="theme-desc">Cool and calm</p>
+            </div>
+            <button class="theme-action" type="button" data-use="ig-theme-winter">
+              Use
+            </button>
+          </div>
+        </article>
+
+        <article class="theme-tile" data-theme="ig-theme-spring">
+          <img
+            class="theme-img"
+            src="/images/spring.jpg"
+            alt="Spring theme preview"
+          />
+          <div class="theme-overlay">
+            <div class="theme-text">
+              <p class="theme-name">Spring</p>
+              <p class="theme-desc">Fresh and light</p>
+            </div>
+            <button class="theme-action" type="button" data-use="ig-theme-spring">
+              Use
+            </button>
+          </div>
+        </article>
+
+        <article class="theme-tile" data-theme="ig-theme-cblossom">
+          <img
+            class="theme-img"
+            src="/images/cblossom.jpg"
+            alt="Cherry Blossom theme preview"
+          />
+          <div class="theme-overlay">
+            <div class="theme-text">
+              <p class="theme-name">Cherry Blossom</p>
+              <p class="theme-desc">Soft and airy</p>
+            </div>
+            <button class="theme-action" type="button" data-use="ig-theme-cblossom">
+              Use
+            </button>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const STORAGE_KEY = "ig_theme";
+      const THEMES = [
+        "ig-theme-default",
+        "ig-theme-winter",
+        "ig-theme-spring",
+        "ig-theme-cblossom"
+      ];
+
+      function getSavedTheme() {
+        try {
+          const value = localStorage.getItem(STORAGE_KEY);
+          return THEMES.includes(value) ? value : "ig-theme-default";
+        } catch (err) {
+          return "ig-theme-default";
+        }
+      }
+
+      function setSavedTheme(themeValue) {
+        try {
+          localStorage.setItem(STORAGE_KEY, themeValue);
+        } catch (err) {
+          console.warn("[theme] failed to save theme", err);
+        }
+      }
+
+      function paintSelectedState() {
+        const activeTheme = getSavedTheme();
+        const buttons = document.querySelectorAll(".theme-action[data-use]");
+
+        buttons.forEach((button) => {
+          const thisTheme = button.getAttribute("data-use");
+          const isSelected = thisTheme === activeTheme;
+
+          button.classList.toggle("selected", isSelected);
+          button.textContent = isSelected ? "Selected" : "Use";
+          button.setAttribute("aria-pressed", isSelected ? "true" : "false");
+        });
+      }
+
+      document.addEventListener("click", function (event) {
+        const button = event.target.closest(".theme-action[data-use]");
+        if (!button) return;
+
+        const themeValue = button.getAttribute("data-use");
+        if (!THEMES.includes(themeValue)) return;
+
+        setSavedTheme(themeValue);
+        paintSelectedState();
+
+        setTimeout(() => {
+          window.location.href = "/profile.html";
+        }, 120);
+      });
+
+      paintSelectedState();
+    })();
+  </script>
+
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

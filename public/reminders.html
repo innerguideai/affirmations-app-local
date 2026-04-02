@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
+    <title>AI AFFIRM • Reminders</title>
+
+    <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+    <link rel="stylesheet" href="/css/onboarding.css" />
+  </head>
+
+  <body class="ig-screen">
+    <div class="ig-shell">
+      <section class="ig-card">
+        <!-- ONBOARDING VIEW -->
+        <div class="ig-content" id="remindersOnboardingView">
+          <!-- Back link (onboarding: frequency.html) -->
+          <a id="remBackTop" class="back-link" href="/frequency.html">Back</a>
+
+          <h1 class="ig-title">Want reminders?</h1>
+
+
+          <p style="margin: 0 0 10px">
+            Set up your daily reminders to make affirmations fit your routines.
+          </p>
+
+          <div class="ig-time-row">
+            <input id="reminderTime" class="ig-time-input" type="time" value="09:00" />
+
+            <div class="ig-toggle-wrap">
+              <label class="ig-switch" aria-label="Enable reminders">
+                <input id="remSet" type="checkbox" />
+                <span class="ig-switch-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- UAT test button (onboarding only) -->
+          <button id="testNotifyBtn" type="button" class="primary-btn">
+            Send test notification (15s)
+          </button>
+
+          <p id="notifyStatus" style="margin-top:10px; font-size:14px;"></p>
+          <div class="ig-note" id="remStatus"></div>
+        </div>
+
+        <!-- SETTINGS VIEW -->
+        <section id="remindersSettingsView" class="settings-view" style="display:none;">
+          <div class="glass-card">
+            <div class="page-header">
+              <!-- Back link (settings: account.html) -->
+              <a class="back-link" href="/account.html">Back</a>
+              <h1 class="page-title">Reminders</h1>
+            </div>
+            <!-- Focus help link + modal -->
+            <div class="ig-focus-help">
+              <button type="button" class="ig-link-btn" id="igFocusHelpBtn">
+                Not seeing reminders in Focus?
+              </button>
+            </div>
+
+            <div class="ig-modal-overlay" id="igFocusModal" style="display:none;">
+              <div class="ig-modal-card" role="dialog" aria-modal="true" aria-labelledby="igFocusTitle">
+                <div class="ig-modal-header">
+                  <div id="igFocusTitle" class="ig-modal-title">Allow reminders during Focus</div>
+                  <button type="button" class="ig-modal-close" id="igFocusCloseBtn" aria-label="Close">×</button>
+                </div>
+
+                <div class="ig-modal-body">
+                  <div class="ig-modal-section">
+                    <div class="ig-modal-step-title">1) Allow AI Affirm in Focus</div>
+                    <div class="ig-modal-step">
+                      Settings → Focus → (Work/Sleep) → Allowed Notifications → Apps → add <b>AI Affirm</b>
+                    </div>
+                  </div>
+
+                  <div class="ig-modal-section">
+                    <div class="ig-modal-step-title">2) Turn on Time Sensitive (if available)</div>
+                    <div class="ig-modal-step">
+                      Settings → Notifications → <b>AI Affirm</b> → Time Sensitive ON
+                    </div>
+                  </div>
+
+                  <div class="ig-modal-note">
+                    Focus can silence reminders unless you allow the app (or Time Sensitive).
+                  </div>
+                </div>
+
+                <div class="ig-modal-footer">
+                  <button type="button" class="btn secondary" id="igFocusOkBtn">Got it</button>
+                </div>
+              </div>
+            </div>
+            <!-- Daily check-in -->
+            <div class="setting-block" id="dailyBlock">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">Daily check-in</div>
+                </div>
+
+                <div class="ig-toggle-wrap">
+                  <label class="ig-switch" aria-label="Enable daily check-in">
+                    <input type="checkbox" id="dailyEnabled" />
+                    <span class="ig-switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-controls">
+                <label class="field">
+                  <span class="field-label">Time</span>
+                  <input type="time" id="dailyTime" value="09:00" />
+                </label>
+
+                <!-- Settings: removed Preview / Send test / Status (per your request) -->
+              </div>
+            </div>
+
+            <!-- Daytime affirmations -->
+            <div class="setting-block" id="daytimeBlock">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">Daytime affirmations</div>
+                </div>
+
+                <div class="ig-toggle-wrap">
+                  <label class="ig-switch" aria-label="Enable daytime affirmations">
+                    <input type="checkbox" id="daytimeEnabled" />
+                    <span class="ig-switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-controls">
+                <label class="field">
+                  <span class="field-label">Count</span>
+                  <select id="daytimeCount">
+                    <option value="1">1 / day</option>
+                    <option value="2">2 / day</option>
+                    <option value="3">3 / day</option>
+                    <option value="4">4 / day</option>
+                  </select>
+                </label>
+
+                <div class="two-col">
+                  <label class="field">
+                    <span class="field-label">Start</span>
+                    <input type="time" id="daytimeStart" />
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">End</span>
+                    <input type="time" id="daytimeEnd" />
+                  </label>
+                </div>
+
+                <!-- Settings: removed helper + status (per your request) -->
+              </div>
+            </div>
+
+            <!-- Bedtime affirmations -->
+            <div class="setting-block" id="bedtimeBlock">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">Bedtime affirmations</div>
+                </div>
+
+                <div class="ig-toggle-wrap">
+                  <label class="ig-switch" aria-label="Enable bedtime affirmations">
+                    <input type="checkbox" id="bedtimeEnabled" />
+                    <span class="ig-switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-controls">
+                <label class="field">
+                  <span class="field-label">Time</span>
+                  <input type="time" id="bedtimeTime" />
+                </label>
+
+                <!-- Settings: removed status (per your request) -->
+              </div>
+            </div>
+
+            <!-- Practice (present but hidden) -->
+            <div class="setting-block" id="practiceBlock" style="display:none;">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">Practice reminder</div>
+                </div>
+
+                <div class="ig-toggle-wrap">
+                  <label class="ig-switch" aria-label="Enable practice reminder">
+                    <input type="checkbox" id="practiceEnabled" />
+                    <span class="ig-switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer pinned to bottom (ONBOARDING only; hidden in settings via JS) -->
+        <footer class="ig-footer" id="remindersFooter">
+          <div class="ig-footer-stack">
+            <button id="remNotNow" type="button" class="btn btn-secondary">
+              Not now
+            </button>
+          </div>
+        </footer>
+      </section>
+    </div>
+
+    <script src="/js/capacitor.bundle.js"></script>
+    <script src="/js/reminders.js"></script>
+  </body>
+</html>

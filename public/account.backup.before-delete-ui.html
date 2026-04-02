@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Account · AI Affirm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Fonts + modular CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+  <link rel="stylesheet" href="/css/profile.css?v=2026-01-01-2" />
+
+  <!-- Small layout tighten just for Account -->
+  <style>
+    .settings-page { padding-bottom: 12px; }
+    .settings-group { margin-bottom: 10px; }
+    .settings-card { padding: 8px 10px; }
+    .settings-item { padding: 8px 10px; }
+
+    .settings-footer {
+      margin-top: 10px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(0,0,0,0.03);
+      text-align: center;
+    }
+    .settings-footer-links {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: rgba(0,0,0,0.55);
+    }
+    .settings-footer-links a {
+      color: inherit;
+      text-decoration: underline;
+    }
+
+    /* Make disabled rows clearly distinct on blurred background */
+    .settings-item.is-disabled,
+    .settings-item.is-disabled .settings-item__label {
+      opacity: 0.35 !important;
+    }
+  </style>
+</head>
+
+<body class="profile-page">
+  <div class="theme-bg">
+    <div class="content-narrow">
+      <!-- Top bar -->
+      <header class="ig-topbar">
+        <div class="profile-header">
+         
+        </div>
+      </header>
+
+      <!-- Simple back link -->
+      <div class="ig-topbar-back">
+        <a href="#" class="link-back" id="backToProfile">Back to Home</a>
+      </div>
+<br><br>
+      <!-- Settings body -->
+      <main class="settings-page">
+
+        <!-- My account (guest only) -->
+        <div class="settings-group" id="guestAccountGroup">
+          <div class="settings-group__title">My account &raquo;</div>
+
+          <div class="settings-card">
+            <div class="settings-item" id="row-create-or-account">
+              <div class="settings-item__label" id="createOrAccount">Create an account</div>
+              <a class="settings-item__chevron" id="createOrAccountLink" href="/signup.html" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-note" id="accountHint">
+              Having an account secures your data.
+            </div>
+          </div>
+        </div>
+
+        <!-- Make it yours -->
+        <div class="settings-group">
+          <div class="settings-group__title">Make it yours &raquo;</div>
+
+          <div class="settings-card">
+            <div class="settings-item" id="row-my-profile">
+              <div class="settings-item__label">My profile</div>
+              <a class="settings-item__chevron" href="/my-profile.html" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-item is-disabled" id="row-my-affirmations">
+              <div class="settings-item__label">My affirmations</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-item is-disabled" id="row-top3">
+              <div class="settings-item__label">My Top 3 emotions</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-item" id="row-streaks">
+              <div class="settings-item__label">My streaks</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Set up for success -->
+        <div class="settings-group" id="group-setup-success" hidden>
+          <div class="settings-group__title">Set up for success &raquo;</div>
+
+          <div class="settings-card">
+            <div class="settings-item" id="row-reminders">
+              <div class="settings-item__label">Reminders</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-item" id="row-widgets">
+              <div class="settings-item__label">Widgets</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Support & help -->
+        <div class="settings-group">
+          <div class="settings-group__title">Support & help &raquo;</div>
+
+          <div class="settings-card">
+            <div class="settings-item" id="row-share">
+              <div class="settings-item__label">Share AI Affirm</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-item" id="row-review">
+              <div class="settings-item__label">Leave us a review</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-item" id="row-help">
+              <div class="settings-item__label">Help</div>
+              <a class="settings-item__chevron" href="/help.html" aria-label="Open"></a>
+            </div>
+
+            <div class="settings-item" id="row-instagram">
+              <div class="settings-item__label">Instagram</div>
+              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legal links (visible for guest + logged-in) -->
+        <div class="settings-footer-links" id="legalLinks" style="text-align:center; margin-top:14px;">
+          <a href="#" id="privacyLink">Privacy Policy</a>
+          &nbsp;•&nbsp;
+          <a href="#" id="termsLink">Terms & Conditions</a>
+        </div>
+
+        <!-- Footer: logout + legal -->
+        <div class="settings-footer" id="settingsFooter">
+          <button id="logoutBtn" type="button" class="logout-narrow">Log out</button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Theme -->
+  <script src="/js/theme.apply.js?v=2" defer></script>
+  <script src="/js/profile.api.js?v=1" defer></script>
+
+  <script>
+    // Run after the HTML is loaded
+    document.addEventListener("DOMContentLoaded", function () {
+      // =========================
+      // Auth state (single source of truth)
+      // Uses ONLY: ig_auth_mode + currentUser.isGuest
+      // =========================
+
+      // Read auth mode from localStorage ("guest" | "account" | "")
+      const igAuthMode = localStorage.getItem("ig_auth_mode") || "";
+
+      // Read currentUser JSON string (or "{}" if missing)
+      const currentUserRaw = localStorage.getItem("currentUser") || "{}";
+
+      // Parse currentUser safely
+      let currentUserObj = {};
+      try {
+        currentUserObj = JSON.parse(currentUserRaw);
+      } catch (e) {
+        currentUserObj = {};
+      }
+
+      // Guest if mode says guest OR currentUser.isGuest is true
+      const isGuestUser = igAuthMode === "guest" || currentUserObj?.isGuest === true;
+
+      // Account if mode says account
+      const isAccountUser = igAuthMode === "account";
+
+      // Debug
+      console.log("[ACC_STATE]", {
+        igAuthMode,
+        isGuestUser,
+        isAccountUser,
+        currentUserObj,
+        currentUserId: localStorage.getItem("currentUserId") || null
+      });
+
+      // =========================
+      // DOM helpers
+      // =========================
+
+      // Get a node by id
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      // Disable a row: grey + no click
+      function disableRow(id) {
+        const row = $(id);
+        if (!row) return;
+        row.classList.add("is-disabled");
+        row.style.pointerEvents = "none";
+      }
+
+      // Check if a row is disabled
+      function rowIsDisabled(row) {
+        if (!row) return true;
+        return row.classList.contains("is-disabled") || row.style.pointerEvents === "none";
+      }
+
+      // Wire a row tap to navigate (label clickable)
+      function wireRowTap(id, url) {
+        const row = $(id);
+        if (!row) return;
+
+        // Don’t wire if disabled
+        if (rowIsDisabled(row)) return;
+
+        // Cursor hint
+        row.style.cursor = "pointer";
+
+        // Click handler
+        row.addEventListener("click", function (e) {
+          // If the user tapped a nested <a>, let it handle itself
+          if (e.target && e.target.tagName === "A") return;
+
+          // Prevent default
+          e.preventDefault();
+
+          // Navigate
+          window.location.href = url;
+        });
+      }
+
+      // =========================
+      // UI toggles (guest vs account)
+      // =========================
+
+      // Guest group section (existing markup id)
+      const guestGroup = $("guestAccountGroup");
+
+      // Footer section (existing markup id)
+      const footer = $("settingsFooter");
+
+      // Logout button
+      const logoutBtn = $("logoutBtn");
+
+      // Create account section (support both selectors)
+      const createAccountGroup =
+        $("createAccountGroup") ||
+        document.querySelector(".create-account-group") ||
+        null;
+
+      // Apply guest/account UI once
+      function applyAccountUI() {
+        // Show/hide Logout (account only)
+        if (logoutBtn) {
+          logoutBtn.style.display = isAccountUser ? "" : "none";
+        }
+
+        // Show/hide guest groups + footer
+        if (isAccountUser) {
+          if (guestGroup) guestGroup.style.display = "none";
+          if (footer) footer.style.display = "";
+        } else {
+          if (guestGroup) guestGroup.style.display = "";
+          if (footer) footer.style.display = "none";
+        }
+
+        // Show “Create Account” only for guest
+        if (createAccountGroup) {
+          createAccountGroup.style.display = isGuestUser ? "" : "none";
+        }
+
+        // Optional support: disable elements marked account-only
+        // (Only affects elements that already have [data-account-only] in markup)
+        const accountOnlyEls = document.querySelectorAll("[data-account-only]");
+        accountOnlyEls.forEach(function (el) {
+          el.style.pointerEvents = isAccountUser ? "auto" : "none";
+          el.style.opacity = isAccountUser ? "" : "0.5";
+        });
+
+        console.log("[ACC_UI] applied", {
+          isGuestUser,
+          isAccountUser,
+          logoutDisplay: logoutBtn ? logoutBtn.style.display : "(missing)"
+        });
+      }
+
+      // Apply now
+      applyAccountUI();
+
+      // Apply again shortly after (guards against any late-running scripts/styles)
+      setTimeout(applyAccountUI, 200);
+
+      // =========================
+      // Guest vs account row rules
+      // (Keeps your original behavior)
+      // =========================
+
+      if (!isAccountUser) {
+        // Guest mode: disable account-only rows
+        disableRow("row-my-profile");
+        disableRow("row-my-affirmations");
+        disableRow("row-top3");
+        disableRow("row-reminders");
+        disableRow("row-widgets");
+      } else {
+        // Account mode: wire account-only navigation
+        wireRowTap("row-my-profile", "/my-profile.html");
+        wireRowTap("row-top3", "/my-top3.html");
+
+        // NOTE: streaks is wired for both guest + account below
+        // so we don’t wire it here to avoid duplicate listeners
+      }
+
+      // =========================
+      // Back to profile
+      // =========================
+
+      const back = $("backToProfile");
+      if (back) {
+        back.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "/profile.html";
+        });
+      }
+
+      // =========================
+      // Create account row (guest)
+      // =========================
+
+      const rowCreate = $("row-create-or-account");
+      if (rowCreate) {
+        rowCreate.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "/signup.html";
+        });
+      }
+
+      // =========================
+      // Share AI Affirm
+      // =========================
+
+      function shareApp() {
+        const shareText = "AI Affirm — a simple way to build mental fitness daily.";
+        const shareUrl = "https://innerguideai.com";
+        const payload = { title: "AI Affirm", text: shareText, url: shareUrl };
+
+        if (navigator.share) {
+          navigator.share(payload).catch(function () {});
+          return;
+        }
+
+        window.location.href =
+          "sms:&body=" + encodeURIComponent(shareText + " " + shareUrl);
+      }
+
+      const rowShare = $("row-share");
+      if (rowShare) {
+        rowShare.addEventListener("click", function (e) {
+          e.preventDefault();
+          shareApp();
+        });
+      }
+
+      // =========================
+      // My streaks (guest + account)
+      // =========================
+
+      const rowStreaks = $("row-streaks");
+      if (rowStreaks) {
+        rowStreaks.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "/my-streaks.html";
+        });
+      }
+
+      // =========================
+      // Review → review.html
+      // =========================
+
+      const rowReview = $("row-review");
+      if (rowReview) {
+        rowReview.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "/review.html";
+        });
+      }
+
+      // =========================
+      // Help → help.html
+      // =========================
+
+      const rowHelp = $("row-help");
+      if (rowHelp) {
+        rowHelp.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "/help.html";
+        });
+      }
+
+      // =========================
+      // Instagram external
+      // =========================
+
+      const rowIg = $("row-instagram");
+      if (rowIg) {
+        rowIg.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.open(
+            "https://www.instagram.com/innerguideai/?igsh=MWs5cng2ZmlibHJnMg%3D%3D&utm_source=qr",
+            "_blank",
+            "noopener"
+          );
+        });
+      }
+
+      // =========================
+      // Privacy + Terms (footer links)
+      // =========================
+
+      const privacyLink = $("privacyLink");
+      if (privacyLink) {
+        privacyLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.open(
+            "https://mailritu.wixsite.com/innerguideai/privacy-policy",
+            "_blank",
+            "noopener"
+          );
+        });
+      }
+
+      const termsLink = $("termsLink");
+      if (termsLink) {
+        termsLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.open(
+            "https://mailritu.wixsite.com/innerguideai/terms-and-conditions",
+            "_blank",
+            "noopener"
+          );
+        });
+      }
+
+      // =========================
+      // Logout (account only)
+      // =========================
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async function (e) {
+          e.preventDefault();
+
+          // Block logout if not account mode (extra safety)
+          if (!isAccountUser) return;
+
+          // Try API logout using apiFetch first (preferred)
+          try {
+            if (window.apiFetch) {
+              await window.apiFetch("/api/logout", {
+                method: "POST",
+                credentials: "include",
+                cache: "no-store"
+              });
+            } else {
+              // Fallback to fetch with API prefix if provided
+              const API = window.API || "";
+              await fetch(API + "/api/logout", {
+                method: "POST",
+                credentials: "include"
+              });
+            }
+          } catch (err) {
+            console.warn("[account] logout error:", err);
+          }
+
+          // Switch to guest mode locally
+          try {
+            // Set guest mode
+            localStorage.setItem("ig_auth_mode", "guest");
+
+            // Clear account identity
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("currentUserId");
+            localStorage.removeItem("authToken");
+
+            // Clear verify leftovers
+            localStorage.removeItem("pendingVerify");
+            localStorage.removeItem("pendingVerifyEmail");
+
+            // Keep your existing behavior (you already had these lines)
+            localStorage.setItem("ig_guest_start", "");
+            localStorage.setItem("ig_guest_expiry", "");
+          } catch (e2) {}
+
+          // Go back to login
+          window.location.replace("/login.html");
+        });
+      }
+    });
+  </script>
+
+
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

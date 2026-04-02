@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Help · AI Affirm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+  <link rel="stylesheet" href="/css/profile.css?v=2026-01-01-2" />
+  <link rel="stylesheet" href="/css/emotion-dashboard.css?v=2026-01-16-2" />
+  <style>
+    .help-page { padding: 10px 0 18px; }
+    .help-card {
+      margin-top: 10px;
+      padding: 14px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.50);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .help-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+    .help-sub {
+      font-size: 0.9rem;
+      color: rgba(0,0,0,0.65);
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .help-section { margin-top: 12px; }
+    .help-section h3 {
+      margin: 0 0 6px 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .help-section ul {
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(0,0,0,0.75);
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+    .help-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .help-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.08);
+      color: rgba(0,0,0,0.85);
+      font-weight: 600;
+    }
+    .help-link {
+      color: rgba(0,0,0,0.7);
+      text-decoration: underline;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body class="profile-page emotion-dashboard-page ig-theme-default">
+  <div class="ig-theme-bg" aria-hidden="true"></div>
+
+  <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
+    <header class="emotion-dashboard-header">
+      <a
+        href="/account.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Back to account"
+        title="Back to account"
+      >
+        <span aria-hidden="true">←</span>
+      </a>
+
+      <div class="emotion-dashboard-header-copy">
+        <p class="emotion-dashboard-kicker">Support</p>
+        <h1 class="emotion-dashboard-title">Help</h1>
+        <p class="emotion-dashboard-subtitle">
+          Quick guidance for using the app.
+        </p>
+      </div>
+
+      <a
+        href="/profile.html"
+        class="emotion-dashboard-icon-btn"
+        aria-label="Go to home"
+        title="Go to home"
+      >
+        <img
+          src="/images/icons/homeicon.png"
+          alt="Home"
+          class="emotion-dashboard-home-icon"
+        />
+      </a>
+    </header>
+
+    <section class="help-page">
+      <div class="help-card">
+          <div class="help-title">Quick help</div>
+          <div class="help-sub">
+            AI Affirm is a simple check-in. Tap an emotion to see an affirmation.
+            Save what helps you and come back daily.
+          </div>
+
+          <div class="help-section">
+            <h3>How to use</h3>
+            <ul>
+              <li>On Profile, tap an emotion (or use Other).</li>
+              <li>Read the affirmation and rate it if you want.</li>
+              <li>Use “Next Affirmation” to cycle.</li>
+              <li>Use Themes to change your background look.</li>
+            </ul>
+          </div>
+
+          <div class="help-section">
+            <h3>Common issues</h3>
+            <ul>
+              <li>If a page looks stale, do a hard refresh once.</li>
+              <li>If Guest keeps bouncing, restart the app and try Guest again.</li>
+              <li>If a link doesn’t open, try again after the page fully loads.</li>
+            </ul>
+          </div>
+
+          <div class="help-row">
+            <button id="contactSupportBtn" type="button" class="help-btn">
+              Contact support
+            </button>
+
+            <a href="#" id="privacyInline" class="help-link">Privacy</a>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="/js/theme.apply.js?v=2" defer></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      // Back to Account
+      var back = document.getElementById("backToAccount");
+      if (back) {
+        back.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "/account.html";
+        });
+      }
+
+      // Contact support (email)
+      var btn = document.getElementById("contactSupportBtn");
+      if (btn) {
+        btn.addEventListener("click", function () {
+          var subject = encodeURIComponent("AI Affirm — Support");
+          var body = encodeURIComponent(
+            "Hi InnerGuide AI team,\n\nI need help with:\n\n(Describe what happened)\n\nDevice:\nApp version:\n\nThanks,\n"
+          );
+          window.location.href = "mailto:innerguideai@gmail.com?subject=" + subject + "&body=" + body;
+        });
+      }
+
+      // Privacy link
+      var privacy = document.getElementById("privacyInline");
+      if (privacy) {
+        privacy.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.open(
+            "https://mailritu.wixsite.com/innerguideai/privacy-policy",
+            "_blank",
+            "noopener"
+          );
+        });
+      }
+    });
+  </script>
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

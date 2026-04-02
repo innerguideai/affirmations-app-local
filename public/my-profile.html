@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>My Profile • AI Affirm</title>
+
+    <link rel="stylesheet" href="/css/style.css?v=2026-01-16-2" />
+    <link rel="stylesheet" href="/css/profile.css?v=2026-01-16-2" />
+    <link rel="stylesheet" href="/css/emotion-dashboard.css?v=2026-03-25-1" />
+    <link rel="stylesheet" href="/css/utils.css?v=2026-03-25-1" />
+
+    <style>
+      .ig-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+      }
+
+      .ig-dt {
+        opacity: 0.85;
+      }
+
+      .ig-dd {
+        margin: 0;
+        font-weight: 700;
+        text-align: right;
+        max-width: 60%;
+        word-break: break-word;
+      }
+    </style>
+
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+  </head>
+
+  <body class="profile-page emotion-dashboard-page ig-theme-default">
+    <div class="ig-theme-bg" aria-hidden="true"></div>
+
+    <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
+      <header class="emotion-dashboard-header">
+        <a
+          href="/account.html"
+          class="emotion-dashboard-icon-btn"
+          aria-label="Back to account"
+          title="Back to account"
+        >
+          <span aria-hidden="true">←</span>
+        </a>
+
+        <div class="emotion-dashboard-header-copy">
+          <p class="emotion-dashboard-kicker"></p>
+          <h1 class="emotion-dashboard-title">My Profile</h1>
+          <p class="emotion-dashboard-subtitle">
+            Your saved account details.
+          </p>
+        </div>
+
+        <a
+          href="/profile.html"
+          class="emotion-dashboard-icon-btn"
+          aria-label="Go to home"
+          title="Go to home"
+        >
+          <img
+            src="/images/icons/homeicon.png"
+            alt="Home"
+            class="emotion-dashboard-home-icon"
+          />
+        </a>
+      </header>
+
+      <div id="profileCard" hidden>
+        <dl style="margin: 12px 0 0 0;">
+          <div class="ig-row">
+            <dt class="ig-dt">Email</dt>
+            <dd id="emailVal" class="ig-dd">—</dd>
+          </div>
+
+          <div class="ig-row">
+            <dt class="ig-dt">First name</dt>
+            <dd id="firstNameVal" class="ig-dd">—</dd>
+          </div>
+
+          <div class="ig-row">
+            <dt class="ig-dt">Last name</dt>
+            <dd id="lastNameVal" class="ig-dd">—</dd>
+          </div>
+
+          <div class="ig-row">
+            <dt class="ig-dt">Date of birth</dt>
+            <dd id="dobVal" class="ig-dd">—</dd>
+          </div>
+
+          <div class="ig-row">
+            <dt class="ig-dt">Gender</dt>
+            <dd id="genderVal" class="ig-dd">—</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div id="authGateCard" hidden>
+        <p
+          style="
+            margin: 14px 0 0 0;
+            font-size: 14px;
+            line-height: 1.45;
+            opacity: 0.9;
+          "
+        >
+          Sign in to view your profile details.
+        </p>
+
+        <button
+          id="goLoginBtn"
+          type="button"
+          class="emotion-dashboard-icon-btn"
+          style="margin-top: 12px; width: auto; min-width: 120px; padding: 0 14px;"
+        >
+          Log in
+        </button>
+      </div>
+
+      <p
+        id="statusLine"
+        style="opacity: 0.8; font-size: 12px; margin: 12px 0 0 0;"
+        hidden
+      >
+        Loading…
+      </p>
+    </main>
+
+    <script src="/js/theme.apply.js?v=2026-01-16-2"></script>
+    <script src="/js/profile.api.js"></script>
+    <script src="/js/my-profile.js?v=2026-01-16-2" defer></script>
+    <script src="/js/capacitor.bundle.js"></script>
+  </body>
+</html>

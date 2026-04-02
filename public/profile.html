@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile • AI AFFIRM</title>
+
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="/css/style.css?v=2026-01-06-2" />
+  <link rel="stylesheet" href="/css/profile.css?v=2026-01-06-3" />
+
+  <!-- Prevent caching -->
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <script>
+    // Apply saved theme class early (body-based, because CSS maps body.profile-page.ig-theme-*)
+    (function () {
+      try {
+        var themeA = localStorage.getItem("ig_theme"); // current key
+        var themeB = localStorage.getItem("ig-theme"); // legacy fallback
+        var theme = (themeA || themeB || "").trim();
+
+        if (!theme) theme = "ig-theme-default";
+
+        // Normalize storage to ig_theme
+        localStorage.setItem("ig_theme", theme);
+
+        // Apply to <html> as a harmless mirror (optional)
+        document.documentElement.classList.remove("ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom");
+        document.documentElement.classList.add(theme);
+
+        // Apply to <body> ASAP if available; otherwise wait
+        function applyToBody() {
+          if (!document.body) return;
+          document.body.classList.remove("ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom");
+          document.body.classList.add(theme);
+        }
+
+        if (document.body) applyToBody();
+        else document.addEventListener("DOMContentLoaded", applyToBody, { once: true });
+      } catch (e) { }
+    })();
+  </script>
+
+</head>
+
+<!-- Default fallback on body so background never goes blank -->
+
+<body class="profile-page">
+  <div class="ig-theme-bg" aria-hidden="true"></div>
+
+  <main class="profile-main">
+    <section class="content-narrow">
+      <!-- Header row (menu + greeting) -->
+      <div class="profile-header">
+        <button type="button" class="profile-menu-button" aria-label="Menu"
+          onclick="window.location.href='/account.html'">
+          <span class="profile-menu-line"></span>
+          <span class="profile-menu-line"></span>
+          <span class="profile-menu-line"></span>
+        </button>
+
+        <!-- Greeting moved to very top (keep id for existing JS) -->
+        <div id="greetingLine" class="profile-header-greeting">Hello, Friend!</div>
+
+        <!-- Right spacer to keep greeting centered -->
+        <div class="profile-header-spacer" aria-hidden="true"></div>
+      </div>
+
+      <!-- Guest trial hint stays near top (keep id for existing JS) -->
+      <div id="guestTrialLine" class="profile-guest-note"></div>
+
+
+      <!-- Greeting -->
+      <!-- Greeting block removed (greeting is now in header). Keep this area clean. -->
+      <div class="welcome-block profile-greeting-block" style="display:none;"></div>
+
+
+      <!-- Welcome block -->
+      <div class="welcome-block">
+        <div class="welcome-sub">How are you feeling today?</div>
+        <div class="welcome-hint">Tap an emotion to tailor affirmations.</div>
+      </div>
+
+      <!-- Emotion bubbles (3-4-3) -->
+      <section class="emotion-block">
+        <div id="emotionBubbles" class="emotion-bubbles profile-emotion-grid">
+          <div class="emotion-row">
+            <button
+              type="button"
+              class="emotion-chip"
+              data-emotion="calm"
+              data-testid="ec1"
+              aria-label="ec1"
+            >Calm</button>
+            <button type="button" class="emotion-chip" data-emotion="anxious">Anxious</button>
+            <button type="button" class="emotion-chip" data-emotion="sad">Sad</button>
+          </div>
+
+          <div class="emotion-row">
+            <button type="button" class="emotion-chip" data-emotion="angry">Angry</button>
+            <button type="button" class="emotion-chip" data-emotion="tired">Tired</button>
+            <button type="button" class="emotion-chip" data-emotion="stressed">Stressed</button>
+            <button type="button" class="emotion-chip" data-emotion="grateful">Grateful</button>
+          </div>
+
+          <div class="emotion-row">
+            <button type="button" class="emotion-chip" data-emotion="hopeful">Hopeful</button>
+            <button type="button" class="emotion-chip" data-emotion="focused">Focused</button>
+            <button type="button" class="emotion-chip" data-emotion="excited">Excited</button>
+          </div>
+
+          <div class="emotion-row">
+            <button type="button" class="emotion-chip emotion-chip--other" data-emotion="other">
+              Other...
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hidden plumbing -->
+      <input id="feelingInput" type="hidden" value="" />
+
+      <!-- OTHER emotion block -->
+      <section id="otherFeelingBlock" class="other-feeling-block hidden">
+        <div id="otherEmotionRow" class="other-emotion-row hidden">
+          <input id="otherEmotionInput" class="other-input" type="text" placeholder="Type your emotion…"
+            autocomplete="off" />
+          <button id="submitEmotion" type="button" class="ai-pill-btn hidden" aria-label="Generate affirmation">
+            <img src="/images/icons/ai-pill.png" srcset="/images/icons/ai-pill@2x.png 2x" alt="AI" />
+          </button>
+        </div>
+      </section>
+
+      <!-- Support Banner
+      <section id="supportBanner" class="support-banner hidden" role="status" aria-live="polite">
+        <div class="support-banner__content">
+          <div class="support-banner__title">Support:</div>
+          <div id="supportBannerMsg" class="support-banner__text"></div>
+
+          <div class="support-banner__reco-title">Recommendations:</div>
+          <ul class="support-banner__reco-list">
+            <li>Talk to someone you trust</li>
+            <li>Seek guidance from a professional or mentor</li>
+          </ul>
+        </div>
+
+        <button id="supportBannerClose" type="button" class="support-banner__close" aria-label="Dismiss">
+          ✕
+        </button>
+      </section> -->
+
+      <!-- Affirmation area -->
+
+
+      <!-- Footer zone -->
+      <div class="profile-footer">
+        <!-- <section id="topEmotionsSection" class="top-emotions-wrap">
+          <div id="top3FooterLabel" class="foot-label" style="margin-bottom: 6px">Top 3 emotions:</div>
+
+          <section id="topEmotionsContainer" class="hidden top-emotions-section">
+            <div id="topemotlabel" class="hidden topemotlabel">Top 3 emotions:</div>
+            <div id="carousel" class="carousel"></div>
+            <div id="carouselIndicators" class="carousel-indicators"></div>
+          </section>
+        </section> -->
+
+        <div class="foot-row" id="streakRow">
+          <div class="foot-label">Daily streak:</div>
+          <div class="foot-value" id="streakLine">3</div>
+        </div>
+        <div id="igSupportDaysRow" class="ig-week-row">
+
+          <div class="ig-day">
+            <div class="ig-day-circle"></div>
+            <div class="ig-day-label">S</div>
+          </div>
+
+          <div class="ig-day">
+            <div class="ig-day-circle"></div>
+            <div class="ig-day-label">M</div>
+          </div>
+
+          <div class="ig-day">
+            <div class="ig-day-circle"></div>
+            <div class="ig-day-label">T</div>
+          </div>
+
+          <div class="ig-day">
+            <div class="ig-day-circle"></div>
+            <div class="ig-day-label">W</div>
+          </div>
+
+          <div class="ig-day">
+            <div class="ig-day-circle"></div>
+            <div class="ig-day-label">T</div>
+          </div>
+
+          <div class="ig-day">
+            <div class="ig-day-circle"></div>
+            <div class="ig-day-label">F</div>
+          </div>
+
+          <div class="ig-day">
+            <div class="ig-day-circle"></div>
+            <div class="ig-day-label">S</div>
+          </div>
+
+        </div>
+        <div class="foot-row">
+          <div class="foot-value"></div>
+
+          <!-- Theme pill: opens theme.html (NO cycling) -->
+          <button type="button" id="themeToggleButton" class="profile-theme-pill"
+            onclick="window.location.href='/theme.html'">
+            Default
+          </button>
+        </div>
+
+        <!-- Footer meta: date + version moved here (keep todayLine id for existing JS) -->
+        <div class="foot-meta">
+          <div id="todayLine" class="welcome-date">—</div>
+
+          <div class="foot-meta-right">
+            <div class="ig-topbar foot-version">AI Affirm · v1.5.1 draft</div>
+            <div class="ig-build" id="igBuildTag"></div>
+          </div>
+        </div>
+
+
+      </div>
+    </section>
+  </main>
+
+
+  <!-- Emotion context overlay -->
+  <div id="contextOverlay" class="context-overlay hidden">
+
+    <div class="context-card">
+
+      <!-- selected emotion -->
+      <div id="contextEmotion" class="context-emotion"></div>
+
+      <div id="contextQuestionBlock1" class="context-question-block">
+        <div class="context-question-header">
+          <div id="contextQuestion1" class="context-question"></div>
+          <button class="contextCloseBtn">✕</button>
+        </div>
+        <div id="contextOptions1"></div>
+
+      </div>
+
+      <div id="contextQuestionBlock2" class="context-question-block">
+        <div class="context-question-header">
+          <div id="contextQuestion2" class="context-question"></div>
+          <button class="contextCloseBtn">✕</button>
+        </div>
+        <div id="contextOptions2"></div>
+      </div>
+      <!-- <section id="affirmationWrapper" class="affirmation-wrapper hidden">
+        <div id="affirmationCard" class="ig-affirm-text"></div>
+
+        <div id="starRating" class="hidden">
+          <span class="star" onclick="rateAffirmation(1)">★</span>
+          <span class="star" onclick="rateAffirmation(2)">★</span>
+          <span class="star" onclick="rateAffirmation(3)">★</span>
+          <span class="star" onclick="rateAffirmation(4)">★</span>
+          <span class="star" onclick="rateAffirmation(5)">★</span>
+        </div>
+
+        <div class="affirmation-actions">
+          <button id="nextBtn" type="button" class="ig-round-btn ig-round-btn--next next-btn hidden"
+            aria-label="Next affirmation" onclick="getNextAffirmation()">
+            >
+          </button>
+
+          <button id="newAiBtn" type="button" class="ai-pill-btn hidden" aria-label="New AI affirmation"
+            onclick="fetchGPTAffirmation()">
+            <img src="/images/icons/ai-pill.png" srcset="/images/icons/ai-pill@2x.png 2x" alt="AI" />
+          </button>
+        </div>
+      </section> -->
+      <section id="affirmationWrapper" class="affirmation-wrapper hidden">
+  <div id="affirmationCard" class="ig-affirm-text"></div>
+
+  <div class="ig-affirm-controls-row">
+    <div class="ig-affirm-controls-left"></div>
+
+    <div id="starRating" class="hidden">
+      <span class="star" onclick="rateAffirmation(1)">★</span>
+      <span class="star" onclick="rateAffirmation(2)">★</span>
+      <span class="star" onclick="rateAffirmation(3)">★</span>
+      <span class="star" onclick="rateAffirmation(4)">★</span>
+      <span class="star" onclick="rateAffirmation(5)">★</span>
+    </div>
+
+    <div class="ig-affirm-controls-right">
+      <button
+        id="nextBtn"
+        type="button"
+        class="ig-support-next-img hidden"
+        aria-label="Next affirmation"
+        onclick="getNextAffirmation()"></button>
+
+      <button
+        id="newAiBtn"
+        type="button"
+        class="ai-pill-btn hidden"
+        aria-label="New AI affirmation"
+        onclick="fetchGPTAffirmation()">
+        <img
+          src="/images/icons/ai-pill.png"
+          srcset="/images/icons/ai-pill@2x.png 2x"
+          alt="AI" />
+      </button>
+    </div>
+  </div>
+</section>
+    </div>
+
+  </div>
+  <!-- ============================================================
+     SUPPORT OVERLAY
+     Reuses context overlay/card shell for visual consistency
+     Hidden by default; JS will show it later
+     ============================================================ -->
+<div id="supportOverlay" class="context-overlay hidden" aria-hidden="true">
+  <div class="context-card support-card" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
+    
+    <!-- Close button -->
+    <button
+      id="supportOverlayClose"
+      class="context-close contextCloseBtn"
+      type="button"
+      aria-label="Close support message"
+    >
+      ×
+    </button>
+
+    <!-- Support content -->
+  <div class="support-content">
+  <div id="supportTitle" class="context-emotion">A little extra support</div>
+
+  <div id="supportOverlayMsg" class="context-question">
+    Tired has been coming up a lot lately.
+  </div>
+
+  <div class="support-banner__reco-title">Recommendations:</div>
+  <ul class="support-banner__reco-list">
+    <li>Talk to someone you trust</li>
+    <li>Seek guidance from a professional or mentor</li>
+  </ul>
+</div>
+  </div>
+</div>
+  <!-- Theme (apply only, no cycling) -->
+  <script src="/js/theme.apply.js?v=2026-01-06-4" defer></script>
+
+  <!-- Modular profile scripts -->
+  <script src="/js/profile.api.js?v=2026-01-19-1" defer></script>
+  <script src="/js/profile.dom.js?v=2026-01-06-1" defer></script>
+  <script src="/js/profile.affirmations.js?v=2026-01-06-1" defer></script>
+  <script src="/js/profile.context.js?v=2026-03-12" defer></script>
+  <script src="/js/profile.emotions.js?v=2026-01-06-1" defer></script>
+  <script src="/js/profile.init.js?v=2026-01-06-1" defer></script>
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+
+</html>

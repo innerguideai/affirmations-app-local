@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify Email • InnerGuide AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css?v=2026-01-18-1" />
+
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- Verify-required-only centering (no global CSS changes) -->
+  <style>
+    body.centered-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px
+               calc(env(safe-area-inset-bottom, 0px) + 16px);
+    }
+
+    body.centered-page .verify-center {
+      width: min(92vw, 420px);
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body class="centered-page">
+  <main class="container verify-center">
+    <h1>Verify your email</h1>
+
+    <p id="msg" class="status note" style="margin:10px 0 14px;">
+      Check your email to verify your account. You can’t sign in until you verify.
+    </p>
+
+    <div style="margin-top:12px;">
+      <button id="goLogin" class="btn btn-primary" type="button" style="width:100%;">
+        I already verified → Log in
+      </button>
+    </div>
+
+    <div style="margin-top:10px;">
+      <button id="resendBtn" class="btn" type="button" style="width:100%;">
+        Resend verification email
+      </button>
+    </div>
+
+    <p class="note" style="margin-top:12px;color:#666;">
+      After you verify, come back and tap “Log in”. If you don’t see the email, check Promotions/Spam.
+    </p>
+
+
+  </main>
+  <script>
+      console.log("[verify-required] script loaded");
+   //   alert("verify-required loaded");
+      const API = "https://api.innerguideai.com";
+
+    (function () {
+      // --- read params ---
+      const params = new URLSearchParams(location.search);
+      const emailRaw = params.get("email") || "";
+      const email = String(emailRaw).trim().toLowerCase();
+
+      // --- dom ---
+      const msgEl = document.getElementById("msg");
+      const goLoginBtn = document.getElementById("goLogin");
+      const resendBtn = document.getElementById("resendBtn");
+
+      // --- store "pending verification" state so app can keep user here ---
+      try {
+        if (email) localStorage.setItem("pendingVerifyEmail", email);
+        localStorage.setItem("pendingVerify", "1");
+      } catch (e) {
+        console.log("[verify-required] localStorage write failed:", e);
+      }
+
+      // --- helper: set message ---
+      function setMsg(text, kind) {
+        if (!msgEl) return;
+        msgEl.textContent = text || "";
+        // Keep styling simple; reuse existing classes and inline tone.
+        if (kind === "ok") msgEl.style.color = "#1a5";
+        else if (kind === "warn") msgEl.style.color = "#b36b00";
+        else if (kind === "err") msgEl.style.color = "#b00020";
+        else msgEl.style.color = "";
+      }
+
+      // --- wire "I already verified" ---
+      if (goLoginBtn) {
+        goLoginBtn.addEventListener("click", function () {
+          // IMPORTANT: allowLogin=1 tells login.js to clear pendingVerify and allow login attempt
+          const next = email
+            ? "/login.html?allowLogin=1&email=" + encodeURIComponent(email)
+            : "/login.html?allowLogin=1";
+          window.location.replace(next);
+        });
+      }
+
+      // --- resend ---
+      let resendLockedUntil = 0; // simple client-side cooldown
+
+      async function resendVerification() {
+        // Require email (we need it to resend)
+        if (!email) {
+          setMsg("We can’t resend because we don’t have your email. Go back and sign up again.", "err");
+          return;
+        }
+
+        // Cooldown: 30 seconds
+        const now = Date.now();
+        if (now < resendLockedUntil) {
+          const secs = Math.ceil((resendLockedUntil - now) / 1000);
+          setMsg("Please wait " + secs + " seconds and try again.", "warn");
+          return;
+        }
+
+        // Lock
+        resendLockedUntil = now + 30 * 1000;
+
+        // UI state
+        if (resendBtn) resendBtn.disabled = true;
+        setMsg("Sending a new verification email…", "");
+
+        try {
+         //   console.log("[verify-required] calling resend endpoint");
+
+          const res = await fetch(`${API}/api/resend-verification`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email })
+          });
+
+          // Always show success language (backend is generic by design)
+          if (!res.ok) {
+            setMsg("We couldn’t resend right now. Try again in a minute.", "err");
+          } else {
+            setMsg("Sent. Check your email. If it doesn’t show up, check Promotions/Spam.", "ok");
+          }
+        } catch (e) {
+          console.log("[verify-required] resend error:", e);
+          setMsg("We couldn’t resend right now. Check your connection and try again.", "err");
+        } finally {
+          // Unlock button after 3 seconds (but keep cooldown logic)
+          setTimeout(function () {
+            if (resendBtn) resendBtn.disabled = false;
+          }, 3000);
+        }
+      }
+
+      if (resendBtn) {
+        resendBtn.addEventListener("click", resendVerification);
+      }
+    })();
+  </script>
+
+
+  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+/* =========================
+   My streaks - monthly calendar
+   ========================= */
+
+.streak-month-card {
+  margin-top: 18px;
+}
+
+.streak-month-header {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.streak-month-title {
+  margin: 0;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-strong, #1f2937);
+}
+
+.streak-weekdays,
+.streak-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.streak-weekdays {
+  margin-bottom: 10px;
+}
+
+.streak-weekdays div {
+  text-align: center;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-muted, rgba(0, 0, 0, 0.65));
+}
+
+.streak-day {
+  position: relative;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.streak-day-blank {
+  min-height: 44px;
+}
+
+.streak-day-connector {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--streak-complete-bg, var(--theme-accent)) 24%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.streak-day.run-start .streak-day-connector {
+  left: 50%;
+  right: 0;
+  opacity: 1;
+}
+
+.streak-day.run-middle .streak-day-connector {
+  left: 0;
+  right: 0;
+  opacity: 1;
+}
+
+.streak-day.run-end .streak-day-connector {
+  left: 0;
+  right: 50%;
+  opacity: 1;
+}
+
+.streak-day-circle {
+  position: relative;
+  z-index: 1;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--text-strong, #1f2937);
+  background: color-mix(in srgb, var(--theme-surface-light) 72%, rgba(255,255,255,0.55));
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* Past / current month days that are not complete */
+.streak-day:not(.is-complete):not(.is-future) .streak-day-circle {
+  background: color-mix(in srgb, var(--theme-surface-light) 82%, rgba(255,255,255,0.5));
+  color: var(--text-strong, #1f2937);
+}
+
+/* Future days should fade back more */
+.streak-day.is-future .streak-day-circle {
+  background: color-mix(in srgb, var(--theme-surface-light) 50%, rgba(255,255,255,0.35));
+  color: color-mix(in srgb, var(--text-strong, #1f2937) 45%, white);
+  opacity: 0.7;
+}
+
+/* Completed streak day */
+.streak-day.is-complete .streak-day-circle {
+  background: var(--streak-complete-bg, var(--theme-accent));
+  border-color: transparent;
+  color: #fff;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--streak-complete-glow, var(--theme-accent)) 25%, transparent),
+    0 8px 18px color-mix(in srgb, var(--streak-complete-glow, var(--theme-accent)) 30%, transparent);
+}
+
+/* Today ring */
+.streak-day.is-today .streak-day-circle {
+  outline: 2px solid color-mix(in srgb, var(--theme-accent) 42%, white);
+  outline-offset: 2px;
+}
+
+/* If today is also complete, keep the complete fill and a softer outer ring */
+.streak-day.is-today.is-complete .streak-day-circle {
+  outline: 2px solid color-mix(in srgb, white 75%, var(--streak-complete-bg, var(--theme-accent)));
+  outline-offset: 2px;
+}
+
+.streak-day-number {
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Hide date number only on completed days */
+.streak-day.is-complete .streak-day-number {
+  opacity: 0;
+}
+
+.streak-day-check {
+  position: absolute;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .streak-weekdays,
+  .streak-month-grid {
+    gap: 6px;
+  }
+
+  .streak-day,
+  .streak-day-blank {
+    min-height: 40px;
+  }
+
+  .streak-day-circle {
+    width: 34px;
+    height: 34px;
+  }
+
+  .streak-month-title {
+    font-size: 1.35rem;
+  }
+
+  .streak-day-number,
+  .streak-day-check {
+    font-size: 0.9rem;
+  }
+}

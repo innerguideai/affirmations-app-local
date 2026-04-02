@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI AFFIRM • Start</title>
+  <script>
+      console.log("[BOOT] index.html loaded", {
+    href: window.location.href,
+    ts: new Date().toISOString()
+  });
+    (function () {
+      "use strict";
+
+      function go(url) {
+        try { window.location.replace(url); }
+        catch (_) { window.location.href = url; }
+      }
+
+      const KEY_ONBOARDED = "ig_onboarded";
+      const KEY_MODE = "ig_auth_mode";
+      const KEY_GUEST_ID = "currentUserId";
+      const KEY_CURRENT_USER = "currentUser";
+
+      const mode = (localStorage.getItem(KEY_MODE) || "").toLowerCase();
+
+      let cu = {};
+      try { cu = JSON.parse(localStorage.getItem(KEY_CURRENT_USER) || "{}"); }
+      catch (_) { cu = {}; }
+
+      const guestId = (localStorage.getItem(KEY_GUEST_ID) || "").trim();
+      const isGuest = cu && cu.isGuest === true;
+
+      // Self-heal onboarding if we clearly have a returning user state
+      const inferredOnboarded =
+        (mode === "guest" && isGuest && !!guestId) ||
+        (mode === "account");
+
+      if (inferredOnboarded) {
+        localStorage.setItem(KEY_ONBOARDED, "1");
+      }
+
+      const onboarded = localStorage.getItem(KEY_ONBOARDED) === "1";
+
+      console.log("[INDEX_GATE]", {
+        onboarded,
+        inferredOnboarded,
+        mode,
+        guestId,
+        isGuest,
+        hasApiFetch: !!window.apiFetch
+      });
+
+      // If not onboarded, go to welcome
+      if (!onboarded) {
+        go("/welcome.html");
+        return;
+      }
+
+      // Guest mode: require BOTH mode + currentUser.isGuest + guestId
+      if (mode === "guest") {
+        if (isGuest && guestId) go("/profile.html");
+        else go("/pathselection.html");
+        return;
+      }
+
+      // Account mode: probe /api/me if possible, else go to login
+      if (mode === "account") {
+        if (window.apiFetch) {
+          window.apiFetch("/api/me", { method: "GET", credentials: "include", cache: "no-store" })
+            .then(function (res) {
+              console.log("[INDEX_GATE] /api/me status", res.status);
+              if (res && res.ok) go("/profile.html");
+              else go("/login.html");
+            })
+            .catch(function (err) {
+              console.log("[INDEX_GATE] /api/me error", err);
+              go("/login.html");
+            });
+          return;
+        }
+
+        go("/login.html");
+        return;
+      }
+
+      // fallback
+      go("/welcome.html");
+    })();
+  </script>
+
+</head>
+<body>  <script src="/js/capacitor.bundle.js"></script>
+</body>
+</html>
+
