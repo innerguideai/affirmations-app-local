@@ -14,9 +14,25 @@
   const LONGEST_KEY = "ig-longest-streak";
   const COMPLETED_DATES_KEY = "ig-completed-checkin-dates";
 
+  function normalizeDateKey(key) {
+    const parts = String(key || "").split("-");
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const d = parseInt(parts[2], 10);
+
+    if (!y || !m || !d) return null;
+
+    const mm = String(m).padStart(2, "0");
+    const dd = String(d).padStart(2, "0");
+
+    return `${y}-${mm}-${dd}`;
+  }
   function todayKey() {
     const d = new Date();
-    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 
   // Read longest streak (default to 0 if missing/invalid)
@@ -39,7 +55,7 @@
   }
 
   function readLastDate() {
-    return localStorage.getItem(LAST_DATE_KEY);
+    return normalizeDateKey(localStorage.getItem(LAST_DATE_KEY));
   }
 
   function writeLastDate(val) {
@@ -50,7 +66,11 @@
     try {
       const raw = localStorage.getItem(COMPLETED_DATES_KEY);
       const arr = JSON.parse(raw || "[]");
-      return Array.isArray(arr) ? arr : [];
+      if (!Array.isArray(arr)) return [];
+
+      return arr
+        .map(normalizeDateKey)
+        .filter(Boolean);
     } catch (_) {
       return [];
     }
@@ -90,7 +110,7 @@
     console.log("[streak] saved completed dates", cleaned);
   }
 
-    function playStreakSound() {
+  function playStreakSound() {
     try {
       const audio = new Audio("/sounds/streak-notification.mp3");
       audio.volume = 0.6;
@@ -542,14 +562,33 @@ function igRenderWeeklyStreak() {
   const COMPLETED_DATES_KEY = "ig-completed-checkin-dates";
 
   function dateKey(date) {
-    return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
   }
 
   function readCompletedDates() {
     try {
       const raw = localStorage.getItem(COMPLETED_DATES_KEY);
       const arr = JSON.parse(raw || "[]");
-      return Array.isArray(arr) ? arr : [];
+      if (!Array.isArray(arr)) return [];
+
+      return arr
+        .map((key) => {
+          const parts = String(key || "").split("-");
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10);
+          const d = parseInt(parts[2], 10);
+
+          if (!y || !m || !d) return null;
+
+          const mm = String(m).padStart(2, "0");
+          const dd = String(d).padStart(2, "0");
+
+          return `${y}-${mm}-${dd}`;
+        })
+        .filter(Boolean);
     } catch (_) {
       return [];
     }

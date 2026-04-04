@@ -8,7 +8,24 @@ function getLN() {
   }
   return null;
 }
+function getNextAffirmationFromList(list, storageKey) {
+  const items = Array.isArray(list) ? list : [];
+  if (!items.length) return "";
 
+  const raw = localStorage.getItem(storageKey);
+  const currentIndex = parseInt(raw || "0", 10);
+  const safeIndex = Number.isFinite(currentIndex) ? currentIndex : 0;
+
+  const nextText = items[safeIndex % items.length];
+  const nextIndex = (safeIndex + 1) % items.length;
+
+  localStorage.setItem(storageKey, String(nextIndex));
+  return nextText;
+}
+function buildNotificationBody(text) {
+  const base = String(text || "").trim();
+  return `${base} Tap to open AI Affirm for more support.`;
+}
 // ------------------------------
 // Mode switch: onboarding vs settings
 // ------------------------------
@@ -20,6 +37,28 @@ console.log("[IG][Reminders] LocalNotifications available =", !!getLN());
 
 // Shared notification delivery sound for all local notifications
 const NOTIFICATION_SOUND = "notification.aiff";
+const DAYTIME_AFFIRMATIONS = [
+  "I am safe, steady, and supported right now.",
+  "I release this stress and return to calm.",
+  "I am grounded, capable, and calm in this moment.",
+  "I trust myself to handle what comes next.",
+  "I release my anger and choose steady patience.",
+  "I respond with clarity, calm, and self-control.",
+  "I let go of pressure and soften within.",
+  "I breathe deeply and welcome calm back in.",
+  "I honor my need for rest and pause.",
+  "I give myself space to recover and reset."
+];
+
+const BEDTIME_AFFIRMATIONS = [
+  "I release this day and welcome deep rest.",
+  "I let go gently and settle into calm.",
+  "I am safe to rest and restore tonight.",
+  "I quiet my mind and soften into sleep."
+];
+
+const DAYTIME_INDEX_KEY = "ig_daytime_affirmation_index";
+const BEDTIME_INDEX_KEY = "ig_bedtime_affirmation_index";
 
 function goNext() {
   if (mode === "settings") return;
@@ -111,7 +150,7 @@ async function scheduleBedtime(LN, hour, minute) {
       {
         id: 1003,
         title: "Bedtime reset",
-        body: "One calm breath. One steady thought.",
+        body: getNextAffirmationFromList(BEDTIME_AFFIRMATIONS, BEDTIME_INDEX_KEY),
         schedule: {
           on: { hour, minute },
           allowWhileIdle: true,
@@ -180,8 +219,10 @@ async function scheduleDaytime(LN, count, startHHMM, endHHMM) {
 
     return {
       id,
-      title: "Daytime reset",
-      body: "Quick nudge. Take 10 seconds.",
+      title: "Daytime affirmation",
+      body: buildNotificationBody(
+        getNextAffirmationFromList(DAYTIME_AFFIRMATIONS, DAYTIME_INDEX_KEY)
+      ),
       schedule: {
         on: { hour, minute },
         allowWhileIdle: true,

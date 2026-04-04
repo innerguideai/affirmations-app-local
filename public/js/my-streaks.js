@@ -63,16 +63,65 @@ function readCompletedDates() {
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
 
-    const cleaned = parsed.filter((value) => {
-      return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
-    });
+    const cleaned = parsed
+      .map((value) => {
+        if (typeof value !== "string") return null;
+
+        const parts = value.split("-");
+        if (parts.length !== 3) return null;
+
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const day = parseInt(parts[2], 10);
+
+        if (!year || !month || !day) return null;
+
+        return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      })
+      .filter(Boolean);
 
     return Array.from(new Set(cleaned)).sort();
   } catch (_) {
     return [];
   }
 }
+// DEBUG: dump all streak-related localStorage values
+function debugDumpStreakStorage() {
+  try {
+    console.log("========== STREAK DEBUG START ==========");
 
+    // Log every localStorage key first so we can see the real names in use
+    const allKeys = Object.keys(localStorage);
+    console.log("All localStorage keys:", allKeys);
+
+    // Log only likely streak/auth keys
+    const interestingKeys = allKeys.filter((key) =>
+      key.toLowerCase().includes("streak") ||
+      key.toLowerCase().includes("history") ||
+      key.toLowerCase().includes("emotion") ||
+      key.toLowerCase().includes("auth") ||
+      key.toLowerCase().includes("user")
+    );
+
+    console.log("Interesting localStorage keys:", interestingKeys);
+
+    interestingKeys.forEach((key) => {
+      const rawValue = localStorage.getItem(key);
+      console.log(`[localStorage] ${key}:`, rawValue);
+
+      try {
+        const parsed = JSON.parse(rawValue);
+        console.log(`[parsed] ${key}:`, parsed);
+      } catch (err) {
+        console.log(`[parsed] ${key}: not JSON`);
+      }
+    });
+
+    console.log("=========== STREAK DEBUG END ===========");
+  } catch (err) {
+    console.error("debugDumpStreakStorage failed:", err);
+  }
+}
 // -----------------------------------------
 // Guest detection
 // -----------------------------------------
@@ -121,7 +170,7 @@ async function canViewStreaks() {
       if (role && role !== "guest") return true;
       if (role === "guest") return false;
     }
-  } catch (_) {}
+  } catch (_) { }
 
   const localId = readStr("currentUserId");
   if (localId) return true;
@@ -240,13 +289,23 @@ function renderStreakSummary() {
   const longest = $("longestStreakVal");
   const lastEl = $("lastDateVal");
 
-  if (daily) daily.textContent = String(readInt(STREAK_KEY));
-  if (longest) longest.textContent = String(readInt(LONGEST_KEY));
-
+  const dailyValue = readInt(STREAK_KEY);
+  const longestValue = readInt(LONGEST_KEY);
   const last = readStr(LAST_DATE_KEY);
+
+  console.log("[my-streaks][summary]", {
+    STREAK_KEY,
+    dailyValue,
+    LONGEST_KEY,
+    longestValue,
+    LAST_DATE_KEY,
+    last,
+  });
+
+  if (daily) daily.textContent = String(dailyValue);
+  if (longest) longest.textContent = String(longestValue);
   if (lastEl) lastEl.textContent = last || "—";
 }
-
 // -----------------------------------------
 // Render month title
 // -----------------------------------------
@@ -265,12 +324,29 @@ function renderMonthCalendar() {
   if (!grid) return;
 
   const cells = buildMonthGrid(visibleMonthDate);
+  const completedDates = readCompletedDates();
 
+  console.log("[my-streaks][calendar] visibleMonth", {
+    label: getMonthLabel(visibleMonthDate),
+    year: visibleMonthDate.getFullYear(),
+    monthIndex: visibleMonthDate.getMonth(),
+    monthNumber: visibleMonthDate.getMonth() + 1,
+    completedDates,
+  });
   grid.innerHTML = "";
 
   cells.forEach((cell) => {
     const cellEl = document.createElement("div");
-
+    if (cell.type === "day") {
+      console.log("[my-streaks][calendar][cell]", {
+        dateKey: cell.dateKey,
+        dayNumber: cell.dayNumber,
+        isToday: cell.isToday,
+        isFuture: cell.isFuture,
+        isComplete: cell.isComplete,
+        runType: cell.runType,
+      });
+    }
     if (cell.type === "blank") {
       cellEl.className = "streak-day streak-day-blank";
       grid.appendChild(cellEl);
@@ -282,8 +358,9 @@ function renderMonthCalendar() {
     if (cell.isToday) cellEl.classList.add("is-today");
     if (cell.isFuture) cellEl.classList.add("is-future");
     if (cell.isComplete) cellEl.classList.add("is-complete");
-    if (cell.runType) cellEl.classList.add(`run-${cell.runType}`);
-
+    if (cell.isComplete) {
+      cellEl.classList.add(`run-${cell.runType}`);
+    }
     const connector = document.createElement("div");
     connector.className = "streak-day-connector";
 
@@ -428,6 +505,8 @@ async function init() {
     return;
   }
 
+  debugDumpStreakStorage();
+  debugStreakState();
   showStreaks();
 }
 
