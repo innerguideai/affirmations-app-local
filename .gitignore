@@ -1,83 +1,75 @@
-# Node modules
+# ===========================================
+# AI AFFIRM — .gitignore
+# ===========================================
+
+# Node
 node_modules/
-
-# Environment files
-.env
-
-# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
+
+# Environment / secrets (NEVER commit)
+.env
+.env.local
+.env*.local
+*.env
+
+# MongoDB local dumps
+dump/
 
 # OS files
 .DS_Store
+Thumbs.db
 
-# Mongo data (if any local dump)
-dump/
-.env
-
-# macOS / Xcode user state
-.DS_Store
-**/xcuserdata/
-**/*.xcuserstate
-
-# CocoaPods
-ios/App/Pods/
-ios/App/Podfile.lock
-
-# Backups / junk
+# Backups / archives / junk
 *.bak
 *.bak.*
 *copy*
+*.tgz
+*.tar.gz
+archive/
+_backups/
+backups/
 ios_backup_*/
 ios.bak_*/
 public_backup_*/
 ios_App_public_backup_*/
 
-# Logs
-*.log
-
-# iOS generated web bundle (synced from /public)
-ios/App/App/public/
-
-
-# macOS
-.DS_Store
-
-# Xcode user state (never commit)
-xcuserdata/
-*.xcuserstate
-
-# Local backups (never commit)
-_backups/
-backups/
-*.tgz
-
-# ----------------------------
-# iOS bundle hygiene (TEMP)
-# Source of truth is /public
-# ----------------------------
-ios/App/App/public/
-
-# Xcode user / shared data (local machine noise)
-ios/App/App.xcodeproj/xcshareddata/
+# iOS — Xcode user state
 **/xcuserdata/
-.DS_Store
+**/*.xcuserstate
+ios/App/App.xcodeproj/xcshareddata/
 
-# Local archives
-archive/
-*.tar.gz
+# iOS — CocoaPods
+ios/App/Pods/
+ios/App/Podfile.lock
 
-# iOS generated web bundle (synced from /public)
+# iOS — generated web bundle (source of truth is /public)
 ios/App/App/public/
 
-# Local archives
-*.tar.gz
-
+# Android — secrets (NEVER commit)
 android/keystore.properties
 android/keystores/*.jks
 
-users.json
+# Android — build artifacts
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/app/src/main/assets/public/
+
+# Android — IDE noise
+*.iml
+.idea/
+android/.idea/
+android/captures/
+android/app/.cxx/
+
+# Appium / test artifacts
 appium-*.xml
 appium-*.js
 appium.md
+
+# Misc
+users.json
