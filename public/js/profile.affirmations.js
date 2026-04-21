@@ -25,6 +25,7 @@ let __fetchAffirmationsInFlight = false;
 let __nextInFlight = false;
 let __newAIInFlight = false;
 let hasSeenDbAffirmation = false;
+const IG_DB_AFFIRMATION_LIMIT = 3;
 // -------------------------------
 // Small DOM-safe helpers
 // -------------------------------
@@ -38,6 +39,7 @@ function igGetFeelingFromDOM() {
 
 // Write affirmation text safely without wiping other UI inside the card
 function igSetAffirmationText(text) {
+  __affirmationAnimToken++;
   if (typeof DOM === "undefined" || !DOM.affirmationCard) return;
 
   // Clear stray direct text nodes (created by older innerText usage)
@@ -54,6 +56,112 @@ function igSetAffirmationText(text) {
   }
 
   txt.textContent = String(text || "");
+}
+let __affirmationAnimToken = 0;
+
+function igGetAffirmationTextEl() {
+  if (typeof DOM === "undefined" || !DOM.affirmationCard) return null;
+
+  // Clear stray direct text nodes from older render paths
+  Array.from(DOM.affirmationCard.childNodes).forEach((n) => {
+    if (n.nodeType === Node.TEXT_NODE) n.textContent = "";
+  });
+
+  let txt = DOM.affirmationCard.querySelector("#affirmationText");
+  if (!txt) {
+    txt = document.createElement("div");
+    txt.id = "affirmationText";
+    DOM.affirmationCard.appendChild(txt);
+  }
+
+  return txt;
+}
+
+function igSleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function igReadAiStartColor() {
+  try {
+    const rootStyles = getComputedStyle(document.documentElement);
+
+    // Prefer a theme-safe soft text start color if available
+    const honeydew = rootStyles.getPropertyValue("--honeydew").trim();
+    if (honeydew) return honeydew;
+
+    // Fallback to theme accent if honeydew is missing
+    const accent = rootStyles.getPropertyValue("--theme-accent").trim();
+    if (accent) return accent;
+
+    return "rgb(220, 234, 215)";
+  } catch (_) {
+    return "rgb(220, 234, 215)";
+  }
+}
+
+async function igAnimateAiAffirmationText(text) {
+  const txt = igGetAffirmationTextEl();
+  if (!txt) return;
+
+  const fullText = String(text || "").trim();
+  const token = ++__affirmationAnimToken;
+
+  txt.innerHTML = "";
+
+  if (!fullText) {
+    txt.textContent = "";
+    return;
+  }
+
+  const startColor = igReadAiStartColor();
+
+  // Read the normal final text color from the live element
+  txt.style.color = "";
+  const finalColor = getComputedStyle(txt).color || "rgba(0,0,0,0.85)";
+
+  const words = fullText.split(/\s+/);
+  const spans = [];
+
+  for (let i = 0; i < words.length; i++) {
+    if (token !== __affirmationAnimToken) return;
+
+    const span = document.createElement("span");
+    span.textContent = words[i];
+    span.style.color = startColor;
+    span.style.opacity = "0.95";
+    span.style.transition = "color 420ms ease, opacity 420ms ease";
+
+    txt.appendChild(span);
+    spans.push(span);
+
+    if (i < words.length - 1) {
+      txt.appendChild(document.createTextNode(" "));
+    }
+
+    await igSleep(75);
+  }
+
+  if (token !== __affirmationAnimToken) return;
+
+  requestAnimationFrame(() => {
+    if (token !== __affirmationAnimToken) return;
+
+    spans.forEach((span) => {
+      span.style.color = finalColor;
+      span.style.opacity = "1";
+    });
+  });
+}
+
+async function igRenderAffirmationText(text, options = {}) {
+  const { animateAi = false } = options;
+
+  if (animateAi) {
+    await igAnimateAiAffirmationText(text);
+    return;
+  }
+
+  igSetAffirmationText(text);
 }
 
 function igShowAffirmationCard() {
@@ -898,7 +1006,8 @@ async function fetchAffirmations() {
         // Guest cycling uses text values
         shownIds = [currentAffirmation.text];
 
-        igSetAffirmationText(currentAffirmation.text);
+
+        await igRenderAffirmationText(currentAffirmation.text, { animateAi: true });
         igShowAffirmationCard();
 
         if (DOM?.submitEmotion) DOM.submitEmotion.classList.add("hidden");
@@ -972,6 +1081,13 @@ async function fetchAffirmations() {
     if (endpoint === "/api/affirmations") {
       hasSeenDbAffirmation = true;
     }
+    console.log("[ai-anim-debug] fetchAffirmations render decision", {
+      endpoint,
+      animateAi: endpoint === "/api/affirmations/gpt",
+      textPreview: data?.affirmation?.text?.slice?.(0, 80) || "",
+      count,
+      currentFeeling
+    });
     if (data?.affirmation) {
       currentAffirmation = data.affirmation;
       shownIds.push(currentAffirmation._id || "");
@@ -980,8 +1096,10 @@ async function fetchAffirmations() {
         igSaveAvoidPhraseFromAi(feeling, currentAffirmation.text);
       }
 
-      igSetAffirmationText(currentAffirmation.text || "No text.");
-      igShowAffirmationCard();
+      await igRenderAffirmationText(
+        currentAffirmation.text || "No text.",
+        { animateAi: endpoint === "/api/affirmations/gpt" }
+      ); igShowAffirmationCard();
       console.log("[profile:affirmation:rendered]", {
         wrapperExists: !!document.getElementById("affirmationWrapper"),
         boxExists: !!document.querySelector(".affirmation-box"),
@@ -1099,8 +1217,13 @@ async function getNextAffirmation() {
       igShowStars();
       updateStarDisplay(Number(currentAffirmation.rating) || 0);
 
-      DOM?.nextBtn?.classList.remove("hidden");
-      DOM?.newAiBtn?.classList.add("hidden");
+      if (shownIds.length >= IG_DB_AFFIRMATION_LIMIT) {
+        DOM?.nextBtn?.classList.add("hidden");
+        DOM?.newAiBtn?.classList.remove("hidden");
+      } else {
+        DOM?.nextBtn?.classList.remove("hidden");
+        DOM?.newAiBtn?.classList.add("hidden");
+      }
     }
   } catch (err) {
     console.error("getNextAffirmation error:", err);
@@ -1170,7 +1293,7 @@ async function fetchGPTAffirmation() {
         updateStarDisplay(Number(currentAffirmation.rating) || 0);
       }
 
-      igSetAffirmationText(currentAffirmation.text);
+      await igRenderAffirmationText(currentAffirmation.text, { animateAi: true });
       igShowAffirmationCard();
 
       DOM?.nextBtn?.classList.remove("hidden");
