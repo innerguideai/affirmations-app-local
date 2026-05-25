@@ -1,5 +1,13 @@
 {
   "appId": "com.innerguideai.app",
   "appName": "AI Affirm",
-  "webDir": "public"
+  "webDir": "public",
+  "plugins": {
+    "Browser": {
+      "presentationStyle": "popover"
+    },
+    "FirebaseAuthentication": {
+      "providers": ["google.com", "apple.com"]
+    }
+  }
 }
