@@ -5,7 +5,7 @@
   // -----------------------------
   // Config
   // -----------------------------
-  const API_BASE = "https://api.innerguideai.com";
+  const API_BASE = "http://54.221.158.219:3000";
 
   // Local fallback lines used when /api/me returns 401
   // or when the support API cannot return account data.

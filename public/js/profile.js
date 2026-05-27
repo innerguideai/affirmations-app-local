@@ -3,7 +3,7 @@
 
 /* =============== 0) Small helpers =============== */
 
-const API = "https://api.innerguideai.com";
+const API = "http://54.221.158.219:3000";
 console.log("[profile] API base =", API || "(same-origin)");
 
 // JWT-aware fetch wrapper: works for iOS (Bearer) + Web (cookies)

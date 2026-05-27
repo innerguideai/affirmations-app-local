@@ -3,7 +3,7 @@
 // - allowLogin=1 lets user attempt login after tapping "I already verified"
 // - 403 EMAIL_NOT_VERIFIED routes back to verify-required
 
-const API = "https://api.innerguideai.com";
+const API = "http://54.221.158.219:3000";
 
 // Helper: fetch /api/me with cookie (kept from your older stable file)
 async function fetchMeOnce() {

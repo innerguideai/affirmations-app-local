@@ -6,7 +6,7 @@
 
 console.log("[profile.api] loaded v2026-01-07-recover");
 
-const API = "https://api.innerguideai.com";
+const API = "http://54.221.158.219:3000";
 const __API_DEBUG = true; // set false to silence logs
 
 // Debug (global): show Capacitor plugin keys at file load (once)

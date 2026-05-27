@@ -1,6 +1,6 @@
 // /public/js/signup.js
 // Version: v2026-03-31-1
-const API = "https://api.innerguideai.com";
+const API = "http://54.221.158.219:3000";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("signup.js loaded v2026-03-31-1");
