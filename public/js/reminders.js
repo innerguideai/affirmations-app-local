@@ -1,6 +1,6 @@
 // public/js/reminders.js
 "use strict";
-
+const API_BASE = "http://54.221.158.219:3000";
 function getLN() {
   if (window.IG?.LocalNotifications) return window.IG.LocalNotifications;
   if (window.Capacitor?.Plugins?.LocalNotifications) {
@@ -25,6 +25,64 @@ function getNextAffirmationFromList(list, storageKey) {
 function buildNotificationBody(text) {
   const base = String(text || "").trim();
   return `${base} Tap to open AI Affirm for more support.`;
+}
+
+async function fetchDaytimeNotificationPool(count) {
+  try {
+    const meRes = await fetch(`${API_BASE}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store"
+    });
+
+    if (!meRes.ok) {
+      const localUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+      const localUserId = localUser?._id || localUser?.id || null;
+
+      if (!localUserId) return [];
+
+      const poolRes = await fetch(
+        `${API_BASE}/api/support/daytime-notification-pool?userId=${encodeURIComponent(localUserId)}&count=${encodeURIComponent(count)}`,
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store"
+        }
+      );
+
+      if (!poolRes.ok) return [];
+
+      const poolData = await poolRes.json();
+      return Array.isArray(poolData?.data) ? poolData.data : [];
+    }
+
+    const meData = await meRes.json();
+    const userId =
+      meData?.user?._id ||
+      meData?.user?.id ||
+      meData?._id ||
+      meData?.id ||
+      null;
+
+    if (!userId) return [];
+
+    const poolRes = await fetch(
+      `${API_BASE}/api/support/daytime-notification-pool?userId=${encodeURIComponent(userId)}&count=${encodeURIComponent(count)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store"
+      }
+    );
+
+    if (!poolRes.ok) return [];
+
+    const poolData = await poolRes.json();
+    return Array.isArray(poolData?.data) ? poolData.data : [];
+  } catch (e) {
+    console.log("[IG][Reminders] daytime pool fetch failed", e);
+    return [];
+  }
 }
 // ------------------------------
 // Mode switch: onboarding vs settings
@@ -51,10 +109,20 @@ const DAYTIME_AFFIRMATIONS = [
 ];
 
 const BEDTIME_AFFIRMATIONS = [
-  "I release this day and welcome deep rest.",
-  "I let go gently and settle into calm.",
-  "I am safe to rest and restore tonight.",
-  "I quiet my mind and soften into sleep."
+  "You did enough for today. Let your body rest.",
+  "The day is complete. You can release what remains.",
+  "Your mind can soften now; nothing needs solving tonight.",
+  "Rest is safe. You do not have to earn it.",
+  "You carried a lot today. Let it be lighter now.",
+  "Breathe out the pressure. Tomorrow can wait.",
+  "You are allowed to stop holding everything together.",
+  "Let the noise settle. You are safe in this moment.",
+  "Your work is done for today. Peace can begin.",
+  "You can rest without fixing every unfinished thing.",
+  "Release the stress you were never meant to keep.",
+  "Let your body recover from what your mind carried.",
+  "You are not behind. Tonight is for restoration.",
+  "Close the day gently. You are held by rest."
 ];
 
 const DAYTIME_INDEX_KEY = "ig_daytime_affirmation_index";
@@ -145,19 +213,27 @@ async function cancelBedtime(LN) {
 async function scheduleBedtime(LN, hour, minute) {
   await cancelBedtime(LN);
 
+  const raw = localStorage.getItem(BEDTIME_INDEX_KEY);
+  const currentIndex = parseInt(raw || "0", 10);
+  const safeIndex = Number.isFinite(currentIndex) ? currentIndex : 0;
+  const usedIndex = safeIndex % BEDTIME_AFFIRMATIONS.length;
+  const bedtimeLine = BEDTIME_AFFIRMATIONS[usedIndex];
+  const nextIndex = (usedIndex + 1) % BEDTIME_AFFIRMATIONS.length;
+  localStorage.setItem(BEDTIME_INDEX_KEY, String(nextIndex));
+
   await LN.schedule({
     notifications: [
       {
         id: 1003,
-        title: "Bedtime reset",
-        body: getNextAffirmationFromList(BEDTIME_AFFIRMATIONS, BEDTIME_INDEX_KEY),
+        title: "Evening wind-down",
+        body: bedtimeLine,
         schedule: {
           on: { hour, minute },
           allowWhileIdle: true,
         },
         sound: NOTIFICATION_SOUND,
         extra: {
-          ig_route: "/profile.html?source=bedtime&id=1003",
+          ig_route: `/support.html?source=bedtime&id=1003&bedtimeIndex=${usedIndex}`,
         },
       },
     ],
@@ -213,38 +289,48 @@ async function scheduleDaytime(LN, count, startHHMM, endHHMM) {
   const safeCount = Math.max(1, Math.min(4, parseInt(count || "1", 10) || 1));
   const minsList = buildEvenlySpacedTimes(startMins, endMins, safeCount);
 
-  const notifications = minsList.map((mins, idx) => {
-    const { hour, minute } = fromMinutes(mins);
-    const id = DAYTIME_IDS[idx];
+  const daytimePool = await fetchDaytimeNotificationPool(safeCount);
+//   requested: safeCount,
+//     returned: daytimePool.length,
+//       firstAffirmationId: daytimePool[0]?.affirmationId || null,
+//         firstEmotion: daytimePool[0]?.emotion || null,
+//           firstText: daytimePool[0]?.affirmationText || null
+// });
+const notifications = minsList.map((mins, idx) => {
+  const { hour, minute } = fromMinutes(mins);
+  const id = DAYTIME_IDS[idx];
 
-    return {
-      id,
-      title: "Daytime affirmation",
-      body: buildNotificationBody(
-        getNextAffirmationFromList(DAYTIME_AFFIRMATIONS, DAYTIME_INDEX_KEY)
-      ),
-      schedule: {
-        on: { hour, minute },
-        allowWhileIdle: true,
-      },
-      sound: NOTIFICATION_SOUND,
-      extra: {
-        ig_route: `/support.html?source=daytime&id=${id}`,
-      },
-    };
-  });
+  return {
+    id,
+    title: "Daytime affirmation",
+    body: buildNotificationBody(
+      daytimePool[idx]?.affirmationText ||
+      getNextAffirmationFromList(DAYTIME_AFFIRMATIONS, DAYTIME_INDEX_KEY)
+    ),
+    schedule: {
+      on: { hour, minute },
+      allowWhileIdle: true,
+    },
+    sound: NOTIFICATION_SOUND,
+    extra: {
+      ig_route: daytimePool[idx]?.affirmationId
+        ? `/support.html?source=daytime&id=${id}&affirmationId=${encodeURIComponent(daytimePool[idx].affirmationId)}`
+        : `/support.html?source=daytime&id=${id}`,
+    },
+  };
+});
 
-  await LN.schedule({ notifications });
+await LN.schedule({ notifications });
 
-  console.log("[IG][Reminders] scheduled daytime", {
-    count: safeCount,
-    startHHMM,
-    endHHMM,
-    times: minsList.map((m) => {
-      const { hour, minute } = fromMinutes(m);
-      return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-    }),
-  });
+console.log("[IG][Reminders] scheduled daytime", {
+  count: safeCount,
+  startHHMM,
+  endHHMM,
+  times: minsList.map((m) => {
+    const { hour, minute } = fromMinutes(m);
+    return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+  }),
+});
 }
 
 // ------------------------------
@@ -265,6 +351,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const footer = document.getElementById("remindersFooter");
 
   if (mode === "settings") {
+    document.body.classList.add("reminders-settings-page");
     if (onboardingView) onboardingView.style.display = "none";
     if (settingsView) settingsView.style.display = "block";
     if (footer) footer.style.display = "none";
@@ -409,6 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const dailyEnabled = document.getElementById("dailyEnabled");
   const dailyTime = document.getElementById("dailyTime");
+  const dailyFrequency = document.getElementById("dailyFrequency");
 
   const bedtimeEnabled = document.getElementById("bedtimeEnabled");
   const bedtimeTime = document.getElementById("bedtimeTime");
@@ -420,8 +508,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const savedDailyTime = localStorage.getItem("ig_reminders_time") || "09:00";
   const savedDailyEnabled = localStorage.getItem("ig_reminders_enabled") === "true";
+  const savedDailyFrequency = localStorage.getItem("ig_frequency") || "daily";
   if (dailyTime) dailyTime.value = savedDailyTime;
   if (dailyEnabled) dailyEnabled.checked = savedDailyEnabled;
+  if (dailyFrequency) dailyFrequency.value = savedDailyFrequency;
 
   const daytimeSavedEnabled = localStorage.getItem("ig_daytime_enabled") === "true";
   const daytimeSavedCount = localStorage.getItem("ig_daytime_count") || "1";
@@ -595,6 +685,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (dailyEnabled) dailyEnabled.addEventListener("change", applyDailyFromSettings);
+
+  if (dailyFrequency) {
+    dailyFrequency.addEventListener("change", () => {
+      localStorage.setItem("ig_frequency", dailyFrequency.value || "daily");
+    });
+  }
 
   if (dailyTime) {
     dailyTime.addEventListener("change", () => {

@@ -1,18 +1,17 @@
 // /js/my-profile.js
-// Read-only My Profile page (Option A)
-// - Does NOT call /api/me (Capacitor cookie auth is unreliable)
-// - Uses localStorage currentUser/currentUserId as the source for display
-// - Blocks guests and users with no cached profile
+// F-0250 Editable profile
+// - Uses /api/me as the source of truth for logged-in account users
+// - Blocks guests and users with no cached account markers
 "use strict";
 
 (function () {
+  var currentUser = null;
+  var isSaving = false;
+
   function log() {
     try { console.log("[my-profile]", ...arguments); } catch (_) {}
   }
 
-  // -----------------------------
-  // DOM helpers
-  // -----------------------------
   function $(id) {
     return document.getElementById(id);
   }
@@ -30,73 +29,185 @@
   function setText(id, value) {
     var el = $(id);
     if (!el) return;
-    el.textContent = (value && String(value).trim()) ? String(value).trim() : "—";
+    var text = value === null || value === undefined ? "" : String(value).trim();
+    el.textContent = text || "-";
   }
 
-  // -----------------------------
-  // Auth + user helpers (local-only)
-  // -----------------------------
+  function setStatus(message, kind) {
+    var el = $("editStatusLine");
+    if (!el) return;
+    var text = message ? String(message) : "";
+    el.textContent = text;
+    el.style.color = kind === "error" ? "#7f1d1d" : "";
+    if (text) show(el);
+    else hide(el);
+  }
+
+  function setLoadingStatus(message) {
+    var el = $("statusLine");
+    if (!el) return;
+    el.textContent = message || "";
+    if (message) show(el);
+    else hide(el);
+  }
+
   function safeParse(json) {
-    try { return JSON.parse(json); } catch (e) { return null; }
+    try { return JSON.parse(json); } catch (_) { return null; }
   }
 
   function isGuestUser(u) {
     try {
+      if (u && u.isGuest === true) return true;
       if (u && u.role) return String(u.role).toLowerCase() === "guest";
+      if (localStorage.getItem("ig_auth_mode") === "guest") return true;
       if (localStorage.getItem("ig_is_guest") === "true") return true;
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
 
   function getCachedUser() {
-    // Prefer currentUser JSON; fall back to null
     var raw = null;
     try { raw = localStorage.getItem("currentUser"); } catch (_) {}
 
-    var u = raw ? safeParse(raw) : null;
+    var user = raw ? safeParse(raw) : null;
+    if (user && user.id && !user._id) user._id = user.id;
 
-    // Normalize id fields if present
-    if (u && u.id && !u._id) u._id = u.id;
-
-    // If we have a currentUserId but no user object, return a minimal stub
-    // (still not enough to show profile fields, but helps gating messages)
     var id = null;
     try { id = localStorage.getItem("currentUserId"); } catch (_) {}
-    if (!u && id) u = { _id: id };
+    if (!user && id) user = { _id: id };
 
-    return u;
+    return user;
   }
 
-  function isLoggedInLocal() {
+  function hasLocalAccountMarkers() {
     try {
-      // Logged-in for this release means:
-      // - not guest
-      // - has a cached user object OR user id
-      var u = getCachedUser();
-      if (!u) return false;
-      if (isGuestUser(u)) return false;
+      var user = getCachedUser();
+      if (!user) return false;
+      if (isGuestUser(user)) return false;
 
-      var hasId = !!(u._id || u.id);
+      var mode = localStorage.getItem("ig_auth_mode") || "";
+      var hasToken = !!localStorage.getItem("authToken");
       var hasUserJson = !!localStorage.getItem("currentUser");
       var hasUserId = !!localStorage.getItem("currentUserId");
+      var hasId = !!(user._id || user.id);
 
-      return hasId || hasUserJson || hasUserId;
-    } catch (e) {
+      return mode === "account" || hasToken || hasUserJson || hasUserId || hasId;
+    } catch (_) {
       return false;
     }
   }
 
-  // -----------------------------
-  // Navigation
-  // -----------------------------
+  function normalizeUser(user) {
+    if (!user || typeof user !== "object") return null;
+    if (user.id && !user._id) user._id = user.id;
+    return user;
+  }
+
+  function cacheUser(user) {
+    if (!user) return;
+    try {
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("currentUserId", user._id || user.id || "");
+    } catch (_) {}
+  }
+
+  function readDob(user) {
+    return String((user && (user.dob || user.dateOfBirth)) || "").trim();
+  }
+
+  function dateInputValue(value) {
+    var raw = String(value || "").trim();
+    if (!raw) return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+
+    var date = new Date(raw);
+    if (isNaN(date.getTime())) return "";
+
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, "0");
+    var day = String(date.getDate()).padStart(2, "0");
+    return year + "-" + month + "-" + day;
+  }
+
+  function displayDob(value) {
+    var raw = String(value || "").trim();
+    if (!raw) return "Not set";
+
+    var inputValue = dateInputValue(raw);
+    var date = inputValue ? new Date(inputValue + "T00:00:00") : new Date(raw);
+    if (isNaN(date.getTime())) return raw;
+
+    return date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit"
+    });
+  }
+
+  function renderProfile(user) {
+    currentUser = normalizeUser(user);
+    if (!currentUser) return;
+
+    setText("emailVal", currentUser.email);
+    setText("firstNameVal", currentUser.firstName);
+    setText("lastNameVal", currentUser.lastName);
+    setText("dobVal", displayDob(readDob(currentUser)));
+    setText("genderVal", currentUser.gender || "Not set");
+    setText("editEmailVal", currentUser.email);
+  }
+
+  function populateEditForm(user) {
+    var firstName = $("editFirstName");
+    var lastName = $("editLastName");
+    var dob = $("editDob");
+    var gender = $("editGender");
+
+    if (firstName) firstName.value = String((user && user.firstName) || "");
+    if (lastName) lastName.value = String((user && user.lastName) || "");
+    if (dob) dob.value = dateInputValue(readDob(user));
+    if (gender) gender.value = String((user && user.gender) || "Prefer not to say");
+    setText("editEmailVal", user && user.email);
+  }
+
+  function setEditMode(isEditing) {
+    var readOnly = $("profileReadOnly");
+    var form = $("editProfileForm");
+
+    if (isEditing) {
+      populateEditForm(currentUser);
+      hide(readOnly);
+      show(form);
+      setStatus("", "");
+      var firstName = $("editFirstName");
+      if (firstName) firstName.focus();
+      return;
+    }
+
+    hide(form);
+    show(readOnly);
+  }
+
+  function setSaving(nextIsSaving) {
+    isSaving = !!nextIsSaving;
+    var saveBtn = $("saveProfileBtn");
+    var cancelBtn = $("cancelProfileBtn");
+    var editBtn = $("editProfileBtn");
+
+    if (saveBtn) {
+      saveBtn.disabled = isSaving;
+      saveBtn.textContent = isSaving ? "Saving..." : "Save";
+    }
+    if (cancelBtn) cancelBtn.disabled = isSaving;
+    if (editBtn) editBtn.disabled = isSaving;
+  }
+
   function goLogin() {
     try { window.location.replace("/login.html"); } catch (_) { window.location.href = "/login.html"; }
   }
 
   function goBack() {
-    // Prefer history back if available; fallback to account
     try {
       if (window.history && window.history.length > 1) {
         window.history.back();
@@ -106,15 +217,85 @@
     window.location.href = "/account.html";
   }
 
-  // -----------------------------
-  // Main
-  // -----------------------------
-    document.addEventListener("DOMContentLoaded", async function () {
+  async function fetchFreshUser() {
+    if (typeof window.apiFetch !== "function") {
+      throw new Error("apiFetch unavailable");
+    }
+
+    var response = await window.apiFetch("/api/me", { method: "GET" });
+    if (!response.ok) {
+      var text = await response.text();
+      throw new Error("/api/me failed " + response.status + ": " + text);
+    }
+
+    return normalizeUser(await response.json());
+  }
+
+  function collectPayload() {
+    return {
+      firstName: String(($("editFirstName") && $("editFirstName").value) || "").trim(),
+      lastName: String(($("editLastName") && $("editLastName").value) || "").trim(),
+      dob: String(($("editDob") && $("editDob").value) || "").trim(),
+      gender: String(($("editGender") && $("editGender").value) || "Prefer not to say").trim()
+    };
+  }
+
+  async function saveProfile() {
+    if (isSaving) return;
+    if (!currentUser || isGuestUser(currentUser)) {
+      setStatus("Sign in required.", "error");
+      return;
+    }
+
+    var payload = collectPayload();
+    if (!payload.firstName || !payload.lastName) {
+      setStatus("First and last name are required.", "error");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setStatus("Saving...", "");
+
+      var response = await window.apiFetch("/api/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      var text = await response.text();
+      var data = text ? safeParse(text) : null;
+
+      if (!response.ok) {
+        var message = data && (data.message || data.error) ? data.message || data.error : "Could not save profile.";
+        setStatus(message, "error");
+        return;
+      }
+
+      var updatedUser = normalizeUser(data || {});
+      cacheUser(updatedUser);
+
+      if (payload.firstName) {
+        try { localStorage.setItem("ig_display_name", payload.firstName); } catch (_) {}
+      }
+
+      renderProfile(updatedUser);
+      setEditMode(false);
+      setStatus("Profile updated.", "success");
+      log("saved profile");
+    } catch (error) {
+      log("save failed:", error);
+      setStatus("Could not save profile. Please try again.", "error");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async function () {
     log("loaded");
 
     var authGateCard = $("authGateCard");
     var profileCard = $("profileCard");
-    var statusLine = $("statusLine");
 
     var backBtn = $("backBtn");
     if (backBtn) backBtn.addEventListener("click", function (e) { e.preventDefault(); goBack(); });
@@ -122,100 +303,66 @@
     var goLoginBtn = $("goLoginBtn");
     if (goLoginBtn) goLoginBtn.addEventListener("click", function (e) { e.preventDefault(); goLogin(); });
 
-    // Show a tiny loading line briefly (optional)
-    if (statusLine) {
-      statusLine.textContent = "Loading…";
-      show(statusLine);
+    var editBtn = $("editProfileBtn");
+    if (editBtn) {
+      editBtn.addEventListener("click", function () {
+        if (!currentUser || isGuestUser(currentUser)) return;
+        setEditMode(true);
+      });
     }
 
-    // Gate: local-only logged-in check
-    if (!isLoggedInLocal()) {
-      log("gate: not logged in (local)");
+    var cancelBtn = $("cancelProfileBtn");
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function () {
+        if (isSaving) return;
+        setEditMode(false);
+        setStatus("", "");
+      });
+    }
+
+    var form = $("editProfileForm");
+    if (form) {
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        saveProfile();
+      });
+    }
+
+    setLoadingStatus("Loading...");
+
+    if (!hasLocalAccountMarkers()) {
+      log("gate: not logged in locally");
       hide(profileCard);
       show(authGateCard);
-
-      if (statusLine) {
-        statusLine.textContent = "Sign in required.";
-        show(statusLine);
-      }
+      setLoadingStatus("Sign in required.");
       return;
     }
 
-    // Block guest explicitly, even if guest has currentUserId
-    var u = getCachedUser();
-    if (isGuestUser(u)) {
+    var cachedUser = getCachedUser();
+    if (isGuestUser(cachedUser)) {
       log("gate: guest user blocked");
       hide(profileCard);
       show(authGateCard);
-
-      if (statusLine) {
-        statusLine.textContent = "Sign in required.";
-        show(statusLine);
-      }
+      setLoadingStatus("Sign in required.");
       return;
     }
 
-        // ✅ Prefer API as source of truth for My Profile (logged-in users only)
-        try {
-          if (typeof window.apiFetch !== "function") {
-            log("apiFetch missing on page");
-            goLogin();
-            return;
-          }
+    try {
+      var freshUser = await fetchFreshUser();
+      if (!freshUser || isGuestUser(freshUser)) {
+        throw new Error("not an account user");
+      }
 
-          const r = await window.apiFetch("/api/me", { method: "GET" });
-
-          if (!r.ok) {
-            const t = await r.text();
-            log("api/me failed:", r.status, t);
-            goLogin();
-            return;
-          }
-
-          const fresh = await r.json();
-
-          if (fresh && fresh.id && !fresh._id) fresh._id = fresh.id;
-
-          // Cache for other pages (optional, but helpful)
-          try {
-            localStorage.setItem("currentUser", JSON.stringify(fresh));
-            localStorage.setItem("currentUserId", fresh._id || fresh.id || "");
-          } catch (_) {}
-
-          // Render with API data
-          setText("emailVal", fresh.email);
-          setText("firstNameVal", fresh.firstName);
-          setText("lastNameVal", fresh.lastName);
-          setText("dobVal", fresh.dob || fresh.dateOfBirth);
-          setText("genderVal", fresh.gender);
-
-          log("rendered from /api/me");
-        } catch (e) {
-          log("api/me error:", e);
-          goLogin();
-          return;
-        }
-    // Render read-only fields
-    setText("emailVal", u.email);
-    setText("firstNameVal", u.firstName);
-    setText("lastNameVal", u.lastName);
-        (function () {
-          const raw = (u.dob || u.dateOfBirth || "").trim();
-          if (!raw) { setText("dobVal", "Not set"); return; }
-
-          // If it's already YYYY-MM-DD, format it
-          const d = new Date(raw);
-          if (isNaN(d.getTime())) { setText("dobVal", raw); return; }
-
-          setText("dobVal", d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" }));
-        })();
-        setText("genderVal", (u.gender && String(u.gender).trim()) ? u.gender : "Not set");
-
-    hide(authGateCard);
-    show(profileCard);
-
-    if (statusLine) hide(statusLine);
-
-    log("rendered", { hasEmail: !!u.email, hasFirstName: !!u.firstName, hasId: !!(u._id || u.id) });
+      cacheUser(freshUser);
+      renderProfile(freshUser);
+      hide(authGateCard);
+      show(profileCard);
+      setEditMode(false);
+      setLoadingStatus("");
+      log("rendered from /api/me");
+    } catch (error) {
+      log("api/me error:", error);
+      goLogin();
+    }
   });
 })();

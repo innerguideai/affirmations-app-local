@@ -17,6 +17,23 @@
     "One calm thought is enough to begin shifting this moment."
   ];
 
+  const BEDTIME_AFFIRMATIONS = [
+    "You did enough for today. Let your body rest.",
+    "The day is complete. You can release what remains.",
+    "Your mind can soften now; nothing needs solving tonight.",
+    "Rest is safe. You do not have to earn it.",
+    "You carried a lot today. Let it be lighter now.",
+    "Breathe out the pressure. Tomorrow can wait.",
+    "You are allowed to stop holding everything together.",
+    "Let the noise settle. You are safe in this moment.",
+    "Your work is done for today. Peace can begin.",
+    "You can rest without fixing every unfinished thing.",
+    "Release the stress you were never meant to keep.",
+    "Let your body recover from what your mind carried.",
+    "You are not behind. Tonight is for restoration.",
+    "Close the day gently. You are held by rest."
+  ];
+
   // -----------------------------
   // DOM
   // -----------------------------
@@ -52,7 +69,9 @@
 
     return {
       source: params.get("source") || "daytime",
-      id: params.get("id") || ""
+      id: params.get("id") || "",
+      affirmationId: params.get("affirmationId") || "",
+      bedtimeIndex: params.get("bedtimeIndex") || ""
     };
   }
 
@@ -102,6 +121,28 @@
     setStars(0);
 
     console.log("support.js: fallback line rendered");
+  }
+
+  function renderBedtimeLine(indexParam) {
+    isFallbackMode = false;
+    currentSupportItem = null;
+
+    const idx = parseInt(indexParam, 10);
+    const safeIdx =
+      Number.isFinite(idx) && idx >= 0 && idx < BEDTIME_AFFIRMATIONS.length
+        ? idx
+        : 0;
+    const line = BEDTIME_AFFIRMATIONS[safeIdx];
+
+    setText(supportStatusEl, "");
+    setText(supportLineEl, line);
+    setText(supportWhyEl, "");
+    setStars(0);
+
+    const subEl = document.querySelector(".welcome-sub");
+    const hintEl = document.querySelector(".welcome-hint");
+    if (subEl) subEl.textContent = "Evening wind-down";
+    if (hintEl) hintEl.textContent = "One soft line. Let the day close.";
   }
 
   function renderSupportItem(item) {
@@ -213,15 +254,19 @@
     }
   }
 
-  async function fetchDaytimeReset(userId, source) {
+  async function fetchDaytimeReset(userId, source, affirmationId = "") {
     if (!userId) return null;
 
     try {
       const fetchFn = getFetchFn();
 
-      const url =
+      let url =
         `/api/support/daytime-reset?userId=${encodeURIComponent(userId)}` +
         `&source=${encodeURIComponent(source || "daytime")}`;
+
+      if (affirmationId) {
+        url += `&affirmationId=${encodeURIComponent(affirmationId)}`;
+      }
 
       const res = await fetchFn(url, {
         method: "GET",
@@ -465,6 +510,11 @@
   async function loadSupportLine() {
     const params = getQueryParams();
 
+    if (params.source === "bedtime") {
+      renderBedtimeLine(params.bedtimeIndex);
+      return;
+    }
+
     setText(supportStatusEl, "Loading...");
     setText(supportWhyEl, "Finding your reset");
     setText(supportLineEl, "Loading…");
@@ -476,8 +526,11 @@
       return;
     }
 
-    const supportItem = await fetchDaytimeReset(currentUserId, params.source);
-
+const supportItem = await fetchDaytimeReset(
+  currentUserId,
+  params.source,
+  params.affirmationId
+);
     if (!supportItem) {
       console.log("support.js: no support item returned, using fallback");
       renderFallbackLine();

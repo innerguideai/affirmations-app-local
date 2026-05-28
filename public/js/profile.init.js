@@ -427,7 +427,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- hard auth gate: must be real user OR valid guest ---
   if (!user?._id && !guestValid) {
-    console.warn("[profile] no user + guest invalid → redirect to login");
     location.href = "login.html";
     return;
   }
@@ -453,6 +452,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Guest mode: hide ALL Top 3 UI (footer chips, label, carousel/section)
   if (finalIsGuest) {
     igHideTop3UI();
+  }
+
+  // --- expired guest modal: guest identity present but trial has lapsed ---
+  if (finalIsGuest && !guestValid) {
+    const modal = document.getElementById("guestExpiredModal");
+    if (modal) {
+      modal.style.display = "flex";
+      document.body.classList.add("ig-guest-expired");
+
+      function igDisableExpiredGuestAiButton() {
+        const btn = document.getElementById("newAiBtn");
+        if (!btn) return;
+        btn.disabled = true;
+        btn.setAttribute("aria-disabled", "true");
+        btn.title = "Create a free account to keep using AI-generated affirmations.";
+      }
+      igDisableExpiredGuestAiButton();
+      setTimeout(igDisableExpiredGuestAiButton, 300);
+
+      const createBtn = document.getElementById("guestExpiredCreateBtn");
+      const laterBtn = document.getElementById("guestExpiredLaterBtn");
+      if (createBtn) createBtn.addEventListener("click", function () {
+        window.location.href = "/signup.html";
+      });
+      if (laterBtn) laterBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+      });
+    }
   }
 
   // --- greeting: prefer ig_display_name (from name.html) for everyone ---
@@ -509,14 +536,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (guestEl && typeof igGetGuestTrialInfo === "function") {
       const info = igGetGuestTrialInfo();
 
-      if (info.isActive && info.isValid && info.expiresAt instanceof Date) {
+      if (info.isActive && info.isValid && info.expiresAt) {
         const nowMs = Date.now();
-        const endMs = info.expiresAt.getTime();
+        const endMs = info.expiresAt;
         const msPerDay = 24 * 60 * 60 * 1000;
         let daysLeft = Math.ceil((endMs - nowMs) / msPerDay);
         if (daysLeft < 0) daysLeft = 0;
 
-        const endLabel = info.expiresAt.toLocaleDateString(undefined, {
+        const endLabel = new Date(info.expiresAt).toLocaleDateString(undefined, {
           month: "short",
           day: "numeric",
         });
@@ -532,12 +559,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         guestEl.textContent = text;
       } else if (guestEl) {
-        guestEl.textContent = "";
+        guestEl.textContent = info.isActive ? "Guest trial expired" : "";
       }
     }
-  } catch (e) {
-    console.warn("[profile] guest trial banner error:", e);
-  }
+  } catch (_) {}
 
   // --- feature inits ---
   if (typeof initEmotionHandlers === "function") {
@@ -550,6 +575,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadTopEmotions(); // footer chips, carousel handled elsewhere
   igRenderWeeklyStreak();
   console.log("[profile] init complete (modular)");
+  try {
+    if (localStorage.getItem('ig_tour_done') !== '1') {
+      setTimeout(startIgTour, 800);
+    }
+  } catch (_) {}
 });
 // =========================
 // Weekly streak footer

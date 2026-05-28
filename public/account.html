@@ -23,7 +23,9 @@
           "ig-theme-default",
           "ig-theme-winter",
           "ig-theme-spring",
-          "ig-theme-cblossom"
+          "ig-theme-cblossom",
+          "ig-theme-summer",
+          "ig-theme-zen"
         ];
 
         function isValid(v) {
@@ -146,17 +148,14 @@
     <h1 class="emotion-dashboard-title">Account</h1>
   </div>
 
+  <!-- F-0256: account menu closes with X to match hamburger/X navigation pattern. -->
   <a
     href="/profile.html"
     class="emotion-dashboard-icon-btn"
-    aria-label="Go to home"
-    title="Go to home"
+    aria-label="Close account menu"
+    title="Close"
   >
-    <img
-      src="/images/icons/homeicon.png"
-      alt="Home"
-      class="emotion-dashboard-home-icon"
-    />
+    <span aria-hidden="true">×</span>
   </a>
 </header>
       <!-- Settings body -->

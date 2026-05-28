@@ -153,19 +153,107 @@ async function igAnimateAiAffirmationText(text) {
   });
 }
 
-async function igRenderAffirmationText(text, options = {}) {
-  const { animateAi = false } = options;
+// RLS-003: show/hide AI label
+function igSetAILabel(isAI) {
+  const label = document.getElementById("affirmAiLabel");
+  if (!label) return;
+  if (isAI) {
+    label.classList.remove("hidden");
+    label.style.animation = "none";
+    void label.offsetWidth;
+    label.style.animation = "";
+  } else {
+    label.classList.add("hidden");
+  }
+}
 
-  if (animateAi) {
-    await igAnimateAiAffirmationText(text);
-    return;
+// F-0261 v6: glow off instantly → text fades → glow fades IN slowly
+function igFadeSwapText(newText) {
+  const card = document.getElementById("affirmationCard");
+  const glow = document.getElementById("affirmGlow");
+  if (!card) { igSetAffirmationText(newText); return; }
+
+  // Snap glow off with no transition so user clearly sees it go dark
+  if (glow) {
+    glow.style.transition = "opacity 0s";
+    glow.classList.remove("affirm-glow--active");
   }
 
-  igSetAffirmationText(text);
+  card.style.transition = "opacity 0.25s ease";
+  card.style.opacity = "0";
+
+  setTimeout(() => {
+    igSetAffirmationText(newText);
+    card.style.opacity = "1";
+
+    // Restore CSS transition for slow fade-in, then add class
+    if (glow) {
+      glow.style.transition = "";          // revert to CSS (1.4s ease)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          glow.classList.add("affirm-glow--active");
+        });
+      });
+    }
+  }, 260);
+}
+
+async function igRenderAffirmationText(text, options = {}) {
+  const { animateAi = false } = options;
+  const glow = document.getElementById("affirmGlow");
+  const card = document.getElementById("affirmationCard");
+
+  igSetAILabel(animateAi);
+
+  // Card must be visible before glow fires — fixes first-render on AI path
+  igShowAffirmationCard();
+
+  // Glow fades in slowly and STAYS — ensure CSS transition is active, then add class
+  if (glow) {
+    glow.style.transition = "";          // revert to CSS rule (1.4s ease)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        glow.classList.add("affirm-glow--active");
+      });
+    });
+  }
+
+  if (animateAi) {
+    // Word-by-word color reveal (existing)
+    await igAnimateAiAffirmationText(text);
+  } else {
+    // Fade reveal for DB results
+    if (card) {
+      card.style.transition = "opacity 0.2s ease";
+      card.style.opacity = "0";
+      await igSleep(180);
+      igSetAffirmationText(text);
+      card.style.opacity = "1";
+    } else {
+      igSetAffirmationText(text);
+    }
+  }
+  // Glow stays on — removed from here intentionally (F-0261 v6)
 }
 
 function igShowAffirmationCard() {
   DOM?.affirmationWrapper?.classList.remove("hidden");
+  // F-0261: populate emotion pill from context label
+  const pill = document.getElementById("affirmEmotionPill");
+  if (pill) {
+    const src = document.getElementById("contextEmotion");
+    pill.textContent = src ? src.textContent.trim() : "";
+  }
+  // F-0261 v6: populate driver · pressure context line
+  const ctxLine = document.getElementById("affirmContextLine");
+  if (ctxLine) {
+    const driverEl = document.querySelector("#contextOptions1 .context-option-active");
+    const pressureEl = document.querySelector("#contextOptions2 .context-option-active");
+    const parts = [];
+    if (driverEl) parts.push(driverEl.textContent.trim());
+    if (pressureEl) parts.push(pressureEl.textContent.trim());
+    ctxLine.textContent = parts.join(" · ");
+  }
 }
 
 function igHideStars() {
@@ -463,6 +551,19 @@ function igNormalizeEmotion(feeling) {
   return (feeling || "").toString().trim().toLowerCase();
 }
 
+const IG_SUPPORT_ACTIONS = {
+  "anxious":     "Take three slow breaths before choosing your next step.",
+  "anxiety":     "Take three slow breaths before choosing your next step.",
+  "stressed":    "Drop your shoulders and unclench your jaw for 20 seconds.",
+  "overwhelmed": "Drop your shoulders and unclench your jaw for 20 seconds.",
+  "tired":       "Rest your eyes and soften your face for 30 seconds.",
+  "sad":         "Place one hand on your heart and take one gentle breath.",
+  "depressed":   "Place one hand on your heart and take one gentle breath.",
+  "angry":       "Pause. Let your body settle before you respond.",
+  "lonely":      "Send one small message to someone safe.",
+  "fear":        "Name one thing you can control right now."
+};
+
 function igIsNegativeEmotion(e) {
   const NEG = new Set([
     "sad",
@@ -600,6 +701,13 @@ function igShowSupportBanner(emotion, userId) {
       cleanEmotion ? cleanEmotion.charAt(0).toUpperCase() + cleanEmotion.slice(1) : "This feeling";
 
     msg.textContent = `${prettyEmotion} has been coming up a lot lately.`;
+
+    const actionEl = document.getElementById("supportOverlayAction");
+    if (actionEl) {
+      const mapped = IG_SUPPORT_ACTIONS[cleanEmotion];
+      actionEl.textContent = mapped ? `Try this now: ${mapped}` : "";
+      actionEl.style.display = mapped ? "" : "none";
+    }
 
     overlay.classList.remove("hidden");
     overlay.setAttribute("aria-hidden", "false");
@@ -967,6 +1075,7 @@ async function fetchAffirmations() {
         currentAffirmation = { text: next.text, rating: 0, _id: "" };
         shownIds.push(next.text);
 
+        igSetAILabel(false);
         igSetAffirmationText(next.text);
         igShowAffirmationCard();
 
@@ -1169,7 +1278,8 @@ async function getNextAffirmation() {
         currentAffirmation = { text: next.text, rating: 0, _id: "" };
         shownIds.push(next.text);
 
-        igSetAffirmationText(next.text);
+        igSetAILabel(false);
+        igFadeSwapText(next.text);
         igShowAffirmationCard();
         igHideStars();
 
@@ -1211,7 +1321,8 @@ async function getNextAffirmation() {
       currentAffirmation = data.affirmation;
       if (currentAffirmation._id) shownIds.push(currentAffirmation._id);
 
-      igSetAffirmationText(currentAffirmation.text);
+      igSetAILabel(false);
+      igFadeSwapText(currentAffirmation.text);
       igShowAffirmationCard();
 
       igShowStars();
@@ -1293,6 +1404,13 @@ async function fetchGPTAffirmation() {
         updateStarDisplay(Number(currentAffirmation.rating) || 0);
       }
 
+      // F-0261 v6: snap glow off instantly so transition is visible on re-entry
+      const glowEl = document.getElementById("affirmGlow");
+      if (glowEl) {
+        glowEl.style.transition = "opacity 0s";
+        glowEl.classList.remove("affirm-glow--active");
+      }
+
       await igRenderAffirmationText(currentAffirmation.text, { animateAi: true });
       igShowAffirmationCard();
 
@@ -1349,6 +1467,33 @@ async function fetchAllAffirmationsForUser(userId) {
     return { emotions: [] };
   }
 }
+
+// RLS-003: X close + Read aloud wire-up
+document.addEventListener("DOMContentLoaded", () => {
+  // X close — hides the full context overlay
+  const closeBtn = document.getElementById("affirmResultClose");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      const overlay = document.getElementById("contextOverlay");
+      if (overlay) overlay.classList.add("hidden");
+    });
+  }
+
+  // Read aloud — uses native speechSynthesis, no-ops if unsupported
+  const readBtn = document.getElementById("readAloudBtn");
+  if (readBtn) {
+    if (!window.speechSynthesis) {
+      readBtn.style.display = "none";
+    } else {
+      readBtn.addEventListener("click", () => {
+        const text = currentAffirmation?.text;
+        if (!text) return;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+      });
+    }
+  }
+});
 
 // -------------------------------
 // Export globals (single export block)

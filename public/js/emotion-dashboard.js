@@ -20,6 +20,17 @@ console.log("[emotion-dashboard] loaded");
     kpiPeakValue: document.getElementById("kpiPeakValue"),
     kpiPeakMeta: document.getElementById("kpiPeakMeta"),
 
+    monthlyInsightCard: document.getElementById("monthlyInsightCard"),
+    monthlyInsightCollapsed: document.getElementById("monthlyInsightCollapsed"),
+    monthlyInsightExpanded: document.getElementById("monthlyInsightExpanded"),
+    monthlyInsightPattern: document.getElementById("monthlyInsightPattern"),
+    monthlyInsightAction: document.getElementById("monthlyInsightAction"),
+    monthlyInsightTips: document.getElementById("monthlyInsightTips"),
+    monthlyInsightAffirmationLabel: document.getElementById("monthlyInsightAffirmationLabel"),
+    monthlyInsightReset: document.getElementById("monthlyInsightReset"),
+    monthlyInsightPracticeBtn: document.getElementById("monthlyInsightPracticeBtn"),
+    monthlyInsightGotItBtn: document.getElementById("monthlyInsightGotItBtn"),
+
     top10Summary: document.getElementById("top10Summary"),
     top10Chart: document.getElementById("top10Chart"),
 
@@ -132,9 +143,198 @@ console.log("[emotion-dashboard] loaded");
     return `${titleCase(bestEmotion)} showed up most on ${bestDay}.`;
   }
 
+  function getEmotionAction(emotion) {
+    const key = String(emotion || "").toLowerCase().trim();
+    const actions = {
+      tired: "Check sleep, recovery, and weekend load.",
+      stressed: "Plan one reset before the pressure point.",
+      anxious: "Add a short grounding pause before that time.",
+      sad: "Add one supportive connection or gentle activity.",
+      angry: "Add a pause before responding.",
+      overwhelmed: "Reduce one task before that time."
+    };
+
+    return actions[key] || "Notice what usually happens before this emotion.";
+  }
+
+  function findTopHeatmapPattern(heatmapRows, targetEmotion) {
+    const target = String(targetEmotion || "").toLowerCase().trim();
+    let best = null;
+
+    for (const row of safeArray(heatmapRows)) {
+      const rowEmotion = String(row && row.emotion || "").toLowerCase().trim();
+      if (target && rowEmotion !== target) continue;
+
+      for (const day of safeArray(row && row.days)) {
+        const count = Number(day && day.count || 0);
+        if (!day || count <= 0) continue;
+
+        if (!best || count > best.count) {
+          best = {
+            emotion: rowEmotion,
+            day: day.day || "",
+            time: day.time || day.timeOfDay || day.period || "",
+            count
+          };
+        }
+      }
+    }
+
+    return best;
+  }
+
+  function fullDayName(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+
+    const dayMap = {
+      sun: "Sunday",
+      mon: "Monday",
+      tue: "Tuesday",
+      wed: "Wednesday",
+      thu: "Thursday",
+      fri: "Friday",
+      sat: "Saturday"
+    };
+    const normalized = raw.toLowerCase().replace(/[^a-z]/g, "");
+    const match = normalized.match(/sun|mon|tue|wed|thu|fri|sat/);
+
+    return match ? dayMap[match[0]] : titleCase(raw);
+  }
+
+  function buildPatternLabel(pattern) {
+    if (!pattern || !pattern.day) return "";
+    const day = fullDayName(pattern.day);
+    const time = String(pattern.time || "").trim().toLowerCase();
+    return time ? `${day} ${time}` : day;
+  }
+
+  function labelText(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    return raw.replace(/_/g, " ").replace(/\s+/g, " ").toLowerCase();
+  }
+
+  function sentenceStart(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    return raw.charAt(0).toUpperCase() + raw.slice(1);
+  }
+
+  function monthKey(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `ig_monthly_insight_collapsed_${year}_${month}`;
+  }
+
+  function isMonthlyInsightCollapsed() {
+    try {
+      return localStorage.getItem(monthKey()) === "1";
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function setMonthlyInsightCollapsed(isCollapsed) {
+    if (!els.monthlyInsightCollapsed || !els.monthlyInsightExpanded) return;
+
+    els.monthlyInsightCollapsed.classList.toggle("hidden", !isCollapsed);
+    els.monthlyInsightExpanded.classList.toggle("hidden", isCollapsed);
+    if (els.monthlyInsightCard) {
+      els.monthlyInsightCard.classList.toggle("is-collapsed", isCollapsed);
+    }
+  }
+
+  function saveMonthlyInsightCollapsed() {
+    try {
+      localStorage.setItem(monthKey(), "1");
+    } catch (_) {}
+    setMonthlyInsightCollapsed(true);
+  }
+
+  function getAffirmationText(affirmation) {
+    if (affirmation && typeof affirmation === "object") {
+      return String(affirmation.text || "").trim();
+    }
+    return String(affirmation || "").trim();
+  }
+
+  function getAffirmationId(affirmation) {
+    if (!affirmation || typeof affirmation !== "object") return "";
+    return String(affirmation.id || affirmation._id || affirmation.affirmationId || "").trim();
+  }
+
+  function getInsightTips(emotion, driver, pressure) {
+    const haystack = [emotion, driver, pressure].map(labelText).join(" ");
+    const has = (value) => haystack.includes(value);
+
+    if (has("work friction") || has("work")) {
+      return [
+        "Step away from the desk for 2 minutes.",
+        "Try box breathing: inhale 4, hold 4, exhale 4, hold 4."
+      ];
+    }
+
+    if (has("health uncertainty") || has("health")) {
+      return [
+        "Write down what you know, what you do not know, and the next small step.",
+        "Take one calming breath before searching for more answers."
+      ];
+    }
+
+    if (has("unsupported") || has("loneliness")) {
+      return [
+        "Send one simple message to someone safe.",
+        "Plan one small connection before the day feels too open."
+      ];
+    }
+
+    if (has("low energy") || has("tired")) {
+      return [
+        "Protect one rest block before adding more tasks.",
+        "Check sleep, food, and recovery before pushing harder."
+      ];
+    }
+
+    if (has("too much") || has("overwhelmed")) {
+      return [
+        "Remove or delay one task.",
+        "Choose the next smallest step only."
+      ];
+    }
+
+    return [
+      "Notice what usually happens before this feeling appears.",
+      "Take a 2-minute reset before the pattern usually starts."
+    ];
+  }
+
+  function renderTips(tips) {
+    if (!els.monthlyInsightTips) return;
+    els.monthlyInsightTips.innerHTML = safeArray(tips)
+      .map((tip) => `<li>${escapeHtml(tip)}</li>`)
+      .join("");
+  }
+
+  function setPracticeRoute(emotion, affirmationId) {
+    if (!els.monthlyInsightPracticeBtn) return;
+
+    const params = new URLSearchParams();
+    params.set("source", "monthly_insight");
+
+    if (affirmationId) {
+      params.set("affirmationId", affirmationId);
+    } else if (emotion) {
+      params.set("emotion", emotion);
+    }
+
+    els.monthlyInsightPracticeBtn.dataset.href = `/support.html?${params.toString()}`;
+  }
+
   function normalizeDashboardData(raw) {
     const summary = raw && raw.summary ? raw.summary : {};
     const charts = raw && raw.charts ? raw.charts : {};
+    const monthlyInsight = raw && raw.monthlyInsight ? raw.monthlyInsight : null;
 
     const top10 = safeArray(charts.top10).slice(0, 6);
     const trend = charts.trend || {};
@@ -142,6 +342,7 @@ console.log("[emotion-dashboard] loaded");
 
     return {
       summary: {
+        monthlyInsight,
         mostFelt: summary.mostFelt || { emotion: null, count: 0 },
         range: summary.range || { distinctCount: 0 },
         topEmotionPeak: summary.topEmotionPeak || {
@@ -179,6 +380,96 @@ console.log("[emotion-dashboard] loaded");
 
     els.kpiPeakValue.textContent = peak.peakLabel || "—";
     els.kpiPeakMeta.textContent = peak.emotion ? `for ${titleCase(peak.emotion)}` : "for —";
+  }
+
+  function renderMonthlyInsight(data) {
+    const monthlyInsight = data.summary.monthlyInsight || {};
+    const insightEmotion = labelText(monthlyInsight.emotion);
+    const driverLabel = labelText(monthlyInsight.driver);
+    const pressureLabel = labelText(monthlyInsight.pressure);
+    const affirmationText = getAffirmationText(monthlyInsight.affirmation);
+    const affirmationId = getAffirmationId(monthlyInsight.affirmation);
+
+    if (insightEmotion) {
+      const explicitDay = monthlyInsight.day || monthlyInsight.weekday || monthlyInsight.dayOfWeek;
+      const heatmapPattern = findTopHeatmapPattern(data.charts.heatmap, insightEmotion);
+      const dayLabel = explicitDay
+        ? fullDayName(explicitDay)
+        : fullDayName(heatmapPattern && heatmapPattern.day);
+      const patternSuffix = dayLabel ? ` on ${dayLabel}` : "";
+      const emotionLabel = sentenceStart(insightEmotion);
+
+      els.monthlyInsightCollapsed.textContent = `Monthly insight · ${emotionLabel} this month`;
+      els.monthlyInsightPattern.textContent =
+        `${emotionLabel} showed up most often this month${patternSuffix}.`;
+
+      if (driverLabel || pressureLabel) {
+        const contextParts = [];
+        if (driverLabel) contextParts.push(driverLabel);
+        if (pressureLabel) contextParts.push(pressureLabel);
+        els.monthlyInsightAction.textContent =
+          `It was mostly connected to ${contextParts.join(" and ")}.`;
+      } else {
+        els.monthlyInsightAction.textContent =
+          "This pattern may be connected to what usually happens before that time.";
+      }
+
+      renderTips([
+        ...getInsightTips(insightEmotion, driverLabel, pressureLabel),
+        "Practice a 2-minute reset before this pattern usually starts."
+      ]);
+
+      if (affirmationText) {
+        els.monthlyInsightAffirmationLabel.hidden = false;
+        els.monthlyInsightAffirmationLabel.textContent = "Use this affirmation:";
+        els.monthlyInsightReset.textContent = `"${affirmationText}"`;
+      } else {
+        els.monthlyInsightAffirmationLabel.hidden = true;
+        els.monthlyInsightAffirmationLabel.textContent = "";
+        els.monthlyInsightReset.textContent = "No saved reset found for this pattern yet.";
+      }
+
+      setPracticeRoute(insightEmotion, affirmationId);
+      setMonthlyInsightCollapsed(isMonthlyInsightCollapsed());
+      return;
+    }
+
+    const mostFelt = data.summary.mostFelt || {};
+    const emotion = String(mostFelt.emotion || "").toLowerCase().trim();
+    const count = Number(mostFelt.count || 0);
+
+    if (!emotion || count <= 0) {
+      els.monthlyInsightPattern.textContent = "No emotion logs yet this month.";
+      els.monthlyInsightAction.textContent = "Look for what usually happens before an emotion shows up.";
+      els.monthlyInsightAffirmationLabel.hidden = true;
+      els.monthlyInsightReset.textContent = "Try a quick check-in when you notice a shift.";
+      renderTips([]);
+      setPracticeRoute("", "");
+      setMonthlyInsightCollapsed(false);
+      return;
+    }
+
+    const pattern = findTopHeatmapPattern(data.charts.heatmap, emotion);
+    const patternLabel = buildPatternLabel(pattern);
+    const emotionLabel = titleCase(emotion);
+
+    if (patternLabel) {
+      els.monthlyInsightPattern.textContent =
+        `This month, ${emotionLabel} showed up most often on ${patternLabel}.`;
+    } else {
+      els.monthlyInsightPattern.textContent =
+        `This month, your most logged emotion was ${emotionLabel}.`;
+    }
+
+    els.monthlyInsightAction.textContent = getEmotionAction(emotion);
+    els.monthlyInsightAffirmationLabel.hidden = true;
+    els.monthlyInsightReset.textContent = patternLabel
+      ? "Try a 2-minute reset before that pattern usually starts."
+      : "Look for what usually happens before this emotion shows up.";
+    els.monthlyInsightCollapsed.textContent = `Monthly insight · ${emotionLabel} this month`;
+    renderTips([]);
+    setPracticeRoute(emotion, "");
+    setMonthlyInsightCollapsed(isMonthlyInsightCollapsed());
   }
 
   // ------------------------------------------------------------
@@ -464,6 +755,7 @@ async function loadDashboard() {
 
     console.log("[emotion-dashboard] data", data);
 
+    renderMonthlyInsight(data);
     renderKpis(data);
     renderTop10Chart(data.charts.top10);
     renderTrendChart(data.charts.trend);
@@ -481,6 +773,23 @@ async function loadDashboard() {
   document.addEventListener("DOMContentLoaded", function () {
     if (els.retryBtn) {
       els.retryBtn.addEventListener("click", loadDashboard);
+    }
+
+    if (els.monthlyInsightCollapsed) {
+      els.monthlyInsightCollapsed.addEventListener("click", function () {
+        setMonthlyInsightCollapsed(false);
+      });
+    }
+
+    if (els.monthlyInsightGotItBtn) {
+      els.monthlyInsightGotItBtn.addEventListener("click", saveMonthlyInsightCollapsed);
+    }
+
+    if (els.monthlyInsightPracticeBtn) {
+      els.monthlyInsightPracticeBtn.addEventListener("click", function () {
+        const href = els.monthlyInsightPracticeBtn.dataset.href || "/support.html?source=monthly_insight";
+        window.location.href = href;
+      });
     }
 
     loadDashboard();

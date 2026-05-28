@@ -1,88 +1,68 @@
 //
-//  capacitor.entry.js
+//  capacitor.entry.js — AI Affirm
 //
-//  Created by Ritu Sharma on 1/9/26.
+//  ES-module entry point bundled by esbuild into capacitor.bundle.js.
+//  Exposes Capacitor plugins on window.IG so plain JS can access them.
+//
+//  Build: npx esbuild public/js/capacitor.entry.js --bundle
+//           --outfile=public/js/capacitor.bundle.js
+//           --format=iife --platform=browser
 //
 
-// public/js/capacitor.entry.js
 "use strict";
 
-// Import the plugin the “Capacitor v7+” way (bundled)
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { App } from "@capacitor/app";
+import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 
-// Put it somewhere your plain JS can access
 window.IG = window.IG || {};
-window.IG.LocalNotifications = LocalNotifications;
+window.IG.LocalNotifications    = LocalNotifications;
+window.IG.FirebaseAuthentication = FirebaseAuthentication;
 
-// Optional log so you can confirm the bundle loaded
-console.log("[cap-bundle] LocalNotifications loaded:", !!window.IG.LocalNotifications);
+console.log("[cap-bundle] FirebaseAuthentication loaded:", !!window.IG.FirebaseAuthentication);
 
-// ------------------------------
-// 1) Cold-start / resume routing (consume pending route once)
-// ------------------------------
+// ── Cold-start / resume routing ─────────────────────────────────────────────
+// Consume a pending route stored before the app was suspended, then navigate.
+
 function consumePendingRouteOnce() {
   try {
-    const route = localStorage.getItem("ig_pending_route");
+    const route   = localStorage.getItem("ig_pending_route");
     const routeAt = localStorage.getItem("ig_pending_route_at");
-
-    console.log("[IG][ROUTE] consumePendingRouteOnce:start", {
-      route,
-      routeAt,
-      href: window.location.href,
-      pathname: window.location.pathname,
-      ig_auth_mode: localStorage.getItem("ig_auth_mode"),
-      currentUserRaw: localStorage.getItem("currentUser"),
-      ts: new Date().toISOString()
-    });
 
     if (!route) return;
 
     localStorage.removeItem("ig_pending_route");
+
+    // Expire after 60 s to avoid stale navigations
+    if (routeAt && Date.now() - Number(routeAt) > 60_000) {
+      localStorage.removeItem("ig_pending_route_at");
+      return;
+    }
+
     const current = window.location.href;
-
-    console.log("[IG][ROUTE] consumePendingRouteOnce:after-remove", {
-      route,
-      current,
-      ig_auth_mode: localStorage.getItem("ig_auth_mode"),
-      currentUserRaw: localStorage.getItem("currentUser"),
-      ts: new Date().toISOString()
-    });
-
-    if (current === route) return;
-
-    console.log("[IG][ROUTE] consuming pending route ->", route, {
-      ig_auth_mode: localStorage.getItem("ig_auth_mode"),
-      currentUserRaw: localStorage.getItem("currentUser"),
-      ts: new Date().toISOString()
-    });
-
-    window.location.replace(route);
+    console.log("[IG][ROUTE] consuming pending route ->", route);
+    if (current !== route) window.location.replace(route);
   } catch (e) {
     console.log("[IG][ROUTE] consumePendingRouteOnce error:", e);
   }
 }
 consumePendingRouteOnce();
 
-// ------------------------------
-// 2) Notification tap router (persist route + attempt immediate redirect)
-// ------------------------------
+// ── Notification tap router ─────────────────────────────────────────────────
+// Stores a pending route when a local notification is tapped, then navigates.
+
 (function installNotifyTapRouter() {
   try {
-    if (!window.IG || !window.IG.LocalNotifications) {
+    if (!window.IG?.LocalNotifications) {
       console.log("[IG][NOTIFY] tap router skipped: LocalNotifications missing");
       return;
     }
 
-    // Strong guard: survives multiple page scripts in same webview session
-    window.IG = window.IG || {};
     window.IG.__notifyTapRouterInstalled = window.IG.__notifyTapRouterInstalled || false;
-
     if (window.IG.__notifyTapRouterInstalled) {
       console.log("[IG][NOTIFY] tap router already installed, skipping");
       return;
     }
-
     window.IG.__notifyTapRouterInstalled = true;
 
     console.log("[IG][NOTIFY] tap router installed");
@@ -92,47 +72,16 @@ consumePendingRouteOnce();
       function (event) {
         try {
           const route = event?.notification?.extra?.ig_route || "/profile.html";
+          console.log("[IG][NOTIFY] tapped → route:", route);
 
-          console.log("[IG][NOTIFY] tapped:event", {
-            event,
-            derivedRoute: route,
-            hrefBefore: window.location.href,
-            pathnameBefore: window.location.pathname,
-            ig_auth_mode: localStorage.getItem("ig_auth_mode"),
-            currentUserRaw: localStorage.getItem("currentUser"),
-            ts: new Date().toISOString()
-          });
-
-          localStorage.setItem("ig_pending_route", route);
+          localStorage.setItem("ig_pending_route",    route);
           localStorage.setItem("ig_pending_route_at", String(Date.now()));
-
-          console.log("[IG][NOTIFY] tapped:after-store", {
-            pendingRoute: localStorage.getItem("ig_pending_route"),
-            pendingRouteAt: localStorage.getItem("ig_pending_route_at"),
-            ig_auth_mode: localStorage.getItem("ig_auth_mode"),
-            currentUserRaw: localStorage.getItem("currentUser"),
-            ts: new Date().toISOString()
-          });
 
           window.location.replace(route);
         } catch (e) {
-          console.log("[IG][NOTIFY] handler error:", e, {
-            ig_auth_mode: localStorage.getItem("ig_auth_mode"),
-            currentUserRaw: localStorage.getItem("currentUser"),
-            ts: new Date().toISOString()
-          });
-
-          localStorage.setItem("ig_pending_route", "/profile.html");
+          console.log("[IG][NOTIFY] handler error:", e);
+          localStorage.setItem("ig_pending_route",    "/profile.html");
           localStorage.setItem("ig_pending_route_at", String(Date.now()));
-
-          console.log("[IG][NOTIFY] fallback route stored", {
-            pendingRoute: localStorage.getItem("ig_pending_route"),
-            pendingRouteAt: localStorage.getItem("ig_pending_route_at"),
-            ig_auth_mode: localStorage.getItem("ig_auth_mode"),
-            currentUserRaw: localStorage.getItem("currentUser"),
-            ts: new Date().toISOString()
-          });
-
           window.location.replace("/profile.html");
         }
       }
@@ -142,9 +91,11 @@ consumePendingRouteOnce();
   }
 })();
 
-// ------------------------------
-// 3) Universal link handler (password reset)
-// ------------------------------
+// ── Universal Link handler ──────────────────────────────────────────────────
+// Handles password-reset deep links only.
+// Google Sign-In is handled via @capacitor-firebase/authentication natively
+// and never goes through a deep link redirect.
+
 (function installUniversalLinkHandler() {
   try {
     if (!App) {
@@ -161,30 +112,18 @@ consumePendingRouteOnce();
       try {
         const url = event?.url;
         if (!url) return;
-
         console.log("[IG][DEEPLINK] opened with url:", url);
 
         const parsed = new URL(url);
 
-        // Match reset link
+        // Email reset link: com.innerguideai.app://reset?token=...&email=...
         if (parsed.pathname.includes("reset.html")) {
-
           const token = parsed.searchParams.get("token") || "";
           const email = parsed.searchParams.get("email") || "";
-
-          const route =
-            "/reset.html?token=" +
-            encodeURIComponent(token) +
-            "&email=" +
-            encodeURIComponent(email);
-
-          console.log("[IG][DEEPLINK] routing to local reset page:", route);
-          // IMPORTANT: do NOT use router or pending route storage
-          // directly navigate the WebView to the server page
-
+          const route = "/reset.html?token=" + encodeURIComponent(token) +
+                        "&email="            + encodeURIComponent(email);
+          console.log("[IG][DEEPLINK] routing to reset page:", route);
           window.location.href = route;
-
-          return;
         }
 
       } catch (e) {

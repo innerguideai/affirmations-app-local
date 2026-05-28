@@ -22,11 +22,14 @@ document.addEventListener("DOMContentLoaded", () => {
     chooseGuestBtn.addEventListener("click", async (e) => {
       e.preventDefault();
 
-      // Preserve routing/theme preferences so the reset does not send users back through onboarding or flash the wrong theme.
+      // Preserve routing/theme preferences before clearing guest/account state.
       const keepOnboarded = localStorage.getItem("ig_onboarded");
       const keepTheme = localStorage.getItem("ig_theme");
+      const onboardingStep = localStorage.getItem("ig_onboarding_step");
+      const currentDisplayName = String(localStorage.getItem("ig_display_name") || "").trim();
+      const keepDisplayName = onboardingStep === "name" && currentDisplayName.length > 0;
 
-      // Remove auth/identity/trial keys and stale guest-local state
+      // Remove auth/identity/trial keys and stale guest-local state.
       [
         "ig_auth_mode",
         "currentUser",
@@ -41,22 +44,19 @@ document.addEventListener("DOMContentLoaded", () => {
         "ig_guest_start",
         "ig_guest_expiry",
         "ig_guest_seed_v1",
-        // Clear the saved guest name so a fresh guest start cannot inherit an old greeting.
         "ig_display_name",
-        // Clear the guest-library reset marker so local affirmation cache cannot be treated as already reset.
         "ig_guest_affs_reset_marker_v1"
       ].forEach((k) => localStorage.removeItem(k));
 
-      // Remove cached guest affirmations immediately so the new guest identity starts with a clean local library.
       Object.keys(localStorage)
         .filter((k) => k.startsWith("ig_guest_affs_v1_"))
         .forEach((k) => localStorage.removeItem(k));
 
-      // Restore what we keep
+      // Restore only values that should survive a fresh guest start.
       if (keepOnboarded === "1") localStorage.setItem("ig_onboarded", "1");
       if (keepTheme) localStorage.setItem("ig_theme", keepTheme);
+      if (keepDisplayName) localStorage.setItem("ig_display_name", currentDisplayName);
 
-      // Rebuild guest auth/trial state only after stale account and guest state has been removed.
       await bootstrapGuestMode();
       window.location.href = `/profile.html?v=${Date.now()}`;
     });
@@ -122,6 +122,14 @@ async function bootstrapGuestMode() {
 
   /* Set 7-day trial timestamps (separate from 30-day storage retention) */
   setGuestTrialWindowDays(7);
+
+  /* Best-effort expiry notification (no-op if permission not granted) */
+  try {
+    const exp = parseInt(localStorage.getItem("ig_guest_expiry") || "0", 10);
+    if (exp && typeof igScheduleGuestExpiryNotification === "function") {
+      igScheduleGuestExpiryNotification(exp);
+    }
+  } catch (_) {}
 }
 
 /* ============================================================

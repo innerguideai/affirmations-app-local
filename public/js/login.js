@@ -139,6 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
               console.log("[login] set ig_auth_mode(account) failed:", e);
             }
 
+            try {
+              const LN = window.IG && window.IG.LocalNotifications;
+              if (LN && typeof LN.cancel === "function") LN.cancel({ notifications: [{ id: 3001 }] });
+            } catch (_) {}
+
         } catch {}
 
         // redirect by role
@@ -301,7 +306,11 @@ document.addEventListener("DOMContentLoaded", () => {
               console.log("[login] set ig_auth_mode(account) failed:", e);
             }
 
-            
+            try {
+              const LN = window.IG && window.IG.LocalNotifications;
+              if (LN && typeof LN.cancel === "function") LN.cancel({ notifications: [{ id: 3001 }] });
+            } catch (_) {}
+
           console.log("[login] cached user keys:", Object.keys(user));
         } catch (e) {
           console.log("[login] cache user failed:", e);

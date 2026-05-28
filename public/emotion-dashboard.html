@@ -16,7 +16,9 @@
           "ig-theme-default",
           "ig-theme-winter",
           "ig-theme-spring",
-          "ig-theme-cblossom"
+          "ig-theme-cblossom",
+          "ig-theme-summer",
+          "ig-theme-zen"
         );
         document.documentElement.classList.add(saved);
       } catch (e) {
@@ -28,7 +30,7 @@
   <!-- Shared app CSS -->
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/profile.css" />
-  <link rel="stylesheet" href="/css/emotion-dashboard.css" />
+  <link rel="stylesheet" href="/css/emotion-dashboard.css?v=2026-05-22-1" />
 </head>
 
 <body class="profile-page emotion-dashboard-page ig-theme-default">
@@ -36,14 +38,13 @@
   <div class="ig-theme-bg" aria-hidden="true"></div>
 <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
   <header class="emotion-dashboard-header">
-      <a
-        href="/account.html"
+      <div
         class="emotion-dashboard-icon-btn"
-        aria-label="Back to account"
-        title="Back to account"
+        aria-hidden="true"
+        style="visibility:hidden;"
       >
         <span aria-hidden="true">←</span>
-      </a>
+      </div>
 
       <div class="emotion-dashboard-header-copy">
         <p class="emotion-dashboard-kicker">This month</p>
@@ -53,17 +54,14 @@
         </p>
       </div>
 
+      <!-- F-0256: sub-page closes to profile with right-side X. -->
       <a
         href="/profile.html"
         class="emotion-dashboard-icon-btn"
-        aria-label="Go to home"
-        title="Go to home"
+        aria-label="Close to profile"
+        title="Close"
       >
-        <img
-          src="/images/icons/homeicon.png"
-          alt="Home"
-          class="emotion-dashboard-home-icon"
-        />
+        <span aria-hidden="true">×</span>
       </a>
     </header>
 
@@ -83,6 +81,52 @@
     </section>
 
     <section id="emotionDashboardContent" class="hidden">
+      <section id="monthlyInsightCard" class="emotion-dashboard-card emotion-dashboard-monthly-insight" aria-label="Monthly insight">
+        <button
+          id="monthlyInsightCollapsed"
+          class="emotion-dashboard-insight-collapsed hidden"
+          type="button"
+        >
+          Monthly insight · —
+        </button>
+
+        <div id="monthlyInsightExpanded">
+          <div class="emotion-dashboard-section-head">
+            <div>
+              <h2 class="emotion-dashboard-section-title">Monthly insight</h2>
+              <p id="monthlyInsightPattern" class="emotion-dashboard-section-subtitle">
+                —
+              </p>
+            </div>
+          </div>
+          <p id="monthlyInsightAction" class="emotion-dashboard-insight-action">
+            —
+          </p>
+          <div class="emotion-dashboard-insight-tips">
+            <p class="emotion-dashboard-insight-label">Try this:</p>
+            <ul id="monthlyInsightTips" class="emotion-dashboard-insight-tip-list"></ul>
+          </div>
+
+          <div class="emotion-dashboard-insight-affirmation">
+            <p id="monthlyInsightAffirmationLabel" class="emotion-dashboard-insight-label">
+              Use this affirmation:
+            </p>
+            <p id="monthlyInsightReset" class="emotion-dashboard-insight-reset">
+              —
+            </p>
+          </div>
+
+          <div class="emotion-dashboard-insight-actions">
+            <button id="monthlyInsightPracticeBtn" class="emotion-dashboard-primary-btn" type="button">
+              Practice this reset
+            </button>
+            <button id="monthlyInsightGotItBtn" class="emotion-dashboard-insight-secondary-btn" type="button">
+              Got it
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- KPI row -->
       <section class="emotion-dashboard-kpi-grid" aria-label="Emotion summary">
         <article class="emotion-dashboard-kpi-card emotion-dashboard-kpi-card--felt">
@@ -168,6 +212,6 @@
   <script src="/js/profile.api.js"></script>
 
   <!-- Page logic -->
-  <script src="/js/emotion-dashboard.js"></script>
+  <script src="/js/emotion-dashboard.js?v=2026-05-22-1"></script>
 </body>
 </html>

@@ -5,11 +5,28 @@
     <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
     <title>AI AFFIRM • Reminders</title>
 
-    <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
-    <link rel="stylesheet" href="/css/onboarding.css" />
+<link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
+<link rel="stylesheet" href="/css/emotion-dashboard.css" />
+<link rel="stylesheet" href="/css/onboarding.css" />
+    <!-- Early theme apply for settings mode only (prevents first-paint flash) -->
+    <script>
+      (function () {
+        try {
+          if (location.search.indexOf("mode=settings") === -1) return;
+          var KEY = "ig_theme";
+          var THEMES = ["ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom"];
+          var theme = (localStorage.getItem(KEY) || "").trim();
+          if (THEMES.indexOf(theme) === -1) theme = "ig-theme-default";
+          THEMES.forEach(function (c) { document.documentElement.classList.remove(c); });
+          document.documentElement.classList.add(theme);
+        } catch (e) {}
+      })();
+    </script>
   </head>
 
   <body class="ig-screen">
+    <!-- Theme background layer: activated in settings mode via body.reminders-settings-page -->
+    <div class="ig-theme-bg" aria-hidden="true"></div>
     <div class="ig-shell">
       <section class="ig-card">
         <!-- ONBOARDING VIEW -->
@@ -47,11 +64,22 @@
         <!-- SETTINGS VIEW -->
         <section id="remindersSettingsView" class="settings-view" style="display:none;">
           <div class="glass-card">
-            <div class="page-header">
-              <!-- Back link (settings: account.html) -->
-              <a class="back-link" href="/account.html">Back</a>
-              <h1 class="page-title">Reminders</h1>
-            </div>
+            <div class="page-header" style="display:grid; grid-template-columns:44px 1fr 44px; align-items:center;">
+            <span aria-hidden="true" style="visibility:hidden;">×</span>
+
+            <h1 class="page-title">Reminders</h1>
+
+            <!-- F-0256: reminders settings closes to profile with right-side X. -->
+            <a
+              href="/profile.html"
+              class="emotion-dashboard-icon-btn"
+              aria-label="Close to profile"
+              title="Close"
+              style="justify-self:end;"
+            >
+              <span aria-hidden="true">×</span>
+            </a>
+          </div>
             <!-- Focus help link + modal -->
             <div class="ig-focus-help">
               <button type="button" class="ig-link-btn" id="igFocusHelpBtn">
@@ -95,7 +123,7 @@
             <div class="setting-block" id="dailyBlock">
               <div class="setting-row">
                 <div class="setting-text">
-                  <div class="setting-title">Daily check-in</div>
+                  <div class="setting-title">Check-in</div>
                 </div>
 
                 <div class="ig-toggle-wrap">
@@ -108,11 +136,18 @@
 
               <div class="setting-controls">
                 <label class="field">
+                  <span class="field-label">Frequency</span>
+                  <select id="dailyFrequency">
+                    <option value="daily">Daily</option>
+                    <option value="few_times_week">A few times a week</option>
+                    <option value="weekly">Weekly</option>
+                  </select>
+                </label>
+
+                <label class="field">
                   <span class="field-label">Time</span>
                   <input type="time" id="dailyTime" value="09:00" />
                 </label>
-
-                <!-- Settings: removed Preview / Send test / Status (per your request) -->
               </div>
             </div>
 
@@ -213,6 +248,7 @@
     </div>
 
     <script src="/js/capacitor.bundle.js"></script>
+    <script src="/js/theme.apply.js"></script>
     <script src="/js/reminders.js"></script>
   </body>
 </html>

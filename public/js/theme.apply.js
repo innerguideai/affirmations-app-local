@@ -12,7 +12,9 @@
     "ig-theme-default": { label: "Default", bodyClass: "ig-theme-default" },
     "ig-theme-winter": { label: "Winter", bodyClass: "ig-theme-winter" },
     "ig-theme-spring": { label: "Spring", bodyClass: "ig-theme-spring" },
-      "ig-theme-cblossom": { label: "Cherry Blossom", bodyClass: "ig-theme-cblossom" },
+    "ig-theme-cblossom": { label: "Cherry Blossom", bodyClass: "ig-theme-cblossom" },
+    "ig-theme-summer": { label: "Summer Beach", bodyClass: "ig-theme-summer" },
+    "ig-theme-zen": { label: "Zen Garden", bodyClass: "ig-theme-zen" },
   };
 
   function readThemeValue() {

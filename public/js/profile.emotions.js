@@ -72,65 +72,56 @@ function initEmotionHandlers() {
   }
 
   function showOtherUI() {
-    // Show the other block + remove hidden so input is clickable
-    if (DOM.otherFeelingBlock) {
-      DOM.otherFeelingBlock.classList.remove("hidden");
-      DOM.otherFeelingBlock.style.display = "block";
-    }
-
-    if (DOM.otherEmotionRow) DOM.otherEmotionRow.classList.remove("hidden");
-
-    // Always reset typed value when entering Other
+    // Reset legacy inline input (kept hidden — overlay takes over)
     if (DOM.otherEmotionInput) {
       DOM.otherEmotionInput.value = "";
       DOM.otherEmotionInput.removeAttribute("disabled");
       DOM.otherEmotionInput.removeAttribute("readonly");
       DOM.otherEmotionInput.style.pointerEvents = "auto";
     }
+    if (DOM.submitEmotion) DOM.submitEmotion.classList.add("hidden");
 
-    // Hide submit until the user types
-    if (DOM.submitEmotion) {
-      DOM.submitEmotion.classList.add("hidden");
+    // Reset picker overlay input + submit button
+    const pickerInput  = document.getElementById("otherPickerInput");
+    const pickerSubmit = document.getElementById("otherPickerSubmit");
+    if (pickerInput)  pickerInput.value = "";
+    if (pickerSubmit) pickerSubmit.classList.add("hidden");
 
-      // Stop the "circle button" behavior (one-time hardening)
-      if (!DOM.submitEmotion.dataset.igPillFixed) {
-        DOM.submitEmotion.dataset.igPillFixed = "1";
-        DOM.submitEmotion.style.width = "auto";
-        DOM.submitEmotion.style.height = "auto";
-        DOM.submitEmotion.style.whiteSpace = "nowrap";
-        DOM.submitEmotion.style.borderRadius = "999px";
-        DOM.submitEmotion.style.padding = "10px 14px";
-        DOM.submitEmotion.style.display = "inline-flex";
-        DOM.submitEmotion.style.alignItems = "center";
-        DOM.submitEmotion.style.justifyContent = "center";
-      }
-    }
-
-    // While typing "Other", hide the rating + Next buttons
+    // Hide rating + Next buttons while in Other
     hideAffirmationActions();
 
-    // Hide the affirmation card itself so we don't show an empty white box
+    // Hide affirmation card so no empty white box appears
     if (DOM.affirmationCard) DOM.affirmationCard.style.display = "none";
-
-    // Clear only the affirmation text (keep card structure)
     clearAffirmationTextOnly();
 
-    // iOS WebView: focus works best after paint
-    if (DOM.otherEmotionInput) {
-      setTimeout(() => DOM.otherEmotionInput.focus(), 0);
+    // Show picker overlay
+    const pickerOverlay = document.getElementById("otherPickerOverlay");
+    if (pickerOverlay) {
+      pickerOverlay.classList.remove("hidden");
+      pickerOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    // Focus text input after paint (iOS needs slight delay)
+    if (pickerInput) {
+      setTimeout(() => pickerInput.focus(), 60);
     }
   }
 
   function hideOtherUI() {
-    // Hide everything and clear typed value so it never “sticks”
+    // Clear legacy inline block (IDs kept in DOM for profile.dom.js)
     if (DOM.otherEmotionInput) DOM.otherEmotionInput.value = "";
-
-    if (DOM.submitEmotion) DOM.submitEmotion.classList.add("hidden");
-    if (DOM.otherEmotionRow) DOM.otherEmotionRow.classList.add("hidden");
-
+    if (DOM.submitEmotion)     DOM.submitEmotion.classList.add("hidden");
+    if (DOM.otherEmotionRow)   DOM.otherEmotionRow.classList.add("hidden");
     if (DOM.otherFeelingBlock) {
       DOM.otherFeelingBlock.classList.add("hidden");
       DOM.otherFeelingBlock.style.display = "none";
+    }
+
+    // Hide picker overlay
+    const pickerOverlay = document.getElementById("otherPickerOverlay");
+    if (pickerOverlay) {
+      pickerOverlay.classList.add("hidden");
+      pickerOverlay.setAttribute("aria-hidden", "true");
     }
   }
 
@@ -188,38 +179,100 @@ function initEmotionHandlers() {
     });
   }
 
-  // --- submit typed emotion ---
+  // --- submit typed emotion (legacy inline path, kept for safety) ---
   if (DOM.submitEmotion) {
     DOM.submitEmotion.addEventListener("click", () => {
       console.log("Submit button clicked");
       const typed = (DOM.otherEmotionInput ? DOM.otherEmotionInput.value : "").trim();
       if (!typed) return;
 
-      // Log (already added)
       console.log("Emotion selected:", typed);
 
-      // Reset context
       window.contextDriver = null;
       window.contextPressure = null;
       console.log("Context reset for new emotion");
 
-      // Close Other UI
       hideOtherUI();
 
-      // Show affirmation card
       if (DOM.affirmationCard) DOM.affirmationCard.style.display = "";
-
-      // Set feeling (IMPORTANT — this feeds backend)
       if (DOM.feelingInput) DOM.feelingInput.value = typed;
 
-      // For "Other" → use the same context entry path as preset emotions
       getContextQuestion(typed, 1).then((data) => {
         console.log("Context Question (Other):", data);
-
         if (typeof showContextQuestion === "function") {
           showContextQuestion(typed, data, 1);
         }
       });
+    });
+  }
+
+  // --- F-0249: other picker overlay handlers ---
+  const igPickerOverlay = document.getElementById("otherPickerOverlay");
+  const igPickerInput   = document.getElementById("otherPickerInput");
+  const igPickerSubmit  = document.getElementById("otherPickerSubmit");
+  const igPickerClose   = document.getElementById("otherPickerClose");
+
+  function igDispatchPickerEmotion(emotion) {
+    const trimmed = (emotion || "").trim();
+    if (!trimmed) return;
+
+    window.contextDriver   = null;
+    window.contextPressure = null;
+    console.log("[picker] emotion selected:", trimmed);
+
+    hideOtherUI();
+    if (DOM.affirmationCard) DOM.affirmationCard.style.display = "";
+    if (DOM.feelingInput) DOM.feelingInput.value = trimmed;
+
+    getContextQuestion(trimmed, 1).then((data) => {
+      console.log("[picker] context question:", data);
+      if (typeof showContextQuestion === "function") {
+        showContextQuestion(trimmed, data, 1);
+      }
+    });
+  }
+
+  // Common chip taps → immediate dispatch
+  if (igPickerOverlay) {
+    igPickerOverlay.querySelectorAll(".other-picker-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        igDispatchPickerEmotion(chip.dataset.emotion || "");
+      });
+    });
+  }
+
+  // Show "Use this emotion" only when input has text
+  if (igPickerInput) {
+    igPickerInput.addEventListener("input", () => {
+      const hasText = igPickerInput.value.trim().length > 0;
+      if (igPickerSubmit) igPickerSubmit.classList.toggle("hidden", !hasText);
+    });
+  }
+
+  // Submit typed emotion
+  if (igPickerSubmit) {
+    igPickerSubmit.addEventListener("click", () => {
+      igDispatchPickerEmotion(igPickerInput ? igPickerInput.value : "");
+    });
+  }
+
+  // Close / cancel — un-highlights Other chip so state is clean
+  if (igPickerClose) {
+    igPickerClose.addEventListener("click", () => {
+      hideOtherUI();
+      const otherChip = document.querySelector('[data-emotion="other"]');
+      if (otherChip) otherChip.classList.remove("emotion-chip--active");
+    });
+  }
+
+  // Tap backdrop (outside panel) to close
+  if (igPickerOverlay) {
+    igPickerOverlay.addEventListener("click", (e) => {
+      if (e.target === igPickerOverlay) {
+        hideOtherUI();
+        const otherChip = document.querySelector('[data-emotion="other"]');
+        if (otherChip) otherChip.classList.remove("emotion-chip--active");
+      }
     });
   }
 }
@@ -274,7 +327,7 @@ async function loadTopEmotionsCarousel() {
 
   // Reset UI (for carousel only)
   container.classList.add("hidden");
-  // keep label hidden always; footer owns the “Top 3 emotions” text
+  // keep label hidden always; footer owns the "Top 3 emotions" text
   if (label) label.classList.add("hidden");
   carousel.innerHTML = "";
   indicators.innerHTML = "";

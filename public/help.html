@@ -80,14 +80,13 @@
 
   <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
     <header class="emotion-dashboard-header">
-      <a
-        href="/account.html"
+      <div
         class="emotion-dashboard-icon-btn"
-        aria-label="Back to account"
-        title="Back to account"
+        aria-hidden="true"
+        style="visibility:hidden;"
       >
         <span aria-hidden="true">←</span>
-      </a>
+      </div>
 
       <div class="emotion-dashboard-header-copy">
         <p class="emotion-dashboard-kicker">Support</p>
@@ -97,17 +96,14 @@
         </p>
       </div>
 
+      <!-- F-0256: sub-page closes to profile with right-side X. -->
       <a
         href="/profile.html"
         class="emotion-dashboard-icon-btn"
-        aria-label="Go to home"
-        title="Go to home"
+        aria-label="Close to profile"
+        title="Close"
       >
-        <img
-          src="/images/icons/homeicon.png"
-          alt="Home"
-          class="emotion-dashboard-home-icon"
-        />
+        <span aria-hidden="true">×</span>
       </a>
     </header>
 

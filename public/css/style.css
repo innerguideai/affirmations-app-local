@@ -108,12 +108,30 @@ html.ig-theme-spring {
 }
 
 html.ig-theme-cblossom {
-  --theme-surface-dark: rgba(96, 45, 77, 0.9);
+  --theme-surface-dark: rgba(69, 35, 60, 0.9);
   --theme-surface-light: rgba(255, 244, 248, 0.84);
-  --theme-accent: #E9C7D8;
-  --theme-accent-strong: #B76E95;
+  --theme-accent: #fbd2fa;
+  --theme-accent-strong: #b468b1;
   --theme-border-soft: rgba(110, 60, 90, 0.14);
   --theme-glow: rgba(183, 110, 149, 0.34);
+}
+
+html.ig-theme-summer {
+  --theme-surface-dark: rgba(25, 60, 68, 0.86);
+  --theme-surface-light: rgba(244, 238, 218, 0.86);
+  --theme-accent: #9BCDC5;
+  --theme-accent-strong: #32626e;
+  --theme-border-soft: rgba(91, 159, 176, 0.24);
+  --theme-glow: rgba(155, 205, 197, 0.34);
+}
+
+html.ig-theme-zen {
+  --theme-surface-dark: rgba(45, 55, 38, 0.88);
+  --theme-surface-light: rgba(226, 222, 205, 0.86);
+  --theme-accent: #cdb894;
+  --theme-accent-strong: #6A6652;
+  --theme-border-soft: rgba(106, 102, 82, 0.24);
+  --theme-glow: rgba(163, 147, 119, 0.34);
 }
 body.profile-page.ig-theme-default {
   background: url("/images/default.jpg") center top / cover no-repeat;
@@ -127,6 +145,12 @@ body.profile-page.ig-theme-spring {
 body.profile-page.ig-theme-cblossom {
   background: url("/images/cblossom.jpg") center top / cover no-repeat;
 }
+body.profile-page.ig-theme-summer {
+  background-image: url("/images/summerbeach.jpg");
+}
+body.profile-page.ig-theme-zen {
+  background-image: url("/images/zengarden.jpg");
+}
 html.ig-theme-default body.profile-page {
   background: url("/images/default.jpg") center top / cover no-repeat;
 }
@@ -138,6 +162,12 @@ html.ig-theme-spring body.profile-page {
 }
 html.ig-theme-cblossom body.profile-page {
   background: url("/images/cblossom.jpg") center top / cover no-repeat;
+}
+html.ig-theme-summer body.profile-page {
+  background-image: url("/images/summerbeach.jpg");
+}
+html.ig-theme-zen body.profile-page {
+  background-image: url("/images/zengarden.jpg");
 }
 /* Profile page overrides global centered body layout */
 body.profile-page {
@@ -171,6 +201,12 @@ body.profile-page.ig-theme-spring .ig-theme-bg {
 }
 body.profile-page.ig-theme-cblossom .ig-theme-bg {
   background-image: url("/images/cblossom.jpg");
+}
+body.profile-page.ig-theme-summer .ig-theme-bg {
+  background-image: url("/images/summerbeach.jpg");
+}
+body.profile-page.ig-theme-zen .ig-theme-bg {
+  background-image: url("/images/zengarden.jpg");
 }
 /* =======================
    4) Layout helpers (onboarding)
@@ -277,12 +313,288 @@ input, select, textarea {
 border: 1px solid var(--theme-border-soft);
 }
 
-/* Bigger affirmation text */
+/* ============================================================
+   F-0261 v3: Affirmation result card — iPhone polish
+   ============================================================ */
+
+/* Context card: resizes when showing affirmation result */
+.context-card:has(#affirmationWrapper:not(.hidden)) {
+  width: min(88vw, 360px);
+  max-width: 360px;
+  max-height: 74vh;
+  padding: 22px;
+  border-radius: 28px;
+  overflow: visible;
+}
+
+/* Suppress old emotion label and question blocks when result is showing */
+.context-card:has(#affirmationWrapper:not(.hidden)) #contextEmotion,
+.context-card:has(#affirmationWrapper:not(.hidden)) #contextQuestionBlock1,
+.context-card:has(#affirmationWrapper:not(.hidden)) #contextQuestionBlock2 {
+  display: none;
+}
+
+/* Wrapper: flex column, consistent 14px gap between sections */
+#affirmationWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+/* ── Header ── */
+.affirm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  flex-shrink: 0;
+}
+
+.affirm-emotion-label {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--gunmetal);
+  background: var(--theme-accent);
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+.affirm-close-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--honeydew);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+.affirm-close-btn:active { background: rgba(255, 255, 255, 0.26); }
+
+/* ── Meta row — collapses entirely when AI badge is hidden ── */
+.affirm-meta {
+  flex-shrink: 0;
+}
+.affirm-meta:has(.affirm-ai-badge.hidden) {
+  display: none;
+}
+
+.affirm-ai-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gunmetal);
+  background: var(--peach);
+  border-radius: 999px;
+  padding: 5px 10px;
+  letter-spacing: 0.03em;
+  width: fit-content;
+  animation: igAiPulseFade 1.4s ease forwards;
+}
+@keyframes igAiPulseFade {
+  0%   { opacity: 0; transform: scale(0.94); }
+  35%  { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Body ── */
+.affirm-body {
+  position: relative;
+  min-height: 220px;
+  max-height: 48vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 12px;
+  overflow: visible;
+  flex: 1 1 auto;
+}
+
+/* Decorative quotes — inside body padding, will not clip */
+.affirm-body::before {
+  content: "\201C";
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  font-size: 2.8rem;
+  color: var(--honeydew);
+  opacity: 0.14;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+.affirm-body::after {
+  content: "\201D";
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  font-size: 2.8rem;
+  color: var(--honeydew);
+  opacity: 0.14;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Context line — driver · pressure below emotion pill */
+.affirm-context-line {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.54);
+  letter-spacing: 0.04em;
+  text-align: left;
+  min-height: 0;
+  line-height: 1.3;
+  padding: 0 2px;
+}
+.affirm-context-line:empty {
+  display: none;
+}
+
+/* Glow — stronger radial, behind text only */
+.affirm-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: radial-gradient(circle at center, rgba(241, 192, 157, 0.46) 0%, transparent 60%);
+  filter: blur(16px);
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.affirm-glow--active {
+  opacity: 1;
+}
+
+/* Affirmation text */
 .ig-affirm-text {
-  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
-  line-height: 1.2;
+  font-size: clamp(2rem, 5.8vw, 2.55rem);
+  line-height: 1.18;
   font-weight: 800;
-  color:var(--honeydew)
+  color: var(--honeydew);
+  text-align: center;
+  max-width: 95%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Divider ── */
+.affirm-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.10);
+  flex-shrink: 0;
+}
+
+/* ── Footer ── */
+.affirm-footer {
+  display: grid;
+  grid-template-columns: 82px minmax(120px, 1fr) 82px;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+
+.affirm-listen-btn {
+  width: 82px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--honeydew);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+.affirm-listen-btn:active { background: rgba(255, 255, 255, 0.22); }
+
+.affirm-footer #starRating {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
+.affirm-footer #starRating .star {
+  font-size: 22px;
+}
+
+.affirm-next-wrap {
+  width: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.affirm-next-btn {
+  width: 82px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--theme-accent-strong, rgba(147, 183, 123, 0.95));
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+.affirm-next-btn:active { opacity: 0.85; }
+
+/* ── Responsive < 390px ── */
+@media (max-width: 389px) {
+  .context-card:has(#affirmationWrapper:not(.hidden)) {
+    width: 92vw;
+    padding: 18px;
+  }
+  .ig-affirm-text {
+    font-size: clamp(1.75rem, 6vw, 2.25rem);
+  }
+  .affirm-footer {
+    grid-template-columns: 72px minmax(110px, 1fr) 72px;
+  }
+  .affirm-listen-btn,
+  .affirm-next-btn {
+    width: 72px;
+    font-size: 13px;
+  }
+  .affirm-next-wrap { width: 72px; }
+  .affirm-footer #starRating .star { font-size: 20px; }
+}
+
+/* ── Larger tablets ── */
+@media (min-width: 768px) {
+  .context-card:has(#affirmationWrapper:not(.hidden)) {
+    width: 390px;
+    max-width: 390px;
+  }
 }
 
 /* Congrats banner (tap to dismiss) */
@@ -382,6 +694,49 @@ border: 1px solid var(--theme-border-soft);
 .carousel-indicators .dot.active { background: var(--green); }
 
 /* Support banner */
+/* ============================================================
+   SUPPORT OVERLAY CARD (F-0255)
+   ============================================================ */
+.support-card {
+  background: rgba(96, 42, 76, 0.96);
+}
+
+.support-action-line {
+  margin: 16px 0 14px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--honeydew);
+  text-align: center;
+}
+
+.support-recommendations {
+  margin-top: 14px;
+  text-align: left;
+}
+
+.support-recommendations-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--honeydew);
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.support-recommendations-list {
+  margin: 0;
+  padding-left: 22px;
+  text-align: left;
+}
+
+.support-recommendations-list li {
+  margin-bottom: 6px;
+  line-height: 1.35;
+  color: var(--honeydew);
+}
+
+/* ============================================================
+   LEGACY SUPPORT BANNER (profile inline banner, pre-overlay)
+   ============================================================ */
 .support-banner {
   display: flex;
   gap: .75rem;
@@ -654,6 +1009,46 @@ border: 1px solid var(--theme-border-soft);
 #igFocusModal .ig-modal-footer {
   padding: 12px 14px 14px;
 }
+/* =========================
+   Reminders settings: theme background (iOS-safe fixed layer)
+   ========================= */
+body.reminders-settings-page .ig-theme-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+body.reminders-settings-page.ig-theme-default .ig-theme-bg {
+  background-image: url("/images/default.jpg");
+}
+body.reminders-settings-page.ig-theme-winter .ig-theme-bg {
+  background-image: url("/images/winter.jpg");
+}
+body.reminders-settings-page.ig-theme-spring .ig-theme-bg {
+  background-image: url("/images/spring.jpg");
+}
+body.reminders-settings-page.ig-theme-cblossom .ig-theme-bg {
+  background-image: url("/images/cblossom.jpg");
+}
+
+/* Focus help link */
+#remindersSettingsView .ig-focus-help {
+  margin: 4px 0 8px;
+}
+#remindersSettingsView .ig-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  color: var(--theme-accent-strong, #476B38);
+  text-decoration: underline;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
 /* ---- AI Affirm: Signup show/hide password toggle ---- */
 
 /* Wraps the password input so we can place the eye button inside the field. */
