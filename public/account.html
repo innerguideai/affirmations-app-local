@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/css/style.css?v=2026-01-01-2" />
   <link rel="stylesheet" href="/css/profile.css?v=2026-01-01-2" />
   <link rel="stylesheet" href="/css/emotion-dashboard.css" />
+  <link rel="stylesheet" href="/css/account.css?v=2026-05-31-BUG-0036-2" />
   <!-- Early theme apply to reduce first-paint flash -->
   <script>
     (function () {
@@ -67,50 +68,15 @@
     })();
   </script>
 
-  <!-- Small layout tighten just for Account -->
+  <!-- Small page-only behavior overrides for Account -->
   <style>
-    .settings-page {
-      padding-bottom: 12px;
-    }
-
-    .settings-group {
-      margin-bottom: 10px;
-    }
-
-    .settings-card {
-      padding: 8px 10px;
-    }
-
-    .settings-item {
-      padding: 8px 10px;
-    }
-
     .settings-footer {
-      margin-top: 10px;
-      padding-top: 4px;
-      border-top: 1px solid rgba(0, 0, 0, 0.03);
       text-align: center;
-    }
-
-    .settings-footer-links {
-      margin-top: 8px;
-      font-size: 0.72rem;
-      color: rgba(0, 0, 0, 0.55);
-    }
-
-    .settings-footer-links a {
-      color: inherit;
-      text-decoration: underline;
-    }
-
-    .settings-item.is-disabled,
-    .settings-item.is-disabled .settings-item__label {
-      opacity: 0.35 !important;
     }
   </style>
 </head>
 
-<body class="profile-page">
+<body class="profile-page account-page">
   <div class="ig-theme-bg" aria-hidden="true"></div>
 
   <div class="theme-bg">
@@ -231,10 +197,6 @@
               <a class="settings-item__chevron" href="#" aria-label="Open"></a>
             </div>
 
-            <div class="settings-item" id="row-review">
-              <div class="settings-item__label">Leave us a review</div>
-              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
-            </div>
 
             <div class="settings-item" id="row-help">
               <div class="settings-item__label">Help</div>
@@ -534,13 +496,7 @@
         });
       }
 
-      const rowReview = $("row-review");
-      if (rowReview) {
-        rowReview.addEventListener("click", function (e) {
-          e.preventDefault();
-          window.location.href = "/review.html";
-        });
-      }
+
 
       const rowHelp = $("row-help");
       if (rowHelp) {

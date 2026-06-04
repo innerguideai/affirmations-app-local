@@ -21,8 +21,11 @@
       const KEY_MODE = "ig_auth_mode";
       const KEY_GUEST_ID = "currentUserId";
       const KEY_CURRENT_USER = "currentUser";
+      const KEY_AUTH_TOKEN = "authToken";
+      const API = "http://54.221.158.219:3000";
 
       const mode = (localStorage.getItem(KEY_MODE) || "").toLowerCase();
+      const authToken = (localStorage.getItem(KEY_AUTH_TOKEN) || "").trim();
 
       let cu = {};
       try { cu = JSON.parse(localStorage.getItem(KEY_CURRENT_USER) || "{}"); }
@@ -48,6 +51,7 @@
         mode,
         guestId,
         isGuest,
+        hasToken: !!authToken,
         hasApiFetch: !!window.apiFetch
       });
 
@@ -64,23 +68,32 @@
         return;
       }
 
-      // Account mode: probe /api/me if possible, else go to login
+      // Account mode: validate stored backend token directly.
       if (mode === "account") {
-        if (window.apiFetch) {
-          window.apiFetch("/api/me", { method: "GET", credentials: "include", cache: "no-store" })
-            .then(function (res) {
-              console.log("[INDEX_GATE] /api/me status", res.status);
-              if (res && res.ok) go("/profile.html");
-              else go("/login.html");
-            })
-            .catch(function (err) {
-              console.log("[INDEX_GATE] /api/me error", err);
-              go("/login.html");
-            });
+        if (!authToken) {
+          console.log("[INDEX_GATE] account mode without authToken");
+          go("/login.html");
           return;
         }
 
-        go("/login.html");
+        fetch(API + "/api/me", {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer " + authToken
+          }
+        })
+          .then(function (res) {
+            console.log("[INDEX_GATE] /api/me status", res.status);
+            if (res && res.ok) go("/profile.html");
+            else go("/login.html");
+          })
+          .catch(function (err) {
+            console.log("[INDEX_GATE] /api/me error", err);
+            go("/login.html");
+          });
         return;
       }
 
@@ -93,4 +106,3 @@
 <body>  <script src="/js/capacitor.bundle.js"></script>
 </body>
 </html>
-

@@ -316,6 +316,58 @@ console.log("[emotion-dashboard] loaded");
       .join("");
   }
 
+  async function fetchMonthlyInsightFallbackAffirmation(emotion, userId) {
+    const safeEmotion = String(emotion || "").trim();
+    const safeUserId = String(userId || "").trim();
+    if (!safeEmotion || !safeUserId || typeof window.apiFetch !== "function") return null;
+
+    console.log("[BUG-0025] monthly insight fallback starting", {
+      emotion: safeEmotion,
+      userId: safeUserId
+    });
+
+    try {
+      const res = await window.apiFetch("/api/affirmations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          emotion: safeEmotion,
+          userId: safeUserId
+        })
+      });
+
+      if (!res.ok) {
+        console.log("[BUG-0025] monthly insight fallback none", {
+          emotion: safeEmotion,
+          status: res.status
+        });
+        return null;
+      }
+
+      const data = await res.json();
+      const affirmation = data && data.affirmation ? data.affirmation : null;
+      if (getAffirmationText(affirmation)) {
+        console.log("[BUG-0025] monthly insight fallback found", {
+          emotion: safeEmotion,
+          affirmationId: getAffirmationId(affirmation) || null
+        });
+        return affirmation;
+      }
+
+      console.log("[BUG-0025] monthly insight fallback none", {
+        emotion: safeEmotion,
+        status: res.status
+      });
+      return null;
+    } catch (err) {
+      console.log("[BUG-0025] monthly insight fallback none", {
+        emotion: safeEmotion,
+        error: String(err && err.message ? err.message : err)
+      });
+      return null;
+    }
+  }
+
   function setPracticeRoute(emotion, affirmationId) {
     if (!els.monthlyInsightPracticeBtn) return;
 
@@ -382,15 +434,25 @@ console.log("[emotion-dashboard] loaded");
     els.kpiPeakMeta.textContent = peak.emotion ? `for ${titleCase(peak.emotion)}` : "for —";
   }
 
-  function renderMonthlyInsight(data) {
-    const monthlyInsight = data.summary.monthlyInsight || {};
-    const insightEmotion = labelText(monthlyInsight.emotion);
+  async function renderMonthlyInsight(data, userId) {
+const monthlyInsight = data.monthlyInsight || data.summary?.monthlyInsight || {};
+console.log("[BUG-0025] resolved monthlyInsight:", monthlyInsight);    const insightEmotion = labelText(monthlyInsight.emotion);
     const driverLabel = labelText(monthlyInsight.driver);
     const pressureLabel = labelText(monthlyInsight.pressure);
-    const affirmationText = getAffirmationText(monthlyInsight.affirmation);
-    const affirmationId = getAffirmationId(monthlyInsight.affirmation);
+    let insightAffirmation = monthlyInsight.affirmation;
+    let affirmationText = getAffirmationText(insightAffirmation);
+    let affirmationId = getAffirmationId(insightAffirmation);
 
     if (insightEmotion) {
+      if (!affirmationText) {
+        const fallbackAffirmation = await fetchMonthlyInsightFallbackAffirmation(insightEmotion, userId);
+        if (fallbackAffirmation) {
+          insightAffirmation = fallbackAffirmation;
+          affirmationText = getAffirmationText(insightAffirmation);
+          affirmationId = getAffirmationId(insightAffirmation);
+        }
+      }
+
       const explicitDay = monthlyInsight.day || monthlyInsight.weekday || monthlyInsight.dayOfWeek;
       const heatmapPattern = findTopHeatmapPattern(data.charts.heatmap, insightEmotion);
       const dayLabel = explicitDay
@@ -755,7 +817,7 @@ async function loadDashboard() {
 
     console.log("[emotion-dashboard] data", data);
 
-    renderMonthlyInsight(data);
+    await renderMonthlyInsight(data, userId);
     renderKpis(data);
     renderTop10Chart(data.charts.top10);
     renderTrendChart(data.charts.trend);

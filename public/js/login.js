@@ -118,7 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
           },
         });
 
-        if (!r.ok) return;
+        if (!r.ok) {
+          console.log("[login] autoResume /api/me status:", r.status);
+          setStatus("Please sign in to continue.", "note");
+          return;
+        }
 
         const me = await r.json();
 

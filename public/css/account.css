@@ -1,59 +1,176 @@
 /* ===== Account / Settings ===== */
-.settings-page {
+body.account-page {
+  color: var(--gunmetal);
+}
+
+/* Main account content wrapper */
+body.account-page .content-narrow {
+  width: min(100% - 20px, 380px);
+  min-height: auto;
+  margin: calc(env(safe-area-inset-top, 0px) + 46px) auto 8px;
+  padding: 10px 8px 12px;
+  font-size: 1rem;
+  line-height: 1.35;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Header spacing */
+body.account-page .emotion-dashboard-header {
+  margin-bottom: 4px;
+}
+
+/* Account title */
+body.account-page .emotion-dashboard-title {
+  color: var(--gunmetal);
+  font-size: 24px;
+  line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.72);
+}
+
+/* Keep X button as-is visually, only scoped here */
+body.account-page .emotion-dashboard-icon-btn {
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--gunmetal);
+  width: 40px;
+  height: 40px;
+}
+
+/* Page layout */
+body.account-page .settings-page {
   max-width: 720px;
-  margin: 0 auto;
-  padding: 12px 16px;
+  margin: 0;
+  padding: 0 0 calc(env(safe-area-inset-bottom, 0px) + 8px);
 }
 
-.settings-group {
-  margin: 14px 0;
+/* Each account menu group */
+body.account-page .settings-group {
+  margin: 6px 0 6px 12px;
 }
 
-.settings-group__title {
-  font-weight: 600;
-  font-size: 0.9rem;
-  opacity: 0.75;
-  padding: 6px 2px 6px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+/* Group label */
+body.account-page .settings-group__title {
+  margin: 0 0 2px;
+  padding: 0 4px;
+  border: 0;
+  color: rgba(25, 38, 50, 0.78);
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
-.settings-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  border-radius: 14px;
+/* Menu card */
+body.account-page .settings-card {
+  width: calc(100% - 24px);
+  margin-left: 0;
+  margin-right: 12px;
+  background: rgba(255, 255, 255, 0.62);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
-.settings-item {
+/* Menu row */
+body.account-page .settings-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  justify-content: flex-start;
+  min-height: 42px;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(25, 38, 50, 0.08);
 }
 
-.settings-item:last-child {
+body.account-page .settings-item:last-child {
   border-bottom: 0;
 }
 
-.settings-item__label {
-  font-weight: 500;
+/* Menu row label */
+body.account-page .settings-item__label {
+  color: rgba(25, 38, 50, 0.9);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
-.settings-item__chevron::after {
-  content: "›";
-  font-size: 18px;
-  opacity: 0.6;
+/* Hide chevrons completely */
+body.account-page .settings-item__chevron,
+body.account-page .settings-item__chevron::after {
+  display: none !important;
+  content: none !important;
 }
 
-.settings-item.is-disabled {
-  opacity: 0.45;
+/* Disabled rows */
+body.account-page .settings-item.is-disabled {
+  opacity: 1;
   pointer-events: none;
 }
 
-.settings-note {
-  font-size: 0.85rem;
-  opacity: 0.7;
-  padding: 8px 12px 0;
+body.account-page .settings-item.is-disabled .settings-item__label {
+  color: rgba(25, 38, 50, 0.42);
+}
+
+/* Optional notes */
+body.account-page .settings-note {
+  padding: 0 12px 7px;
+  color: rgba(25, 38, 50, 0.68);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* Privacy / Terms links */
+body.account-page .settings-footer-links {
+  margin-top: 7px !important;
+  color: rgba(25, 38, 50, 0.78);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+}
+
+body.account-page .settings-footer-links a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Footer buttons area */
+body.account-page .settings-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 4px 0 calc(env(safe-area-inset-bottom, 0px) + 6px);
+  border-top: 1px solid rgba(25, 38, 50, 0.08);
+}
+
+/* Make Delete and Log out identical */
+body.account-page .settings-footer .logout-narrow,
+body.account-page .settings-footer #deleteAccountBtn {
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 230px !important;
+  max-width: 230px !important;
+  min-width: 230px !important;
+
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border-radius: 9999px !important;
+
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  text-align: center !important;
 }

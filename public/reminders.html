@@ -32,7 +32,7 @@
         <!-- ONBOARDING VIEW -->
         <div class="ig-content" id="remindersOnboardingView">
           <!-- Back link (onboarding: frequency.html) -->
-          <a id="remBackTop" class="back-link" href="/frequency.html">Back</a>
+          <a id="remBackTop" class="back-link" href="/name.html">Back</a>
 
           <h1 class="ig-title">Want reminders?</h1>
 
@@ -52,10 +52,6 @@
             </div>
           </div>
 
-          <!-- UAT test button (onboarding only) -->
-          <button id="testNotifyBtn" type="button" class="primary-btn">
-            Send test notification (15s)
-          </button>
 
           <p id="notifyStatus" style="margin-top:10px; font-size:14px;"></p>
           <div class="ig-note" id="remStatus"></div>
@@ -139,10 +135,11 @@
                   <span class="field-label">Frequency</span>
                   <select id="dailyFrequency">
                     <option value="daily">Daily</option>
-                    <option value="few_times_week">A few times a week</option>
-                    <option value="weekly">Weekly</option>
+                    <option value="few_times_week">A few times a week — Mon, Wed, Fri</option>
+                    <option value="weekly">Weekly — Sunday</option>
                   </select>
                 </label>
+                <p class="ig-field-hint" id="frequencyHint"></p>
 
                 <label class="field">
                   <span class="field-label">Time</span>

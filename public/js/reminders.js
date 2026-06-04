@@ -163,39 +163,80 @@ function fromMinutes(mins) {
 }
 
 // ------------------------------
-// DAILY (id=1001)
+// CHECK-IN (daily/few-times-week/weekly)
+// IDs: daily=1001, few_times_week=1011/1013/1015, weekly=1020
+// Capacitor weekday: 1=Sun 2=Mon 3=Tue 4=Wed 5=Thu 6=Fri 7=Sat
 // ------------------------------
-async function cancelDaily(LN) {
+const CHECK_IN_IDS = [1001, 1011, 1013, 1015, 1020];
+
+async function cancelCheckIn(LN) {
   try {
-    await LN.cancel({ notifications: [{ id: 1001 }] });
-    console.log("[IG][Reminders] canceled daily id=1001 (if any)");
+    await LN.cancel({ notifications: CHECK_IN_IDS.map((id) => ({ id })) });
+    console.log("[IG][Reminders] canceled all check-in ids", CHECK_IN_IDS);
   } catch (e) {
-    console.log("[IG][Reminders] cancel daily skipped/failed (ok)", e);
+    console.log("[IG][Reminders] cancel check-in skipped/failed (ok)", e);
   }
 }
 
-async function scheduleDaily(LN, hour, minute) {
-  await cancelDaily(LN);
+// Kept for backward-compat with onboarding path
+async function cancelDaily(LN) {
+  return cancelCheckIn(LN);
+}
 
-  await LN.schedule({
-    notifications: [
+async function scheduleCheckIn(LN, hour, minute, frequency) {
+  await cancelCheckIn(LN);
+
+  const freq = frequency || "daily";
+  let notifications = [];
+
+  if (freq === "few_times_week") {
+    // Mon=2, Wed=4, Fri=6
+    const days = [
+      { id: 1011, weekday: 2 },
+      { id: 1013, weekday: 4 },
+      { id: 1015, weekday: 6 },
+    ];
+    notifications = days.map(({ id, weekday }) => ({
+      id,
+      title: "Quick check-in",
+      body: "How do you feel right now? Tap to get a fitting affirmation.",
+      schedule: { on: { weekday, hour, minute }, allowWhileIdle: true },
+      sound: NOTIFICATION_SOUND,
+      extra: { ig_route: `/profile.html?source=notify&id=${id}` },
+    }));
+  } else if (freq === "weekly") {
+    // Sunday=1
+    notifications = [
+      {
+        id: 1020,
+        title: "Quick check-in",
+        body: "How do you feel right now? Tap to get a fitting affirmation.",
+        schedule: { on: { weekday: 1, hour, minute }, allowWhileIdle: true },
+        sound: NOTIFICATION_SOUND,
+        extra: { ig_route: "/profile.html?source=notify&id=1020" },
+      },
+    ];
+  } else {
+    // daily (default)
+    notifications = [
       {
         id: 1001,
         title: "Quick check-in",
         body: "How do you feel right now? Tap to get a fitting affirmation.",
-        schedule: {
-          on: { hour, minute },
-          allowWhileIdle: true,
-        },
+        schedule: { on: { hour, minute }, allowWhileIdle: true },
         sound: NOTIFICATION_SOUND,
-        extra: {
-          ig_route: "/profile.html?source=notify&id=1001",
-        },
+        extra: { ig_route: "/profile.html?source=notify&id=1001" },
       },
-    ],
-  });
+    ];
+  }
 
-  console.log("[IG][Reminders] scheduled daily id=1001 at", hour, ":", minute);
+  await LN.schedule({ notifications });
+  console.log("[IG][Reminders] scheduled check-in", { freq, hour, minute });
+}
+
+// Kept for backward-compat with onboarding path (schedules daily)
+async function scheduleDaily(LN, hour, minute) {
+  return scheduleCheckIn(LN, hour, minute, "daily");
 }
 
 // ------------------------------
@@ -561,7 +602,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const list = pendingRes?.notifications || [];
       const ids = new Set(list.map((n) => n.id));
 
-      if (dailyEnabled) dailyEnabled.checked = ids.has(1001);
+      if (dailyEnabled) dailyEnabled.checked = CHECK_IN_IDS.some((id) => ids.has(id));
       if (bedtimeEnabled) bedtimeEnabled.checked = ids.has(1003);
       if (daytimeEnabled) {
         daytimeEnabled.checked =
@@ -611,10 +652,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const freq = dailyFrequency ? dailyFrequency.value : "daily";
+    localStorage.setItem("ig_frequency", freq);
     const { hour, minute } = parseHHMM(hhmm);
-    await scheduleDaily(LN, hour, minute);
+    await scheduleCheckIn(LN, hour, minute, freq);
     localStorage.setItem("ig_reminders_enabled", "true");
-    console.log("[IG][Reminders][Settings] Daily saved at", hhmm);
+    console.log("[IG][Reminders][Settings] Daily saved at", hhmm, "freq=", freq);
   }
 
   async function applyBedtimeFromSettings() {
@@ -686,9 +729,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (dailyEnabled) dailyEnabled.addEventListener("change", applyDailyFromSettings);
 
+  const frequencyHint = document.getElementById("frequencyHint");
+  function updateFrequencyHint(val) {
+    if (!frequencyHint) return;
+    if (val === "few_times_week") {
+      frequencyHint.textContent = "Sends on Monday, Wednesday, and Friday.";
+    } else if (val === "weekly") {
+      frequencyHint.textContent = "Sends every Sunday.";
+    } else {
+      frequencyHint.textContent = "";
+    }
+  }
   if (dailyFrequency) {
+    updateFrequencyHint(dailyFrequency.value);
     dailyFrequency.addEventListener("change", () => {
       localStorage.setItem("ig_frequency", dailyFrequency.value || "daily");
+      updateFrequencyHint(dailyFrequency.value);
+      if (dailyEnabled && dailyEnabled.checked) applyDailyFromSettings();
     });
   }
 

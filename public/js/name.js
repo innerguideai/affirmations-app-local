@@ -26,6 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (name) localStorage.setItem("ig_display_name", name);
 
     // next step
-    window.location.href = "/frequency.html";
+    window.location.href = "/reminders.html";
   });
 });
