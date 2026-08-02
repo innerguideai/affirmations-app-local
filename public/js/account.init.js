@@ -4,7 +4,6 @@
 // Strict session fetch using /api/me
 async function getSessionUserStrict() {
   try {
-    console.log("[account] getSessionUserStrict → calling /api/me");
 
     const res = await apiFetch("/api/me", {
       method: "GET",
@@ -12,15 +11,12 @@ async function getSessionUserStrict() {
       cache: "no-store"
     });
 
-    console.log("[account] /api/me status:", res.status);
 
     if (!res.ok) return null;
 
     let txt = (await res.text()).replace(/^\uFEFF/, "").trim();
-    console.log("[account] /api/me raw length:", txt.length);
 
     const user = txt ? JSON.parse(txt) : null;
-    console.log("[account] /api/me parsed user:", user);
 
     if (user && user.id && !user._id) user._id = user.id;
 
@@ -33,7 +29,6 @@ async function getSessionUserStrict() {
 
 // Initialize the Account page based on real session state
 async function initAccountPage() {
-  console.log("[account] initAccountPage start");
 
   const titleEl = document.getElementById("createOrAccount");
   const linkEl  = document.getElementById("createOrAccountLink");
@@ -50,7 +45,6 @@ async function initAccountPage() {
   const user = await getSessionUserStrict();
   const hasAccount = !!user;
 
-  console.log("[account] hasAccount:", hasAccount);
 
   if (hasAccount) {
     titleEl.textContent = "Account information";

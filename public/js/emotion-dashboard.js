@@ -1,7 +1,6 @@
 // public/js/emotion-dashboard.js
 "use strict";
 
-console.log("[emotion-dashboard] loaded");
 
 (function () {
   // ------------------------------------------------------------
@@ -30,6 +29,8 @@ console.log("[emotion-dashboard] loaded");
     monthlyInsightReset: document.getElementById("monthlyInsightReset"),
     monthlyInsightPracticeBtn: document.getElementById("monthlyInsightPracticeBtn"),
     monthlyInsightGotItBtn: document.getElementById("monthlyInsightGotItBtn"),
+    monthlyInsightSupportHeading: document.getElementById("monthlyInsightSupportHeading"),
+    monthlyInsightTipsLabel: document.getElementById("monthlyInsightTipsLabel"),
 
     top10Summary: document.getElementById("top10Summary"),
     top10Chart: document.getElementById("top10Chart"),
@@ -321,10 +322,6 @@ console.log("[emotion-dashboard] loaded");
     const safeUserId = String(userId || "").trim();
     if (!safeEmotion || !safeUserId || typeof window.apiFetch !== "function") return null;
 
-    console.log("[BUG-0025] monthly insight fallback starting", {
-      emotion: safeEmotion,
-      userId: safeUserId
-    });
 
     try {
       const res = await window.apiFetch("/api/affirmations", {
@@ -337,38 +334,22 @@ console.log("[emotion-dashboard] loaded");
       });
 
       if (!res.ok) {
-        console.log("[BUG-0025] monthly insight fallback none", {
-          emotion: safeEmotion,
-          status: res.status
-        });
-        return null;
+          return null;
       }
 
       const data = await res.json();
       const affirmation = data && data.affirmation ? data.affirmation : null;
       if (getAffirmationText(affirmation)) {
-        console.log("[BUG-0025] monthly insight fallback found", {
-          emotion: safeEmotion,
-          affirmationId: getAffirmationId(affirmation) || null
-        });
         return affirmation;
       }
 
-      console.log("[BUG-0025] monthly insight fallback none", {
-        emotion: safeEmotion,
-        status: res.status
-      });
       return null;
     } catch (err) {
-      console.log("[BUG-0025] monthly insight fallback none", {
-        emotion: safeEmotion,
-        error: String(err && err.message ? err.message : err)
-      });
       return null;
     }
   }
 
-  function setPracticeRoute(emotion, affirmationId) {
+  function setPracticeRoute(emotion, affirmationId, affirmationText, reason) {
     if (!els.monthlyInsightPracticeBtn) return;
 
     const params = new URLSearchParams();
@@ -376,6 +357,17 @@ console.log("[emotion-dashboard] loaded");
 
     if (affirmationId) {
       params.set("affirmationId", affirmationId);
+
+      // Stash the selected affirmation so support.js can render it
+      // directly without calling /api/support/daytime-reset.
+      try {
+        sessionStorage.setItem("ig_support_insight_affirmation", JSON.stringify({
+          affirmationId,
+          text: affirmationText || "",
+          emotion: emotion || "",
+          reason: reason || ""
+        }));
+      } catch (e) {}
     } else if (emotion) {
       params.set("emotion", emotion);
     }
@@ -434,9 +426,55 @@ console.log("[emotion-dashboard] loaded");
     els.kpiPeakMeta.textContent = peak.emotion ? `for ${titleCase(peak.emotion)}` : "for —";
   }
 
+  // BUG-0045 Issue 2: fixed allowlist, exact-match only, no inference
+  const POSITIVE_EMOTIONS = new Set([
+    "calm", "grateful", "hopeful", "focused", "excited",
+    "happy", "joyful", "peaceful", "relaxed", "confident",
+    "proud", "content", "optimistic", "motivated", "inspired",
+    "energized", "connected", "loved", "supported", "accomplished"
+  ]);
+
   async function renderMonthlyInsight(data, userId) {
 const monthlyInsight = data.monthlyInsight || data.summary?.monthlyInsight || {};
-console.log("[BUG-0025] resolved monthlyInsight:", monthlyInsight);    const insightEmotion = labelText(monthlyInsight.emotion);
+const insightEmotion = labelText(monthlyInsight.emotion); // already trim+lowercase via labelText()
+
+    if (insightEmotion && POSITIVE_EMOTIONS.has(insightEmotion)) {
+      const heatmapPattern = findTopHeatmapPattern(data.charts.heatmap, insightEmotion);
+      const dayLabel = fullDayName(heatmapPattern && heatmapPattern.day);
+      const patternSuffix = dayLabel ? ` on ${dayLabel}` : "";
+      const emotionLabel = sentenceStart(insightEmotion);
+
+      els.monthlyInsightCollapsed.textContent = `Monthly insight · ${emotionLabel} this month`;
+      els.monthlyInsightPattern.textContent =
+        `${emotionLabel} showed up most often this month${patternSuffix}.`;
+
+      if (els.monthlyInsightSupportHeading) els.monthlyInsightSupportHeading.hidden = false;
+
+      els.monthlyInsightAction.textContent = dayLabel
+        ? `Something about ${dayLabel} may be giving you more space, progress, or possibility.`
+        : `This pattern may be giving you more space, progress, or possibility.`;
+
+      if (els.monthlyInsightTipsLabel) els.monthlyInsightTipsLabel.textContent = "Build on this";
+      renderTips([
+        "Notice what felt different on those days.",
+        "Identify one person, activity, or thought that supported this feeling.",
+        "Carry one part of that pattern into another day this week."
+      ]);
+
+      els.monthlyInsightAffirmationLabel.hidden = false;
+      els.monthlyInsightAffirmationLabel.textContent = "Use this affirmation:";
+      els.monthlyInsightReset.textContent = `"I can create more moments that help me feel ${insightEmotion}."`;
+
+      els.monthlyInsightPracticeBtn.hidden = true;
+
+      setMonthlyInsightCollapsed(isMonthlyInsightCollapsed());
+      return;
+    }
+
+    if (els.monthlyInsightSupportHeading) els.monthlyInsightSupportHeading.hidden = true;
+    if (els.monthlyInsightTipsLabel) els.monthlyInsightTipsLabel.textContent = "Try this:";
+    els.monthlyInsightPracticeBtn.hidden = false;
+
     const driverLabel = labelText(monthlyInsight.driver);
     const pressureLabel = labelText(monthlyInsight.pressure);
     let insightAffirmation = monthlyInsight.affirmation;
@@ -491,7 +529,8 @@ console.log("[BUG-0025] resolved monthlyInsight:", monthlyInsight);    const ins
         els.monthlyInsightReset.textContent = "No saved reset found for this pattern yet.";
       }
 
-      setPracticeRoute(insightEmotion, affirmationId);
+      const insightReason = [driverLabel, pressureLabel].filter(Boolean).join(" and ");
+      setPracticeRoute(insightEmotion, affirmationId, affirmationText, insightReason);
       setMonthlyInsightCollapsed(isMonthlyInsightCollapsed());
       return;
     }
@@ -785,7 +824,6 @@ async function loadDashboard() {
       return;
     }
 
-    console.log("[emotion-dashboard] using userId:", userId);
 
     // 3) Call dashboard with explicit userId query param
     const res = await window.apiFetch(
@@ -815,7 +853,6 @@ async function loadDashboard() {
     const data = normalizeDashboardData(parsed);
     window.__emotionDashboardData = data;
 
-    console.log("[emotion-dashboard] data", data);
 
     await renderMonthlyInsight(data, userId);
     renderKpis(data);

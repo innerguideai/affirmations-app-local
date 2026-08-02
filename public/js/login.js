@@ -3,7 +3,7 @@
 // - allowLogin=1 lets user attempt login after tapping "I already verified"
 // - 403 EMAIL_NOT_VERIFIED routes back to verify-required
 
-const API = "http://54.221.158.219:3000";
+const API = "https://api-b.innerguideai.com";
 
 // Helper: fetch /api/me with cookie (kept from your older stable file)
 async function fetchMeOnce() {
@@ -51,7 +51,6 @@ function routeToVerifyRequiredIfPending() {
   try {
     const params = new URLSearchParams(location.search);
     if (params.get("allowLogin") === "1") {
-      console.log("[login] allowLogin=1 -> skipping verify gate once");
       return false;
     }
   } catch {}
@@ -70,14 +69,11 @@ function routeToVerifyRequiredIfPending() {
     ? `/verify-required.html?email=${encodeURIComponent(email)}`
     : `/verify-required.html`;
 
-  console.log("[login] pendingVerify=1 -> routing to:", next);
   window.location.replace(next);
   return true;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("login.js loaded v2026-01-19-verify-gate");
-
   const form = document.getElementById("loginForm");
   const emailEl = document.getElementById("email");
   const passEl = document.getElementById("password");
@@ -183,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (qpEmail && successBanner) {
-        console.log("🔔 Showing signup success banner for:", qpEmail);
         successBanner.style.display = "block";
 
         // Clean URL
@@ -251,17 +246,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      console.log("[login] POST /api/login success:", data);
         // ✅ Save token for iOS (cookie may not persist in WKWebView)
         try {
           if (data?.token) {
             localStorage.setItem("authToken", data.token);
-            console.log("[login] saved authToken len:", data.token.length);
           } else {
-            console.log("[login] no token returned");
+            console.warn("[login] no token returned");
           }
         } catch (e) {
-          console.log("[login] token storage failed:", e);
+          console.warn("[login] token storage failed:", e);
         }
 
         // ✅ If login succeeds → clear verify gate
@@ -315,9 +308,8 @@ document.addEventListener("DOMContentLoaded", () => {
               if (LN && typeof LN.cancel === "function") LN.cancel({ notifications: [{ id: 3001 }] });
             } catch (_) {}
 
-          console.log("[login] cached user keys:", Object.keys(user));
         } catch (e) {
-          console.log("[login] cache user failed:", e);
+          console.warn("[login] cache user failed:", e);
         }
 
 

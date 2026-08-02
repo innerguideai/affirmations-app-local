@@ -72,7 +72,7 @@
 
 .welcome-date {
     text-align: left;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   color: rgba(0,0,0,0.45);
   margin-bottom: 10px;
 }
@@ -248,11 +248,11 @@ body.profile-page.ig-theme-spring .profile-main .welcome-block {
   margin-bottom: 0.4rem;
 }
 .foot-label {
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 .foot-value {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: rgba(0,0,0,0.5);
 }
 .ig-btn {
@@ -601,6 +601,13 @@ body.profile-page .profile-emotion-grid .emotion-row .emotion-chip:nth-child(3n)
   align-items: center;
   gap: 8px;
   margin-bottom: 6px;
+}
+
+/* F-0309: shift greeting + hamburger down ~0.25in below safe area.
+   Scoped to this dedicated class (only present in profile.html) so
+   account.html/support.html, which share .profile-header, are unaffected. */
+.profile-header-shift {
+  margin-top: 24px;
 }
 
 .profile-header-left {

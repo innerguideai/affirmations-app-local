@@ -2,8 +2,13 @@
 (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __esm = (fn, res) => function __init() {
-    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  var __esm = (fn, res, err) => function __init() {
+    if (err) throw err[0];
+    try {
+      return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+    } catch (e) {
+      throw err = [e], e;
+    }
   };
   var __export = (target, all) => {
     for (var name3 in all)
@@ -2348,7 +2353,7 @@
         }
       };
       name$q = "@firebase/app";
-      version$1 = "0.14.12";
+      version$1 = "0.15.1";
       logger = new Logger("@firebase/app");
       name$p = "@firebase/app-compat";
       name$o = "@firebase/analytics-compat";
@@ -2376,7 +2381,7 @@
       name$2 = "@firebase/ai";
       name$1 = "@firebase/firestore-compat";
       name = "firebase";
-      version = "12.13.0";
+      version = "12.16.0";
       DEFAULT_ENTRY_NAME2 = "[DEFAULT]";
       PLATFORM_LOG_STRING = {
         [name$q]: "fire-core",
@@ -2670,7 +2675,7 @@
     }
   });
 
-  // node_modules/@firebase/auth/dist/esm/index-907e9a1a.js
+  // node_modules/@firebase/auth/dist/esm/index-d90d2ee5.js
   function _prodErrorMap() {
     return {
       [
@@ -2811,8 +2816,8 @@
         }
       }
       const query = querystring({
-        key: auth.config.apiKey,
-        ...params
+        ...params,
+        key: auth.config.apiKey
       }).slice(1);
       const headers = await auth._getAdditionalHeaders();
       headers[
@@ -2831,7 +2836,7 @@
         ...body
       };
       if (!isCloudflareWorker()) {
-        fetchArgs.referrerPolicy = "no-referrer";
+        fetchArgs.referrerPolicy = "strict-origin-when-cross-origin";
       }
       if (auth.emulatorConfig && isCloudWorkstation(auth.emulatorConfig.host)) {
         fetchArgs.credentials = "include";
@@ -4983,9 +4988,9 @@
   function getScriptParentElement() {
     return document.getElementsByTagName("head")?.[0] ?? document;
   }
-  var prodErrorMap, _DEFAULT_AUTH_ERROR_FACTORY, logClient, Delay, FetchProvider, SERVER_ERROR_MAP, CookieAuthProxiedEndpoints, DEFAULT_API_TIMEOUT_MS, NetworkTimeout, RecaptchaConfig, ProactiveRefresh, UserMetadata, StsTokenManager, UserImpl, instanceCache, InMemoryPersistence, inMemoryPersistence, PersistenceUserManager, AuthMiddlewareQueue, MINIMUM_MIN_PASSWORD_LENGTH, PasswordPolicyImpl, AuthImpl, Subscription, externalJSProvider, _SOLVE_TIME_MS, _EXPIRATION_TIME_MS, _WIDGET_ID_START, MockReCaptcha, MockGreCAPTCHATopLevel, MockGreCAPTCHA, MockWidget, RECAPTCHA_ENTERPRISE_VERIFIER_TYPE, FAKE_TOKEN, RecaptchaEnterpriseVerifier, AuthCredential, EmailAuthCredential, IDP_REQUEST_URI$1, OAuthCredential, VERIFY_PHONE_NUMBER_FOR_EXISTING_ERROR_MAP_, PhoneAuthCredential, ActionCodeURL, EmailAuthProvider, FederatedAuthProvider, BaseOAuthProvider, OAuthProvider, FacebookAuthProvider, GoogleAuthProvider, GithubAuthProvider, TwitterAuthProvider, UserCredentialImpl, MultiFactorError, GenericAdditionalUserInfo, FederatedAdditionalUserInfoWithUsername, FacebookAdditionalUserInfo, GithubAdditionalUserInfo, GoogleAdditionalUserInfo, TwitterAdditionalUserInfo, STORAGE_AVAILABLE_KEY, BrowserPersistenceClass, _POLLING_INTERVAL_MS$1, IE10_LOCAL_STORAGE_SYNC_DELAY, BrowserLocalPersistence, browserLocalPersistence, POLLING_INTERVAL_MS, CookiePersistence, BrowserSessionPersistence, browserSessionPersistence, Receiver, Sender, DB_NAME2, DB_VERSION2, DB_OBJECTSTORE_NAME, DB_DATA_KEYPATH, DBPromise, _POLLING_INTERVAL_MS, _TRANSACTION_RETRY_COUNT, IndexedDBLocalPersistence, indexedDBLocalPersistence, _JSLOAD_CALLBACK, NETWORK_TIMEOUT_DELAY, ReCaptchaLoaderImpl, MockReCaptchaLoaderImpl, RECAPTCHA_VERIFIER_TYPE, DEFAULT_PARAMS, RecaptchaVerifier, ConfirmationResultImpl, PhoneAuthProvider, IdpCredential, AbstractPopupRedirectOperation, _POLL_WINDOW_CLOSE_TIMEOUT, PopupOperation, PENDING_REDIRECT_KEY, redirectOutcomeMap, RedirectAction, EVENT_DUPLICATION_CACHE_DURATION_MS, AuthEventManager, IP_ADDRESS_REGEX, HTTP_REGEX, NETWORK_TIMEOUT, cachedGApiLoader, PING_TIMEOUT, IFRAME_PATH, EMULATED_IFRAME_PATH, IFRAME_ATTRIBUTES, EID_FROM_APIHOST, BASE_POPUP_OPTIONS, DEFAULT_WIDTH, DEFAULT_HEIGHT, TARGET_BLANK, FIREFOX_EMPTY_URL, AuthPopup, WIDGET_PATH, EMULATOR_WIDGET_PATH, FIREBASE_APP_CHECK_FRAGMENT_ID, WEB_STORAGE_SUPPORT_KEY, BrowserPopupRedirectResolver, browserPopupRedirectResolver, MultiFactorAssertionImpl, PhoneMultiFactorAssertionImpl, PhoneMultiFactorGenerator, TotpMultiFactorGenerator, TotpMultiFactorAssertionImpl, TotpSecret, name2, version2, AuthInterop, DEFAULT_ID_TOKEN_MAX_AGE, authIdTokenMaxAge, lastPostedIdToken, mintCookieFactory;
-  var init_index_907e9a1a = __esm({
-    "node_modules/@firebase/auth/dist/esm/index-907e9a1a.js"() {
+  var prodErrorMap, _DEFAULT_AUTH_ERROR_FACTORY, logClient, Delay, FetchProvider, SERVER_ERROR_MAP, CookieAuthProxiedEndpoints, DEFAULT_API_TIMEOUT_MS, NetworkTimeout, RecaptchaConfig, ProactiveRefresh, UserMetadata, StsTokenManager, UserImpl, instanceCache, InMemoryPersistence, inMemoryPersistence, PersistenceUserManager, AuthMiddlewareQueue, MINIMUM_MIN_PASSWORD_LENGTH, PasswordPolicyImpl, AuthImpl, Subscription, externalJSProvider, _SOLVE_TIME_MS, _EXPIRATION_TIME_MS, _WIDGET_ID_START, MockReCaptcha, MockGreCAPTCHATopLevel, MockGreCAPTCHA, MockWidget, RECAPTCHA_ENTERPRISE_VERIFIER_TYPE, FAKE_TOKEN, RECAPTCHA_ENTERPRISE_ONLOAD_CALLBACK_NAME, RecaptchaEnterpriseVerifier, AuthCredential, EmailAuthCredential, IDP_REQUEST_URI$1, OAuthCredential, VERIFY_PHONE_NUMBER_FOR_EXISTING_ERROR_MAP_, PhoneAuthCredential, ActionCodeURL, EmailAuthProvider, FederatedAuthProvider, BaseOAuthProvider, OAuthProvider, FacebookAuthProvider, GoogleAuthProvider, GithubAuthProvider, TwitterAuthProvider, UserCredentialImpl, MultiFactorError, GenericAdditionalUserInfo, FederatedAdditionalUserInfoWithUsername, FacebookAdditionalUserInfo, GithubAdditionalUserInfo, GoogleAdditionalUserInfo, TwitterAdditionalUserInfo, STORAGE_AVAILABLE_KEY, BrowserPersistenceClass, _POLLING_INTERVAL_MS$1, IE10_LOCAL_STORAGE_SYNC_DELAY, BrowserLocalPersistence, browserLocalPersistence, POLLING_INTERVAL_MS, CookiePersistence, BrowserSessionPersistence, browserSessionPersistence, Receiver, Sender, DB_NAME2, DB_VERSION2, DB_OBJECTSTORE_NAME, DB_DATA_KEYPATH, DBPromise, _POLLING_INTERVAL_MS, _TRANSACTION_RETRY_COUNT, IndexedDBLocalPersistence, indexedDBLocalPersistence, _JSLOAD_CALLBACK, NETWORK_TIMEOUT_DELAY, ReCaptchaLoaderImpl, MockReCaptchaLoaderImpl, RECAPTCHA_VERIFIER_TYPE, DEFAULT_PARAMS, RecaptchaVerifier, ConfirmationResultImpl, PhoneAuthProvider, IdpCredential, AbstractPopupRedirectOperation, _POLL_WINDOW_CLOSE_TIMEOUT, PopupOperation, PENDING_REDIRECT_KEY, redirectOutcomeMap, RedirectAction, EVENT_DUPLICATION_CACHE_DURATION_MS, AuthEventManager, IP_ADDRESS_REGEX, HTTP_REGEX, NETWORK_TIMEOUT, cachedGApiLoader, PING_TIMEOUT, IFRAME_PATH, EMULATED_IFRAME_PATH, IFRAME_ATTRIBUTES, EID_FROM_APIHOST, BASE_POPUP_OPTIONS, DEFAULT_WIDTH, DEFAULT_HEIGHT, TARGET_BLANK, FIREFOX_EMPTY_URL, AuthPopup, WIDGET_PATH, EMULATOR_WIDGET_PATH, FIREBASE_APP_CHECK_FRAGMENT_ID, WEB_STORAGE_SUPPORT_KEY, BrowserPopupRedirectResolver, browserPopupRedirectResolver, MultiFactorAssertionImpl, PhoneMultiFactorAssertionImpl, PhoneMultiFactorGenerator, TotpMultiFactorGenerator, TotpMultiFactorAssertionImpl, TotpSecret, name2, version2, AuthInterop, DEFAULT_ID_TOKEN_MAX_AGE, authIdTokenMaxAge, lastPostedIdToken, mintCookieFactory;
+  var init_index_d90d2ee5 = __esm({
+    "node_modules/@firebase/auth/dist/esm/index-d90d2ee5.js"() {
       init_index_esm4();
       init_index_esm();
       init_index_esm3();
@@ -6784,7 +6789,8 @@
       };
       RECAPTCHA_ENTERPRISE_VERIFIER_TYPE = "recaptcha-enterprise";
       FAKE_TOKEN = "NO_RECAPTCHA";
-      RecaptchaEnterpriseVerifier = class {
+      RECAPTCHA_ENTERPRISE_ONLOAD_CALLBACK_NAME = "onFirebaseAuthREInstanceReady";
+      RecaptchaEnterpriseVerifier = class _RecaptchaEnterpriseVerifier {
         /**
          *
          * @param authExtern - The corresponding Firebase {@link Auth} instance.
@@ -6850,8 +6856,11 @@
             return mockRecaptcha.execute("siteKey", { action: "verify" });
           }
           return new Promise((resolve, reject) => {
-            retrieveSiteKey(this.auth).then((siteKey) => {
-              if (!forceRefresh && isEnterprise(window.grecaptcha)) {
+            retrieveSiteKey(this.auth).then(async (siteKey) => {
+              if (!forceRefresh && isEnterprise(window.grecaptcha) && // If download has already been initiated, do not trigger another
+              // download, await the promise here.
+              _RecaptchaEnterpriseVerifier.scriptInjectionDeferred) {
+                await _RecaptchaEnterpriseVerifier.scriptInjectionDeferred.promise;
                 retrieveRecaptchaToken(siteKey, resolve, reject);
               } else {
                 if (typeof window === "undefined") {
@@ -6860,9 +6869,13 @@
                 }
                 let url = _recaptchaEnterpriseScriptUrl();
                 if (url.length !== 0) {
-                  url += siteKey;
+                  url += siteKey + `&onload=${RECAPTCHA_ENTERPRISE_ONLOAD_CALLBACK_NAME}`;
                 }
-                _loadJS(url).then(() => {
+                _RecaptchaEnterpriseVerifier.scriptInjectionDeferred = new Deferred();
+                window[RECAPTCHA_ENTERPRISE_ONLOAD_CALLBACK_NAME] = () => {
+                  _RecaptchaEnterpriseVerifier.scriptInjectionDeferred?.resolve();
+                };
+                _loadJS(url).then(() => _RecaptchaEnterpriseVerifier.scriptInjectionDeferred?.promise).then(() => {
                   retrieveRecaptchaToken(siteKey, resolve, reject);
                 }).catch((error) => {
                   reject(error);
@@ -6874,6 +6887,7 @@
           });
         }
       };
+      RecaptchaEnterpriseVerifier.scriptInjectionDeferred = null;
       AuthCredential = class {
         /** @internal */
         constructor(providerId, signInMethod) {
@@ -8300,6 +8314,7 @@
       IndexedDBLocalPersistence = class {
         constructor() {
           this.type = "LOCAL";
+          this.dbPromise = null;
           this._shouldAllowMigration = true;
           this.listeners = {};
           this.localCache = {};
@@ -8314,11 +8329,14 @@
           });
         }
         async _openDb() {
-          if (this.db) {
-            return this.db;
+          if (this.dbPromise) {
+            return this.dbPromise;
           }
-          this.db = await _openDatabase();
-          return this.db;
+          this.dbPromise = _openDatabase();
+          this.dbPromise.catch(() => {
+            this.dbPromise = null;
+          });
+          return this.dbPromise;
         }
         async _withRetries(op) {
           let numAttempts = 0;
@@ -8330,9 +8348,10 @@
               if (numAttempts++ > _TRANSACTION_RETRY_COUNT) {
                 throw e;
               }
-              if (this.db) {
-                this.db.close();
-                this.db = void 0;
+              if (this.dbPromise) {
+                const db = await this.dbPromise;
+                db.close();
+                this.dbPromise = null;
               }
             }
           }
@@ -8420,9 +8439,10 @@
             if (!indexedDB) {
               return false;
             }
-            const db = await _openDatabase();
-            await _putObject(db, STORAGE_AVAILABLE_KEY, "1");
-            await _deleteObject(db, STORAGE_AVAILABLE_KEY);
+            await this._withRetries(async (db) => {
+              await _putObject(db, STORAGE_AVAILABLE_KEY, "1");
+              await _deleteObject(db, STORAGE_AVAILABLE_KEY);
+            });
             return true;
           } catch {
           }
@@ -9624,7 +9644,7 @@
         }
       };
       name2 = "@firebase/auth";
-      version2 = "1.13.1";
+      version2 = "1.13.3";
       AuthInterop = class {
         constructor(auth) {
           this.auth = auth;
@@ -9733,7 +9753,7 @@
   // node_modules/@firebase/auth/dist/esm/index.js
   var init_esm = __esm({
     "node_modules/@firebase/auth/dist/esm/index.js"() {
-      init_index_907e9a1a();
+      init_index_d90d2ee5();
       init_index_esm4();
       init_index_esm();
       init_index_esm3();
@@ -10380,7 +10400,6 @@
   window.IG = window.IG || {};
   window.IG.LocalNotifications = LocalNotifications;
   window.IG.FirebaseAuthentication = FirebaseAuthentication;
-  console.log("[cap-bundle] FirebaseAuthentication loaded:", !!window.IG.FirebaseAuthentication);
   function consumePendingRouteOnce() {
     try {
       const route = localStorage.getItem("ig_pending_route");
@@ -10392,7 +10411,6 @@
         return;
       }
       const current = window.location.href;
-      console.log("[IG][ROUTE] consuming pending route ->", route);
       if (current !== route) window.location.replace(route);
     } catch (e) {
       console.log("[IG][ROUTE] consumePendingRouteOnce error:", e);
@@ -10402,22 +10420,18 @@
   (function installNotifyTapRouter() {
     try {
       if (!window.IG?.LocalNotifications) {
-        console.log("[IG][NOTIFY] tap router skipped: LocalNotifications missing");
         return;
       }
       window.IG.__notifyTapRouterInstalled = window.IG.__notifyTapRouterInstalled || false;
       if (window.IG.__notifyTapRouterInstalled) {
-        console.log("[IG][NOTIFY] tap router already installed, skipping");
         return;
       }
       window.IG.__notifyTapRouterInstalled = true;
-      console.log("[IG][NOTIFY] tap router installed");
       window.IG.LocalNotifications.addListener(
         "localNotificationActionPerformed",
         function(event) {
           try {
             const route = event?.notification?.extra?.ig_route || "/profile.html";
-            console.log("[IG][NOTIFY] tapped \u2192 route:", route);
             localStorage.setItem("ig_pending_route", route);
             localStorage.setItem("ig_pending_route_at", String(Date.now()));
             window.location.replace(route);
@@ -10439,20 +10453,17 @@
         console.log("[IG][DEEPLINK] App plugin not available");
         return;
       }
-      console.log("[IG][DEEPLINK] installing appUrlOpen listener");
       App.addListener("appUrlOpen", function(event) {
         if (window.__IG_DEEPLINK_HANDLED__) return;
         window.__IG_DEEPLINK_HANDLED__ = true;
         try {
           const url = event?.url;
           if (!url) return;
-          console.log("[IG][DEEPLINK] opened with url:", url);
           const parsed = new URL(url);
           if (parsed.pathname.includes("reset.html")) {
             const token = parsed.searchParams.get("token") || "";
             const email = parsed.searchParams.get("email") || "";
             const route = "/reset.html?token=" + encodeURIComponent(token) + "&email=" + encodeURIComponent(email);
-            console.log("[IG][DEEPLINK] routing to reset page:", route);
             window.location.href = route;
           }
         } catch (e) {
@@ -10653,7 +10664,7 @@
    * limitations under the License.
    *)
 
-@firebase/auth/dist/esm/index-907e9a1a.js:
+@firebase/auth/dist/esm/index-d90d2ee5.js:
   (**
    * @license
    * Copyright 2021 Google LLC

@@ -33,13 +33,13 @@
         localStorage.setItem("ig_theme", theme);
 
         // Apply to <html> as a harmless mirror (optional)
-        document.documentElement.classList.remove("ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom", "ig-theme-summer", "ig-theme-zen");
+        document.documentElement.classList.remove("ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom", "ig-theme-summer", "ig-theme-zen", "ig-theme-practical");
         document.documentElement.classList.add(theme);
 
         // Apply to <body> ASAP if available; otherwise wait
         function applyToBody() {
           if (!document.body) return;
-          document.body.classList.remove("ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom", "ig-theme-summer", "ig-theme-zen");
+          document.body.classList.remove("ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom", "ig-theme-summer", "ig-theme-zen", "ig-theme-practical");
           document.body.classList.add(theme);
         }
 
@@ -59,7 +59,7 @@
   <main class="profile-main">
     <section class="content-narrow">
       <!-- Header row: greeting+date left, menu right -->
-      <div class="profile-header">
+      <div class="profile-header profile-header-shift">
         <div class="profile-header-left">
           <div id="greetingLine" class="profile-header-greeting">Hello, Friend!</div>
           <div id="todayLine" class="welcome-date">—</div>
@@ -306,7 +306,13 @@
 
         <!-- Footer: Listen | stars | Next/NewAI -->
         <div class="affirm-footer">
-          <button id="readAloudBtn" class="affirm-listen-btn" type="button" aria-label="Listen">Listen</button>
+          <button id="readAloudBtn" class="affirm-listen-btn" type="button" aria-label="Listen to affirmation" title="Listen to affirmation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/>
+              <path d="M16.5 8.5a5 5 0 0 1 0 7"/>
+              <path d="M19 6a8.5 8.5 0 0 1 0 12"/>
+            </svg>
+          </button>
 
           <div id="starRating" class="hidden">
             <span class="star" onclick="rateAffirmation(1)">★</span>

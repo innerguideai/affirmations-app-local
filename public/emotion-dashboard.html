@@ -10,7 +10,7 @@
     (function () {
       try {
         var saved = (localStorage.getItem("ig_theme") || "ig-theme-default").trim();
-        var allowed = ["ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom"];
+        var allowed = ["ig-theme-default", "ig-theme-winter", "ig-theme-spring", "ig-theme-cblossom", "ig-theme-summer", "ig-theme-zen", "ig-theme-practical"];
         if (!allowed.includes(saved)) saved = "ig-theme-default";
         document.documentElement.classList.remove(
           "ig-theme-default",
@@ -18,7 +18,8 @@
           "ig-theme-spring",
           "ig-theme-cblossom",
           "ig-theme-summer",
-          "ig-theme-zen"
+          "ig-theme-zen",
+          "ig-theme-practical"
         );
         document.documentElement.classList.add(saved);
       } catch (e) {
@@ -99,11 +100,14 @@
               </p>
             </div>
           </div>
+          <p id="monthlyInsightSupportHeading" class="emotion-dashboard-insight-label" hidden>
+            What may be supporting it
+          </p>
           <p id="monthlyInsightAction" class="emotion-dashboard-insight-action">
             —
           </p>
           <div class="emotion-dashboard-insight-tips">
-            <p class="emotion-dashboard-insight-label">Try this:</p>
+            <p id="monthlyInsightTipsLabel" class="emotion-dashboard-insight-label">Try this:</p>
             <ul id="monthlyInsightTips" class="emotion-dashboard-insight-tip-list"></ul>
           </div>
 
@@ -213,5 +217,6 @@
 
   <!-- Page logic -->
   <script src="/js/emotion-dashboard.js?v=2026-06-03-BUG-0025-2"></script>
+  <script src="/js/capacitor.bundle.js"></script>
 </body>
 </html>

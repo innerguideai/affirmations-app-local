@@ -26,7 +26,8 @@
           "ig-theme-spring",
           "ig-theme-cblossom",
           "ig-theme-summer",
-          "ig-theme-zen"
+          "ig-theme-zen",
+          "ig-theme-practical"
         ];
 
         function isValid(v) {
@@ -155,7 +156,7 @@
 
             <div class="settings-item is-disabled" id="row-my-affirmations">
               <div class="settings-item__label">My affirmations</div>
-              <a class="settings-item__chevron" href="#" aria-label="Open"></a>
+              <a class="settings-item__chevron" href="/my-affirmations.html" aria-label="Open"></a>
             </div>
 
             <div class="settings-item" id="row-top3">
@@ -376,6 +377,19 @@
         row.style.pointerEvents = "none";
       }
 
+      function hideRow(id) {
+        const row = $(id);
+        if (!row) return;
+        row.style.display = "none";
+      }
+
+      function enableRow(id) {
+        const row = $(id);
+        if (!row) return;
+        row.classList.remove("is-disabled");
+        row.style.pointerEvents = "";
+      }
+
       function rowIsDisabled(row) {
         if (!row) return true;
         return row.classList.contains("is-disabled") || row.style.pointerEvents === "none";
@@ -436,10 +450,12 @@
 
       if (!isAccountUser) {
         disableRow("row-my-profile");
-        disableRow("row-my-affirmations");
+        hideRow("row-my-affirmations");
         disableRow("row-top3");
       } else {
         wireRowTap("row-my-profile", "/my-profile.html");
+        enableRow("row-my-affirmations");
+        wireRowTap("row-my-affirmations", "/my-affirmations.html");
         wireRowTap("row-top3", "/emotion-dashboard.html");
       }
 

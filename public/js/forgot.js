@@ -1,7 +1,7 @@
 // /public/js/forgot.js
 // Sends password reset email via NEW route: POST /api/password/forgot
 console.log("[forgot.js] loaded");
-const API = "http://54.221.158.219:3000";
+const API = "https://api-b.innerguideai.com";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("forgotForm");

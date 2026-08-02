@@ -4,20 +4,8 @@
 //
 "use strict";
 
-console.log("[profile.api] loaded v2026-01-07-recover");
-
-const API = "http://54.221.158.219:3000";
-const __API_DEBUG = true; // set false to silence logs
-
-// Debug (global): show Capacitor plugin keys at file load (once)
-try {
-  const cap = window.Capacitor;
-  const keys = cap && cap.Plugins ? Object.keys(cap.Plugins).sort() : [];
-  console.log("[deviceId] (load) Capacitor.Plugins keys:", keys);
-  console.log("[deviceId] (load) has registerPlugin:", !!(cap && typeof cap.registerPlugin === "function"));
-} catch (e) {
-  console.log("[deviceId] (load) plugin keys log failed:", e);
-}
+const API = "https://api-b.innerguideai.com";
+const __API_DEBUG = false;
 
 (function () {
   // ---- helpers ----
@@ -122,10 +110,6 @@ try {
 
       const deviceId = await apiFetch.__deviceIdPromise;
 
-      if (!apiFetch.__deviceIdLogged) {
-        apiFetch.__deviceIdLogged = true;
-        console.log("[deviceId] ready:", deviceId);
-      }
 
     // ------------------------------------------------------------
     // Existing apiFetch logic (plus header)
@@ -149,7 +133,6 @@ try {
             if (is24Hex) {
               u.searchParams.set("userId", cid);
               const rewritten = u.pathname + (u.search || "");
-              console.log("[apiFetch] rewrote guest userId:", path, "→", rewritten);
               path = rewritten;
             } else {
               console.warn("[apiFetch] guest userId present but currentUserId is not 24-hex. Keeping original:", uid);
@@ -173,7 +156,6 @@ try {
       } catch (_) {}
 
     const token = await readToken();
-      console.log("[apiFetch] token?", !!token, token ? token.slice(0, 12) + "..." : "");
 
     if (token) headers.set("Authorization", `Bearer ${token}`);
 
@@ -231,7 +213,6 @@ try {
   async function fetchAndCacheCurrentUser() {
     const res = await apiFetch("/api/me", { method: "GET" });
     const raw = ((await res.text()) || "").replace(/^\uFEFF/, "").trim();
-    if (__API_DEBUG) console.log("[fetchAndCacheCurrentUser] raw body:", raw || "<empty>");
 
     if (!res.ok) return null;
 

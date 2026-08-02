@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 
   <title>Daytime reset • AI Affirm</title>
 
@@ -10,32 +10,28 @@
       <link rel="stylesheet" href="/css/profile.css?v=2026-01-06-3" />
 </head>
   <!-- Default fallback on body so background never goes blank -->
-  <body class="profile-page">
+  <body class="profile-page support-page">
       <div class="ig-theme-bg" aria-hidden="true"></div>
 
    <main class="profile-main">
       <section class="content-narrow">
         <!-- Header row (menu + greeting) -->
-           <!-- Top right home (keeps your look) -->
+           <!-- Close button — matches streaks/sub-page X style -->
 
-        <div class="profile-header">
-          <button
-            type="button"
-            class="profile-menu-button"
-            aria-label="Home"
-            onclick="window.location.href='/profile.html'"
-            style="position: fixed; top: calc(env(safe-area-inset-top) + 14px); right: 14px; z-index: 50; text-decoration:none; background: transparent; border: 0; padding: 0;"
-          >
-            <span
-              style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background: rgba(255,255,255,.65); border: 1px solid rgba(0,0,0,.06); box-shadow: 0 10px 26px rgba(0,0,0,.10);"
-            >
-              <img
-                src="images/icons/homeicon.png"
-                alt="Home"
-                style="width:22px; height:22px; object-fit:contain;"
-              />
-            </span>
-          </button>
+        <div class="profile-header ig-support-header">
+          <a
+            href="/profile.html"
+            aria-label="Close to profile"
+            title="Close"
+            style="position: fixed; top: calc(env(safe-area-inset-top) + 14px); right: 14px; z-index: 50;
+                   width: 44px; height: 44px; border-radius: 14px;
+                   background: rgba(255,255,255,.65); border: 1px solid rgba(0,0,0,.06);
+                   box-shadow: 0 10px 26px rgba(0,0,0,.10);
+                   display: inline-flex; align-items: center; justify-content: center;
+                   color: rgba(45,32,21,.9); text-decoration: none;
+                   font-size: 22px; font-weight: 700;
+                   -webkit-tap-highlight-color: transparent;"
+          >×</a>
         </div>
 
 

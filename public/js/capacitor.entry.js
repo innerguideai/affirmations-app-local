@@ -19,7 +19,6 @@ window.IG = window.IG || {};
 window.IG.LocalNotifications    = LocalNotifications;
 window.IG.FirebaseAuthentication = FirebaseAuthentication;
 
-console.log("[cap-bundle] FirebaseAuthentication loaded:", !!window.IG.FirebaseAuthentication);
 
 // ── Cold-start / resume routing ─────────────────────────────────────────────
 // Consume a pending route stored before the app was suspended, then navigate.
@@ -40,7 +39,6 @@ function consumePendingRouteOnce() {
     }
 
     const current = window.location.href;
-    console.log("[IG][ROUTE] consuming pending route ->", route);
     if (current !== route) window.location.replace(route);
   } catch (e) {
     console.log("[IG][ROUTE] consumePendingRouteOnce error:", e);
@@ -54,25 +52,21 @@ consumePendingRouteOnce();
 (function installNotifyTapRouter() {
   try {
     if (!window.IG?.LocalNotifications) {
-      console.log("[IG][NOTIFY] tap router skipped: LocalNotifications missing");
       return;
     }
 
     window.IG.__notifyTapRouterInstalled = window.IG.__notifyTapRouterInstalled || false;
     if (window.IG.__notifyTapRouterInstalled) {
-      console.log("[IG][NOTIFY] tap router already installed, skipping");
       return;
     }
     window.IG.__notifyTapRouterInstalled = true;
 
-    console.log("[IG][NOTIFY] tap router installed");
 
     window.IG.LocalNotifications.addListener(
       "localNotificationActionPerformed",
       function (event) {
         try {
           const route = event?.notification?.extra?.ig_route || "/profile.html";
-          console.log("[IG][NOTIFY] tapped → route:", route);
 
           localStorage.setItem("ig_pending_route",    route);
           localStorage.setItem("ig_pending_route_at", String(Date.now()));
@@ -103,7 +97,6 @@ consumePendingRouteOnce();
       return;
     }
 
-    console.log("[IG][DEEPLINK] installing appUrlOpen listener");
 
     App.addListener("appUrlOpen", function (event) {
       if (window.__IG_DEEPLINK_HANDLED__) return;
@@ -112,7 +105,6 @@ consumePendingRouteOnce();
       try {
         const url = event?.url;
         if (!url) return;
-        console.log("[IG][DEEPLINK] opened with url:", url);
 
         const parsed = new URL(url);
 
@@ -122,7 +114,6 @@ consumePendingRouteOnce();
           const email = parsed.searchParams.get("email") || "";
           const route = "/reset.html?token=" + encodeURIComponent(token) +
                         "&email="            + encodeURIComponent(email);
-          console.log("[IG][DEEPLINK] routing to reset page:", route);
           window.location.href = route;
         }
 

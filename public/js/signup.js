@@ -1,13 +1,11 @@
 // /public/js/signup.js
 // Version: v2026-03-31-1
-const API = "http://54.221.158.219:3000";
+const API = "https://api-b.innerguideai.com";
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("signup.js loaded v2026-03-31-1");
 
   // Frame-buster: if signup.html is inside success.html (or any iframe), escape to top
   if (window.top && window.top !== window) {
-    console.log("[signup] inside iframe -> busting to top with current URL");
     window.top.location.replace(window.location.href);
     return;
   }
@@ -21,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
       status.textContent = msg;
       status.style.color = color;
     } else {
-      console.log("[signup]", msg);
     }
   };
 
@@ -76,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
     dobEl.addEventListener("focus", () => {
       dobValueOnFocus = dobEl.value || "";
       dobHadExplicitInteraction = false;
-      console.log("[signup][dob] focus value =", JSON.stringify(dobEl.value));
     });
 
     dobEl.addEventListener("pointerdown", () => {
@@ -94,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     dobEl.addEventListener("change", () => {
-      console.log("[signup][dob] change value =", JSON.stringify(dobEl.value));
     });
 
     dobEl.addEventListener("blur", () => {
@@ -105,11 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
         !dobHadExplicitInteraction &&
         dobEl.value === today
       ) {
-        console.log("[signup][dob] clearing auto-filled today value");
         dobEl.value = "";
       }
 
-      console.log("[signup][dob] blur value =", JSON.stringify(dobEl.value));
     });
   }
 
@@ -129,12 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Email validation
     if (!isValidEmail(email)) {
-      console.log("[signup] blocked locally: invalid email", email);
       setStatus("Please enter a valid email address.");
       return;
     }
 
-    console.log("[signup] passed local email validation", email);
 
     // Required fields
     if (!firstName || !lastName || !email || !password) {
@@ -165,8 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       setStatus("Creating your account...", "black");
-      console.log("[signup] payload dob =", JSON.stringify(dob));
-      console.log("[signup] calling backend /api/register", { email });
 
       const res = await fetch(`${API}/api/register`, {
         method: "POST",
@@ -192,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Success
-      console.log("Signup success for:", email);
 
       try {
         localStorage.setItem("signupEmail", email);

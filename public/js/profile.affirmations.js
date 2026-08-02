@@ -12,7 +12,6 @@
 
 "use strict";
 
-console.log("[affirmations] loaded");
 
 // -------------------------------
 // Shared state
@@ -276,7 +275,6 @@ function buildEmotionPayload(userId, extra = {}) {
     ...extra
   };
 
-  console.log("[affirmations] payload →", payload);
 
   return payload;
 }
@@ -350,7 +348,6 @@ function igGuestResetLibraryIfNeeded() {
       .forEach((k) => localStorage.removeItem(k));
 
     localStorage.setItem(IG_GUEST_RESET_MARKER_KEY, start);
-    console.log("[guestLib] reset complete for ig_guest_start:", start);
   } catch (e) {
     console.warn("[guestLib] reset failed:", e);
   }
@@ -406,10 +403,6 @@ function igSaveGuestAff(emotion, text) {
 
   igWriteGuestAffs(emotion, list);
 
-  console.log("[guestLib] saved", {
-    emotion: igNormalizeEmotionKey(emotion),
-    count: list.length,
-  });
 }
 
 function igPickNextGuestAff(emotion, excludeTexts) {
@@ -463,7 +456,6 @@ function igSaveAvoidPhraseFromAi(emotion, aiText) {
   const list = igReadAvoidPhrases(emotion);
 
   if (list.includes(phrase)) {
-    console.log("CLICK:AVOID_PHRASE_SAVE", { emotion: igNormalizeEmotionKey(emotion), action: "skip-duplicate" });
     return;
   }
 
@@ -474,11 +466,6 @@ function igSaveAvoidPhraseFromAi(emotion, aiText) {
 
   try { localStorage.setItem(key, JSON.stringify(objects)); } catch (_) { }
 
-  console.log("CLICK:AVOID_PHRASE_SAVE", {
-    emotion: igNormalizeEmotionKey(emotion),
-    savedCount: objects.length,
-    lastSavedPreview: phrase.length > 60 ? phrase.slice(0, 60) + "…" : phrase,
-  });
 }
 
 function igGetAvoidPhrasesForPrompt(emotion) {
@@ -486,10 +473,6 @@ function igGetAvoidPhrasesForPrompt(emotion) {
   const newestFirst = list.slice().reverse();
   const capped = newestFirst.slice(0, 10);
 
-  console.log("CLICK:AVOID_PHRASE_PROMPT", {
-    emotion: igNormalizeEmotionKey(emotion),
-    count: capped.length,
-  });
 
   return capped;
 }
@@ -540,7 +523,6 @@ function igGetGptDailySnapshot() {
 
 function igLogGptDaily(label) {
   const day = new Date().toISOString().slice(0, 10);
-  console.log("CLICK:GPT_DAILY", { label, day, ...igGetGptDailySnapshot() });
 }
 
 // -------------------------------
@@ -630,7 +612,6 @@ function igRecordAndCheckSupport(userId, feeling) {
 
   arr = arr.filter((ts) => typeof ts === "number" && ts >= cutoff);
   arr.push(now);
-  console.log("Emotion count for support: ", arr.length);
   try {
     localStorage.setItem(key, JSON.stringify(arr));
   } catch (_) {
@@ -718,19 +699,11 @@ function igShowSupportBanner(emotion, userId) {
         overlay.classList.add("hidden");
         overlay.setAttribute("aria-hidden", "true");
 
-        console.log("[support] overlay dismissed", {
-          emotion: cleanEmotion,
-          userId
-        });
       });
 
       closeBtn.dataset.boundSupportClose = "true";
     }
 
-    console.log("[support] overlay shown", {
-      emotion: cleanEmotion,
-      userId
-    });
   } catch (e) {
     console.warn("[support] overlay show failed:", e);
   }
@@ -750,10 +723,6 @@ async function igTrackEmotionForSupport(feeling) {
 
     // If user already closed this active cycle, do not show again
     if (igIsSupportDismissed(userId, result.emotion)) {
-      console.log("[support] suppressed by dismissal", {
-        emotion: result.emotion,
-        count: result.count
-      });
       return;
     }
 
@@ -803,12 +772,6 @@ async function updateButtonStateByCount() {
       nextBtn.classList.add("hidden");
       newAiBtn.classList.remove("hidden");
     }
-    console.log("[buttonState] guest result", {
-      emotion: currentFeeling,
-      remaining,
-      nextHidden: nextBtn.classList.contains("hidden"),
-      aiHidden: newAiBtn.classList.contains("hidden")
-    });
 
     return;
   }
@@ -828,12 +791,6 @@ async function updateButtonStateByCount() {
   const res = await apiFetch(`/api/affirmations/count?${params.toString()}`);
   const { count = 0 } = await res.json();
 
-  console.log("[buttonState] count response", {
-    count,
-    emotion: currentFeeling,
-    driver: window.contextDriver || "",
-    pressure: window.contextPressure || ""
-  });
 
   if (count <= 2) {
     nextBtn.classList.add("hidden");
@@ -843,14 +800,6 @@ async function updateButtonStateByCount() {
     newAiBtn.classList.add("hidden");
   }
 
-  console.log("[buttonState] classes after update", {
-    count,
-    emotion: currentFeeling,
-    driver: window.contextDriver || "",
-    pressure: window.contextPressure || "",
-    nextHidden: nextBtn.classList.contains("hidden"),
-    aiHidden: newAiBtn.classList.contains("hidden")
-  });
 }
 
 // -------------------------------
@@ -967,14 +916,6 @@ function igConsumeGptUseForUser(user, reason) {
 
   const remaining = Math.max(0, max - count);
 
-  console.log("[gptLimit] consume", {
-    reason: reason || "unknown",
-    day: today,
-    count,
-    remaining,
-    max,
-    key: c.key,
-  });
 
   return { count, remaining, day: today, max, key: c.key };
 }
@@ -983,7 +924,6 @@ function igShowGptLimitMessageForUser(user) {
   const gate = igGptGateForUser(user);
   const msg = `You’ve reached today’s limit for AI-generated affirmations (${gate.max}/day). Come back tomorrow.`;
 
-  console.log("[gptLimit] blocked", gate);
 
   igSetAffirmationText(msg);
   igShowAffirmationCard();
@@ -992,7 +932,6 @@ function igShowGptLimitMessageForUser(user) {
 // Guest auto-AI on first submit when local DB is empty (no extra button step)
 async function igGuestAutoGPTOnSubmit(feeling, user) {
   const gate = igGptGateForUser(user);
-  console.log("[gptLimit] gate (guest auto GPT submit)", gate);
 
   if (!gate.allowed) {
     igShowGptLimitMessageForUser(user);
@@ -1027,7 +966,6 @@ async function igGuestAutoGPTOnSubmit(feeling, user) {
 // Main: fetch affirmations (emotion submit)
 // -------------------------------
 async function fetchAffirmations() {
-  console.log("FETCH_AFFIRMATIONS_CALLED");
   igLogGptDaily("emotion-submit:fetchAffirmations");
 
   if (__fetchAffirmationsInFlight) return;
@@ -1137,7 +1075,6 @@ async function fetchAffirmations() {
       DOM?.newAiBtn?.classList.remove("hidden");
       return;
     }
-    console.log("[affirmations] about to call /api/affirmations/count");
     // -------------------------
     // Account mode: existing behavior
     // -------------------------
@@ -1145,13 +1082,10 @@ async function fetchAffirmations() {
     //      `/api/affirmations/count?emotion=${encodeURIComponent(feeling)}&userId=${encodeURIComponent(user._id)}`
     //    );
     const payload = buildEmotionPayload(user._id, {});
-    console.log("[affirmations] url for count:", `/api/affirmations/count?emotion=${encodeURIComponent(payload.emotion)}&userId=${encodeURIComponent(user._id)}&driver=${encodeURIComponent(payload.driver || "")}&pressure=${encodeURIComponent(payload.pressure || "")}`
-    );
     const countRes = await apiFetch(
       `/api/affirmations/count?emotion=${encodeURIComponent(payload.emotion)}&userId=${encodeURIComponent(user._id)}&driver=${encodeURIComponent(payload.driver || "")}&pressure=${encodeURIComponent(payload.pressure || "")}`
     );
     const { count = 0 } = await countRes.json();
-    console.log("[affirmations] Count is: ", count);
 
     const useGPT = count <= 2;
     const endpoint = useGPT ? "/api/affirmations/gpt" : "/api/affirmations";
@@ -1162,14 +1096,12 @@ async function fetchAffirmations() {
 
     if (endpoint === "/api/affirmations/gpt") {
       const gate = igGptGateForUser(user);
-      console.log("[gptLimit] gate (fetchAffirmations)", gate);
 
       if (!gate.allowed) {
         igShowGptLimitMessageForUser(user);
         return;
       }
     }
-    console.log("[affirmations] endpoint used", endpoint);
     const res = await apiFetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1180,23 +1112,14 @@ async function fetchAffirmations() {
         })
       ),
     });
-    console.log("[affirmations] apiFetch returned status =", res.status);
 
     const data = await res.json();
-    console.log("AFFIRMATION RESPONSE:", data);
     if (endpoint === "/api/affirmations/gpt" && data?.affirmation) {
       igConsumeGptUseForUser(user, "fetchAffirmations");
     }
     if (endpoint === "/api/affirmations") {
       hasSeenDbAffirmation = true;
     }
-    console.log("[ai-anim-debug] fetchAffirmations render decision", {
-      endpoint,
-      animateAi: endpoint === "/api/affirmations/gpt",
-      textPreview: data?.affirmation?.text?.slice?.(0, 80) || "",
-      count,
-      currentFeeling
-    });
     if (data?.affirmation) {
       currentAffirmation = data.affirmation;
       shownIds.push(currentAffirmation._id || "");
@@ -1209,24 +1132,6 @@ async function fetchAffirmations() {
         currentAffirmation.text || "No text.",
         { animateAi: endpoint === "/api/affirmations/gpt" }
       ); igShowAffirmationCard();
-      console.log("[profile:affirmation:rendered]", {
-        wrapperExists: !!document.getElementById("affirmationWrapper"),
-        boxExists: !!document.querySelector(".affirmation-box"),
-        textExists: !!document.querySelector(".ig-affirm-text"),
-        boxClassName: document.querySelector(".affirmation-box")?.className || null,
-        textClassName: document.querySelector(".ig-affirm-text")?.className || null,
-        wrapperHTML: document.getElementById("affirmationWrapper")?.innerHTML || null,
-        ts: new Date().toISOString()
-      });
-      console.log("[affirmations] after render before button update", {
-        from: endpoint,
-        currentFeeling,
-        driver: window.contextDriver || "",
-        pressure: window.contextPressure || "",
-        shownIds: [...shownIds],
-        nextHiddenBefore: DOM?.nextBtn?.classList.contains("hidden"),
-        aiHiddenBefore: DOM?.newAiBtn?.classList.contains("hidden")
-      });
       if (DOM?.submitEmotion) DOM.submitEmotion.classList.add("hidden");
 
       igShowStars();
@@ -1306,7 +1211,6 @@ async function getNextAffirmation() {
         })
       ),
     });
-    console.log("[affirmations] 404 received, hasSeenDbAffirmation =", hasSeenDbAffirmation);
     if (res.status === 404) {
       igSetAffirmationText("You’ve seen all saved affirmations for this feeling.");
       igHideStars();
@@ -1361,7 +1265,6 @@ async function fetchGPTAffirmation() {
     if (!user?._id) return;
 
     const gate = igGptGateForUser(user);
-    console.log("[gptLimit] gate (fetchGPTAffirmation)", gate);
 
     if (!gate.allowed) {
       igShowGptLimitMessageForUser(user);
@@ -1468,6 +1371,75 @@ async function fetchAllAffirmationsForUser(userId) {
   }
 }
 
+// -------------------------------
+// Read-aloud voice quality (native speechSynthesis, no new deps)
+// Picks the best available English voice with a safe fallback chain,
+// waits for iOS to finish loading voices, and uses a slightly slower
+// rate for a calmer, less robotic read. Falls back to browser default
+// voice/rate if nothing better is available — never breaks playback.
+// -------------------------------
+function igPickPreferredVoice() {
+  try {
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return null;
+
+    const englishVoices = voices.filter(v => /^en(-|_|$)/i.test(v.lang || ""));
+    const pool = englishVoices.length ? englishVoices : voices;
+
+    // 1) iOS downloadable high-quality voices (named "Enhanced"/"Premium")
+    const enhanced = pool.find(v => /enhanced|premium/i.test(v.name || ""));
+    if (enhanced) return enhanced;
+
+    // 2) Known warm, calm default English voices — safe fallback list,
+    //    order = preference. Any name not present on this device is skipped.
+    const preferredNames = ["Samantha", "Ava", "Allison", "Susan", "Karen", "Moira", "Daniel"];
+    for (const name of preferredNames) {
+      const match = pool.find(v => (v.name || "").includes(name));
+      if (match) return match;
+    }
+
+    // 3) Any en-US voice, then any English voice
+    const enUS = pool.find(v => /^en-us$/i.test(v.lang || ""));
+    if (enUS) return enUS;
+    if (englishVoices.length) return englishVoices[0];
+
+    return null; // let the browser use its own default — unchanged behavior
+  } catch (_) {
+    return null;
+  }
+}
+
+function igEnsureVoicesLoaded(callback) {
+  if (!window.speechSynthesis) { callback(); return; }
+  const existing = window.speechSynthesis.getVoices();
+  if (existing && existing.length) { callback(); return; }
+
+  let called = false;
+  const done = () => { if (called) return; called = true; callback(); };
+
+  window.speechSynthesis.addEventListener("voiceschanged", done, { once: true });
+  // iOS doesn't always fire voiceschanged reliably — don't block the user forever
+  setTimeout(done, 400);
+}
+
+function igSpeakAffirmation(text) {
+  if (!text || !window.speechSynthesis) return;
+
+  window.speechSynthesis.cancel(); // prevent overlapping/layered speech on repeated taps
+
+  igEnsureVoicesLoaded(() => {
+    const utter = new SpeechSynthesisUtterance(text);
+    const voice = igPickPreferredVoice();
+    if (voice) utter.voice = voice;
+
+    utter.rate = 0.93;  // slightly slower than default (1.0) — calmer, less robotic
+    utter.pitch = 1.0;  // default — deviating tends to sound worse on iOS compact voices
+    utter.volume = 1.0;
+
+    window.speechSynthesis.speak(utter);
+  });
+}
+
 // RLS-003: X close + Read aloud wire-up
 document.addEventListener("DOMContentLoaded", () => {
   // X close — hides the full context overlay
@@ -1488,8 +1460,7 @@ document.addEventListener("DOMContentLoaded", () => {
       readBtn.addEventListener("click", () => {
         const text = currentAffirmation?.text;
         if (!text) return;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+        igSpeakAffirmation(text);
       });
     }
   }

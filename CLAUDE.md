@@ -2,6 +2,16 @@
 
 ---
 
+## Current Status (verified 2026-07-11 — see ops/CLAUDE.md for company-level context)
+- Active branch: `develop` (uncommitted changes present as of last check — review `git status` before starting work)
+- Release state: **RLS-003 is in TestFlight Stage B** (PROD API), not pre-TestFlight. DEV UAT (Stage A) passed 50/0/0 on 2026-06-11.
+- Known release blocker (from `docs/qa/release-checklist-rls-003.md`): `scripts/switch-api-env.sh` doesn't cover `public/js/social-auth.js` — fix before next PROD endpoint switch.
+- A new sibling service, **`innerguide-auth`** (shared Google/Apple sign-in + cross-app identity, port 3002 in DEV), now exists at `~/innerguide-auth` and is referenced by this app's auth flow. See its `docs/AUTH_DESIGN.md`. Status per that doc: Phase 0 design approved, Phase 1 (Firebase Google Sign-In) build in progress, behind `ENABLE_FIREBASE_GOOGLE_LOGIN` flag (off by default).
+- Bundle ID check: this file's Android section uses `com.innerguideai.app`; the RLS-003 release checklist references `com.innerguide.aiaffirm` for Appium testing. Confirm which is correct before archiving a release build.
+- The old combined `~/truemind` repo (superseded by `truemind-local` + `truemind-server`) still has an active branch (`feature/firebase-google-signin`) with uncommitted changes — it has not been archived per the CLEANUP TODO. Do not delete until Ritu confirms the work there is captured elsewhere.
+
+---
+
 > **STOP: Read Before Acting.**
 > This repo has fragile frontend / native / backend release state.
 > Do not assume. Do not broadly clean up. Do not merge or reset without approval.

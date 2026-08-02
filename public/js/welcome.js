@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const token = localStorage.getItem("authToken") || "";
       if (token) {
-        console.log("[onboarding] authToken present -> skipping onboarding");
         return;
       }
     } catch (_) {}

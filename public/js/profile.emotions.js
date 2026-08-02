@@ -7,7 +7,6 @@
 /* ============================================================
    DEBUG MARKER
    ============================================================ */
-console.log("[topEmotions] carousel file loaded (no global loadTopEmotions)");
 
 /* ============================================================
    Guest check + UI hide helper (SAFE: no top-level return)
@@ -132,7 +131,6 @@ function initEmotionHandlers() {
       // Reset context when a new emotion is selected
       window.contextDriver = null;
       window.contextPressure = null;
-      console.log("Context reset for new emotion");
 
       const emotion = chip.dataset && chip.dataset.emotion ? chip.dataset.emotion : "";
       if (!emotion) return;
@@ -155,12 +153,6 @@ function initEmotionHandlers() {
 
       // TEST: fetch first context question
       getContextQuestion(emotion, 1).then(data => {
-        console.log("Context Question:", data);
-        console.log("[emotion] about to call showContextQuestion", {
-          emotion,
-          hasQuestion: !!data?.question,
-          optionCount: Array.isArray(data?.options) ? data.options.length : "n/a"
-        });
         if (typeof showContextQuestion === "function") {
           showContextQuestion(emotion, data, 1);
         }
@@ -182,15 +174,12 @@ function initEmotionHandlers() {
   // --- submit typed emotion (legacy inline path, kept for safety) ---
   if (DOM.submitEmotion) {
     DOM.submitEmotion.addEventListener("click", () => {
-      console.log("Submit button clicked");
       const typed = (DOM.otherEmotionInput ? DOM.otherEmotionInput.value : "").trim();
       if (!typed) return;
 
-      console.log("Emotion selected:", typed);
 
       window.contextDriver = null;
       window.contextPressure = null;
-      console.log("Context reset for new emotion");
 
       hideOtherUI();
 
@@ -198,7 +187,6 @@ function initEmotionHandlers() {
       if (DOM.feelingInput) DOM.feelingInput.value = typed;
 
       getContextQuestion(typed, 1).then((data) => {
-        console.log("Context Question (Other):", data);
         if (typeof showContextQuestion === "function") {
           showContextQuestion(typed, data, 1);
         }
@@ -218,14 +206,12 @@ function initEmotionHandlers() {
 
     window.contextDriver   = null;
     window.contextPressure = null;
-    console.log("[picker] emotion selected:", trimmed);
 
     hideOtherUI();
     if (DOM.affirmationCard) DOM.affirmationCard.style.display = "";
     if (DOM.feelingInput) DOM.feelingInput.value = trimmed;
 
     getContextQuestion(trimmed, 1).then((data) => {
-      console.log("[picker] context question:", data);
       if (typeof showContextQuestion === "function") {
         showContextQuestion(trimmed, data, 1);
       }
@@ -300,7 +286,6 @@ function updateCarouselIndicators() {
    NEW NAME: loadTopEmotionsCarousel (no conflict) – REAL DATA
    ============================================================ */
 async function loadTopEmotionsCarousel() {
-  console.log("[topEmotions] carousel: entered loadTopEmotionsCarousel()");
 
   // Guest: hide + skip cleanly
   if (igIsGuestMode()) {
@@ -313,12 +298,6 @@ async function loadTopEmotionsCarousel() {
   const carousel = document.getElementById("carousel");
   const indicators = document.getElementById("carouselIndicators");
 
-  console.log("[topEmotions] carousel: DOM nodes:", {
-    container: !!container,
-    label: !!label,
-    carousel: !!carousel,
-    indicators: !!indicators
-  });
 
   if (!container || !carousel || !indicators) {
     console.log("[topEmotions] carousel: missing DOM nodes, abort.");
@@ -340,11 +319,9 @@ async function loadTopEmotionsCarousel() {
 
   const user = await getCurrentUser();
   if (!user || !user._id) {
-    console.log("[topEmotions] carousel: no user id, skipping");
     return;
   }
 
-  console.log("[topEmotions] carousel: fetching /api/emotions/top for user", user._id);
 
   const res = await apiFetch(`/api/emotions/top?userId=${encodeURIComponent(user._id)}`);
   if (!res.ok) {
@@ -353,7 +330,6 @@ async function loadTopEmotionsCarousel() {
   }
 
   const data = await res.json();
-  console.log("[topEmotions] carousel: raw API data:", data);
 
   let topEmotions = [];
 
@@ -365,10 +341,8 @@ async function loadTopEmotionsCarousel() {
     topEmotions = data;
   }
 
-  console.log("[topEmotions] carousel: normalized topEmotions:", topEmotions);
 
   if (!topEmotions.length) {
-    console.log("[topEmotions] carousel: no emotions from API, abort.");
     return;
   }
 
@@ -414,10 +388,6 @@ async function loadTopEmotionsCarousel() {
     carousel.appendChild(card);
   }
 
-  console.log(
-    "[topEmotions] carousel: cards in DOM after render:",
-    document.querySelectorAll(".carousel-card").length
-  );
 
   updateCarouselIndicators();
 }
@@ -445,7 +415,6 @@ window.__igTopEmotionsRefreshEveryMs = 5 * 60 * 1000;
 /* Safe refresh wrapper so errors never break profile. */
 async function igRefreshTopEmotionsCarouselSafely(reason) {
   try {
-    console.log("[topEmotions] auto-refresh:", reason);
 
     /* Guest stays hidden. */
     if (igIsGuestMode()) {
@@ -455,7 +424,6 @@ async function igRefreshTopEmotionsCarouselSafely(reason) {
 
     /* Only refresh if the page is visible (prevents background work). */
     if (document.visibilityState !== "visible") {
-      console.log("[topEmotions] auto-refresh: skipped (page hidden)");
       return;
     }
 
@@ -483,7 +451,6 @@ function igStartTopEmotionsAutoRefresh() {
     igRefreshTopEmotionsCarouselSafely("cadence");
   }, window.__igTopEmotionsRefreshEveryMs);
 
-  console.log("[topEmotions] auto-refresh: cadence started");
 }
 
 /* Stop cadence when hidden. */
@@ -493,7 +460,6 @@ function igStopTopEmotionsAutoRefresh() {
   clearInterval(window.__igTopEmotionsRefreshTimerId);
   window.__igTopEmotionsRefreshTimerId = null;
 
-  console.log("[topEmotions] auto-refresh: cadence stopped");
 }
 
 /* 1) Refresh when the app logs a new emotion (activity-based). */
@@ -528,12 +494,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Guest: hide + do nothing else
   if (igIsGuestMode()) {
-    console.log("[topEmotions] boot: guest mode → hide + skip");
     igHideTopEmotionsUI();
     return;
   }
 
-  console.log("[topEmotions] boot: DOMContentLoaded → waiting for user, then loading carousel");
 
   const MAX_ATTEMPTS = 12;      // 12 * 250ms = ~3s
   const RETRY_MS = 250;
@@ -552,9 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("user not ready");
       }
 
-      console.log("[topEmotions] boot: user ready:", user._id, "→ loading carousel");
       await window.loadTopEmotionsCarousel();
-      console.log("[topEmotions] boot: carousel loaded");
       return;
     } catch (err) {
       if (attempt >= MAX_ATTEMPTS) {
@@ -588,7 +550,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       initEmotionHandlers();
     } catch (e) {
-      console.log("[profile.emotions] initEmotionHandlers fallback failed:", e);
     }
   });
 })();

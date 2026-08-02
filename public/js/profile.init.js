@@ -107,7 +107,6 @@
     const cleaned = pruneCompletedDatesTo30Days(Array.from(set)).sort();
     writeCompletedDates(cleaned);
 
-    console.log("[streak] saved completed dates", cleaned);
   }
 
   function playStreakSound() {
@@ -115,10 +114,8 @@
       const audio = new Audio("/sounds/streak-notification.mp3");
       audio.volume = 0.6;
       audio.play().catch((err) => {
-        console.log("[streak] sound play skipped:", err);
       });
     } catch (err) {
-      console.log("[streak] sound init failed:", err);
     }
   }
   function renderStreak(val) {
@@ -128,7 +125,6 @@
 
   // public hook (called when emotion is logged)
   window.incrementDailyStreak = function () {
-    console.log("[streak] incrementDailyStreak called");
 
     const today = todayKey();
     const lastDateStr = readLastDate();
@@ -154,7 +150,6 @@
       streak = 1;
       shouldPlayStreakSound = true;
     } else if (lastDateStr === today) {
-      console.log("[streak] already counted today");
       saveCompletedDate(today);
 
       return;
@@ -391,7 +386,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (typeof setCachedUser === "function") setCachedUser(user);
 
-      console.log("[guest] normalized guest userId to 24-hex:", guestHex);
     }
   } catch (e) {
     console.warn("[guest] normalization failed (non-fatal):", e);
@@ -443,11 +437,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Recompute final guest flag using the requested detection rules
   const finalIsGuest = igIsGuestMode(user) || isGuest;
 
-  console.log("[profile] access granted", {
-    hasUser: !!user?._id,
-    guestValid,
-    isGuest: finalIsGuest,
-  });
 
   // Guest mode: hide ALL Top 3 UI (footer chips, label, carousel/section)
   if (finalIsGuest) {
@@ -574,7 +563,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Footer chips: guest mode now no-ops + hides UI; logged-in users unchanged
   loadTopEmotions(); // footer chips, carousel handled elsewhere
   igRenderWeeklyStreak();
-  console.log("[profile] init complete (modular)");
   try {
     if (localStorage.getItem('ig_tour_done') !== '1') {
       setTimeout(startIgTour, 800);

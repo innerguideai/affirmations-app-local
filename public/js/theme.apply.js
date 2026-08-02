@@ -15,6 +15,7 @@
     "ig-theme-cblossom": { label: "Cherry Blossom", bodyClass: "ig-theme-cblossom" },
     "ig-theme-summer": { label: "Summer Beach", bodyClass: "ig-theme-summer" },
     "ig-theme-zen": { label: "Zen Garden", bodyClass: "ig-theme-zen" },
+    "ig-theme-practical": { label: "Practical", bodyClass: "ig-theme-practical" },
   };
 
   function readThemeValue() {

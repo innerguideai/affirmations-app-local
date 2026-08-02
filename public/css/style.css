@@ -133,6 +133,15 @@ html.ig-theme-zen {
   --theme-border-soft: rgba(106, 102, 82, 0.24);
   --theme-glow: rgba(163, 147, 119, 0.34);
 }
+
+html.ig-theme-practical {
+  --theme-surface-dark: rgba(38, 42, 46, 0.87);
+  --theme-surface-light: rgba(238, 236, 230, 0.86);
+  --theme-accent: #7C93A3;
+  --theme-accent-strong: #3E5468;
+  --theme-border-soft: rgba(90, 110, 125, 0.24);
+  --theme-glow: rgba(124, 147, 163, 0.34);
+}
 body.profile-page.ig-theme-default {
   background: url("/images/default.jpg") center top / cover no-repeat;
 }
@@ -151,6 +160,15 @@ body.profile-page.ig-theme-summer {
 body.profile-page.ig-theme-zen {
   background-image: url("/images/zengarden.jpg");
 }
+body.profile-page.ig-theme-practical {
+  background-image:
+    linear-gradient(
+      rgba(15, 20, 25, 0.18),
+      rgba(15, 20, 25, 0.06) 35%,
+      rgba(15, 20, 25, 0.10)
+    ),
+    url("/images/practical.jpg");
+}
 html.ig-theme-default body.profile-page {
   background: url("/images/default.jpg") center top / cover no-repeat;
 }
@@ -168,6 +186,15 @@ html.ig-theme-summer body.profile-page {
 }
 html.ig-theme-zen body.profile-page {
   background-image: url("/images/zengarden.jpg");
+}
+html.ig-theme-practical body.profile-page {
+  background-image:
+    linear-gradient(
+      rgba(15, 20, 25, 0.18),
+      rgba(15, 20, 25, 0.06) 35%,
+      rgba(15, 20, 25, 0.10)
+    ),
+    url("/images/practical.jpg");
 }
 /* Profile page overrides global centered body layout */
 body.profile-page {
@@ -207,6 +234,15 @@ body.profile-page.ig-theme-summer .ig-theme-bg {
 }
 body.profile-page.ig-theme-zen .ig-theme-bg {
   background-image: url("/images/zengarden.jpg");
+}
+body.profile-page.ig-theme-practical .ig-theme-bg {
+  background-image:
+    linear-gradient(
+      rgba(15, 20, 25, 0.18),
+      rgba(15, 20, 25, 0.06) 35%,
+      rgba(15, 20, 25, 0.10)
+    ),
+    url("/images/practical.jpg");
 }
 /* =======================
    4) Layout helpers (onboarding)
@@ -1248,6 +1284,7 @@ Weekly streak circles
 .ig-day-label{
   margin-top:6px;
   font-weight:800;
+  font-size:14px;
 }
 
 

@@ -42,7 +42,7 @@ body.emotion-dashboard-page {
 
 .emotion-dashboard-kicker {
   margin: 0 0 4px 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -61,7 +61,7 @@ body.emotion-dashboard-page {
 
 .emotion-dashboard-subtitle {
   margin: 6px 0 0 0;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.35;
   color: var(--theme-surface-dark);
   opacity: 0.92;

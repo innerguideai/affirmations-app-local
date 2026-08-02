@@ -67,7 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
     chooseAccountBtn.addEventListener("click", (e) => {
       console.log("[PATHSELECT] account click fired");
 
-        /* Path selection = onboarding. Account means "create account" -> go to Signup */
+        /* Path selection = onboarding. Account -> account entry page
+           (offers Apple, Google, "Create an account", and "Already have
+           an account? Sign in") so auth options are visible before any
+           account-creation form. */
         e.preventDefault();
 
         /* Optional safety: clear anything that could hijack routing */
@@ -81,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "ig_is_guest"
         ].forEach((k) => localStorage.removeItem(k));
 
-        window.location.href = `/signup.html?v=${Date.now()}`;
+        window.location.href = `/account-entry.html?v=${Date.now()}`;
 
     });
   } else {

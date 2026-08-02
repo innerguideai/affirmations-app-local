@@ -3,7 +3,7 @@
 // /reset.html?email=<email>&token=<token> 
 // Validates token, resets password, then shows a success message (no redirect). 
 
-const API = "http://54.221.158.219:3000"; 
+const API = "https://api-b.innerguideai.com"; 
 
 document.addEventListener("DOMContentLoaded", () => { 
   const params = new URLSearchParams(location.search); 

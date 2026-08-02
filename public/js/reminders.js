@@ -1,6 +1,6 @@
 // public/js/reminders.js
 "use strict";
-const API_BASE = "http://54.221.158.219:3000";
+const API_BASE = "https://api-b.innerguideai.com";
 function getLN() {
   if (window.IG?.LocalNotifications) return window.IG.LocalNotifications;
   if (window.Capacitor?.Plugins?.LocalNotifications) {

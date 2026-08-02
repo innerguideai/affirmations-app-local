@@ -22,12 +22,10 @@ async function getContextQuestion(emotion, order = 1, parent = null) {
         url += `&parent_option_id=${parent}`;
     }
 
-    console.log("URL Called", url);
 
     const res = await apiFetch(url);
     const data = await res.json();
 
-    console.log("[context] RAW API response:", data);
     return data;
 }
 
@@ -51,20 +49,6 @@ function showContextQuestion(emotion, data, order) {
 
     const block1 = document.getElementById("contextQuestionBlock1");
     const block2 = document.getElementById("contextQuestionBlock2");
-    console.log("[context][show] called", {
-        emotion,
-        order,
-        hasOverlay: !!overlay,
-        hasEmotionEl: !!emotionEl,
-        hasQuestion1: !!question1,
-        hasOptions1: !!options1,
-        hasQuestion2: !!question2,
-        hasOptions2: !!options2,
-        hasBlock1: !!block1,
-        hasBlock2: !!block2,
-        question: data?.question,
-        optionCount: Array.isArray(data?.options) ? data.options.length : "n/a"
-    });
     if (!overlay || !question1 || !options1) return;
 
     emotionEl.textContent = emotion;
@@ -100,9 +84,6 @@ function showContextQuestion(emotion, data, order) {
 
     overlay.classList.remove("hidden");
 
-    console.log("[context][show] overlay opened", {
-        overlayClass: overlay.className
-    });
    if (order === 1 && block1) {
         block1.style.display = "";
 
@@ -123,13 +104,6 @@ function showContextQuestion(emotion, data, order) {
         }
     }
 
-    console.log("[context][show] block visibility", {
-        order,
-        block1Class: block1 ? block1.className : "missing",
-        block1Display: block1 ? block1.style.display : "missing",
-        block2Class: block2 ? block2.className : "missing",
-        block2Display: block2 ? block2.style.display : "missing"
-    });
     /* ============================================================
        Decide where to render question
        ============================================================ */
@@ -172,10 +146,6 @@ function showContextQuestion(emotion, data, order) {
 
     questionEl.textContent = data.question;
     optionsEl.innerHTML = "";
-    console.log("[context][show] question rendered", {
-        order,
-        questionText: questionEl.textContent
-    });
 
     /* ============================================================
        Render options
@@ -226,7 +196,6 @@ function showContextQuestion(emotion, data, order) {
                     affirmationWrapper.classList.add("hidden");
                 }
 
-                console.log("Context driver set:", window.contextDriver);
 
             }
 
@@ -234,7 +203,6 @@ function showContextQuestion(emotion, data, order) {
 
                 window.contextPressure = opt.id;
 
-                console.log("Context pressure set:", window.contextPressure);
 
             }
 
@@ -338,13 +306,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (affirmationWrapper) {
                 affirmationWrapper.classList.remove("hidden");
             }
-console.log("[context:affirmation:rendered]", {
-  wrapperExists: !!document.getElementById("affirmationWrapper"),
-  boxExists: !!document.querySelector(".affirmation-box"),
-  textExists: !!document.querySelector(".ig-affirm-text"),
-  wrapperHTML: document.getElementById("affirmationWrapper")?.innerHTML || null,
-  ts: new Date().toISOString()
-});
             if (typeof fetchAffirmations === "function") {
                 fetchAffirmations();
             }

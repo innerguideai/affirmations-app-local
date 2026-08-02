@@ -1,0 +1,139 @@
+/* ============================================================
+   AI Affirm — tour.css
+   Interactive onboarding walkthrough overlay
+   ============================================================ */
+
+.tour-spotlight {
+  position: fixed;
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.68);
+  z-index: 9998;
+  pointer-events: none;
+  transition: top .3s ease, left .3s ease, width .3s ease, height .3s ease;
+}
+
+.tour-backdrop-plain {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.68);
+  z-index: 9998;
+  pointer-events: none;
+}
+
+.tour-tooltip {
+  position: fixed;
+  z-index: 9999;
+  width: min(300px, calc(100vw - 2rem));
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.25rem 1.25rem 1rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+  animation: tourFadeIn .2s ease;
+}
+
+@keyframes tourFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tour-tooltip-step {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--theme-accent-strong, #476B38);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: .4rem;
+}
+
+.tour-tooltip-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gunmetal, #192632);
+  margin-bottom: .4rem;
+  line-height: 1.3;
+}
+
+.tour-tooltip-body {
+  font-size: .875rem;
+  color: #555;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.tour-dots {
+  display: flex;
+  gap: .4rem;
+  align-items: center;
+  margin-bottom: .85rem;
+}
+
+.tour-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ddd;
+  transition: background .2s, width .2s;
+}
+
+.tour-dot.active {
+  background: var(--theme-accent-strong, #476B38);
+  width: 18px;
+  border-radius: 3px;
+}
+
+.tour-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.tour-skip {
+  font-size: .82rem;
+  color: #999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: .25rem 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tour-next {
+  font-size: .875rem;
+  font-weight: 600;
+  background: var(--theme-accent-strong, #476B38);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: .55rem 1.25rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+}
+
+.tour-next:active { opacity: .85; }
+
+.tour-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  display: none;
+}
+
+.tour-arrow.up {
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom: 9px solid #fff;
+  display: block;
+}
+
+.tour-arrow.down {
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: 9px solid #fff;
+  display: block;
+}

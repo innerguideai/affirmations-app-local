@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>My Affirmations • AI Affirm</title>
+
+    <link rel="stylesheet" href="/css/style.css?v=2026-01-16-2" />
+    <link rel="stylesheet" href="/css/profile.css?v=2026-01-16-2" />
+    <link rel="stylesheet" href="/css/emotion-dashboard.css?v=2026-03-25-1" />
+    <link rel="stylesheet" href="/css/utils.css?v=2026-03-25-1" />
+    <style>
+      .my-affirm-item {
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .my-affirm-item:last-child {
+        border-bottom: none;
+      }
+      .my-affirm-text {
+        font-size: 0.95rem;
+        line-height: 1.4;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .my-affirm-meta {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-size: 0.76rem;
+        opacity: 0.75;
+        margin-bottom: 8px;
+      }
+      .my-affirm-emotion {
+        text-transform: capitalize;
+      }
+      .my-affirm-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .my-affirm-listen-btn,
+      .my-affirm-remove-btn {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border: 1px solid var(--theme-border-soft, rgba(0, 0, 0, 0.12));
+        background: var(--theme-surface-light, rgba(255, 255, 255, 0.6));
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--theme-accent-strong, #33475a);
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .my-affirm-listen-btn:active {
+        background: var(--theme-surface-light, rgba(255, 255, 255, 0.85));
+      }
+      .my-affirm-remove-btn {
+        color: #c94d3e;
+        border-color: rgba(201, 77, 62, 0.28);
+      }
+      .my-affirm-remove-btn.is-confirming {
+        background: #c94d3e;
+        border-color: #c94d3e;
+        color: #fff;
+      }
+      #emptyState {
+        text-align: center;
+        padding: 40px 12px;
+      }
+      #emptyState .empty-title {
+        font-weight: 700;
+        font-size: 0.98rem;
+        margin: 0 0 6px;
+      }
+      #emptyState .empty-sub {
+        font-size: 0.85rem;
+        opacity: 0.75;
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body class="profile-page emotion-dashboard-page ig-theme-default">
+    <div class="ig-theme-bg" aria-hidden="true"></div>
+
+    <main class="emotion-dashboard-shell emotion-dashboard-card emotion-dashboard-content-shell">
+      <header class="emotion-dashboard-header">
+        <div
+          class="emotion-dashboard-icon-btn"
+          aria-hidden="true"
+          style="visibility:hidden;"
+        >
+          <span aria-hidden="true">←</span>
+        </div>
+
+        <div class="emotion-dashboard-header-copy">
+          <p class="emotion-dashboard-kicker"></p>
+          <h1 class="emotion-dashboard-title">My Affirmations</h1>
+          <p class="emotion-dashboard-subtitle">
+            Your affirmations from the last 30 days
+          </p>
+        </div>
+
+        <a
+          href="/account.html"
+          class="emotion-dashboard-icon-btn"
+          aria-label="Close to account"
+          title="Close"
+        >
+          <span aria-hidden="true">×</span>
+        </a>
+      </header>
+
+      <div id="myAffirmationsCard" hidden>
+        <div id="affirmationsList"></div>
+
+        <div id="emptyState" hidden>
+          <p class="empty-title">No affirmations from the last 30 days</p>
+          <p class="empty-sub">Affirmations you receive will appear here.</p>
+        </div>
+      </div>
+
+      <div id="authGateCard" hidden>
+        <p
+          style="
+            margin: 14px 0 0 0;
+            font-size: 14px;
+            line-height: 1.45;
+            opacity: 0.9;
+          "
+        >
+          Sign in to view your saved affirmations.
+        </p>
+
+        <button
+          id="goLoginBtn"
+          type="button"
+          class="emotion-dashboard-icon-btn"
+          style="margin-top: 12px; width: auto; min-width: 120px; padding: 0 14px;"
+        >
+          Log in
+        </button>
+      </div>
+
+      <p
+        id="statusLine"
+        style="opacity: 0.8; font-size: 12px; margin: 12px 0 0 0;"
+        hidden
+      >
+        Loading…
+      </p>
+    </main>
+
+    <script src="/js/theme.apply.js?v=2026-01-16-2"></script>
+    <script src="/js/profile.api.js"></script>
+    <script src="/js/my-affirmations.js?v=2026-07-12-1" defer></script>
+    <script src="/js/capacitor.bundle.js"></script>
+  </body>
+</html>

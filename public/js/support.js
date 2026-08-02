@@ -5,7 +5,7 @@
   // -----------------------------
   // Config
   // -----------------------------
-  const API_BASE = "http://54.221.158.219:3000";
+  const API_BASE = "https://api-b.innerguideai.com";
 
   // Local fallback lines used when /api/me returns 401
   // or when the support API cannot return account data.
@@ -111,6 +111,10 @@
   // -----------------------------
   // Rendering
   // -----------------------------
+  function fallbackMessage() {
+    return currentUserId ? "Quick reset" : "Quick reset (guest mode)";
+  }
+
   function renderFallbackLine(whyText = "Quick reset (guest mode)") {
     isFallbackMode = true;
     currentSupportItem = null;
@@ -120,7 +124,6 @@
     setText(supportWhyEl, whyText);
     setStars(0);
 
-    console.log("support.js: fallback line rendered");
   }
 
   function renderBedtimeLine(indexParam) {
@@ -189,8 +192,6 @@
 
     setStars(existingRating);
 
-    console.log("support.js: rendered line text =", line);
-    console.log("support.js: support item rendered", item);
   }
 
   function setStars(value) {
@@ -242,12 +243,15 @@
       const userId =
         meData?.user?._id ||
         meData?.user?.id ||
+        meData?.user?.userId ||
         meData?._id ||
         meData?.id ||
+        meData?.userId ||
         null;
 
-      console.log("support.js: resolved userId =", userId);
-      return userId;
+      console.log("support.js: /api/me resolved", { status: meRes.status, meData, userId });
+
+      return userId ? String(userId) : null;
     } catch (error) {
       console.error("support.js: /api/me error, using fallback mode", error);
       return null;
@@ -255,7 +259,10 @@
   }
 
   async function fetchDaytimeReset(userId, source, affirmationId = "") {
-    if (!userId) return null;
+    if (!userId) {
+      console.warn("support.js: skipping daytime-reset fetch — no userId resolved");
+      return null;
+    }
 
     try {
       const fetchFn = getFetchFn();
@@ -267,6 +274,8 @@
       if (affirmationId) {
         url += `&affirmationId=${encodeURIComponent(affirmationId)}`;
       }
+
+      console.log("support.js: fetching daytime-reset", { url, userId, source, affirmationId });
 
       const res = await fetchFn(url, {
         method: "GET",
@@ -289,7 +298,6 @@
 
   async function getNextSupportAffirmation() {
     if (nextInFlight) {
-      console.log("support.js: next ignored (in flight)");
       return;
     }
 
@@ -310,12 +318,6 @@
 
       const fetchFn = getFetchFn();
 
-      console.log(
-        "support.js: fetching next affirmation for",
-        currentFeeling,
-        "excluding",
-        shownIds
-      );
 
       const res = await fetchFn("/api/affirmations", {
         method: "POST",
@@ -328,15 +330,13 @@
       });
 
       if (res.status === 404) {
-        console.log("support.js: no more saved affirmations for emotion", currentFeeling);
-        renderFallbackLine(`No more saved lines for ${currentFeeling}. Try a quick reset instead.`);
+          renderFallbackLine(`No more saved lines for ${currentFeeling}. Try a quick reset instead.`);
         return;
       }
 
       const txt = await res.text();
       const data = txt ? JSON.parse(txt) : null;
 
-      console.log("support.js: next raw response", res.status, data);
 
       if (!res.ok) {
         throw new Error(`/api/affirmations failed ${res.status} ${txt}`);
@@ -355,8 +355,7 @@
         }
 
         renderSupportItem(currentSupportItem);
-        console.log("support.js: next affirmation shown");
-      } else {
+        } else {
         renderFallbackLine(`No more saved lines for ${currentFeeling}. Try a quick reset instead.`);
       }
     } catch (error) {
@@ -373,8 +372,7 @@
   // -----------------------------
   async function hideCurrentLine() {
     if (isFallbackMode || !currentUserId || !currentSupportItem) {
-      console.log("support.js: hide in fallback/local mode");
-      renderFallbackLine();
+      renderFallbackLine(fallbackMessage());
       return;
     }
 
@@ -382,8 +380,7 @@
       const affirmationId = getCurrentAffirmationId();
 
       if (!affirmationId) {
-        console.log("support.js: no affirmationId found for hide; loading next line");
-        await loadSupportLine();
+          await loadSupportLine();
         return;
       }
 
@@ -400,7 +397,6 @@
       });
 
       const txt = await res.text();
-      console.log("support.js: hide raw response", res.status, txt.slice(0, 200));
 
       if (!res.ok) {
         throw new Error(`/api/support/hide failed ${res.status} ${txt}`);
@@ -416,31 +412,21 @@
   async function submitRating(value) {
     const rating = Number(value || 0);
 
-    console.log("support.js: submitRating clicked", {
-      value,
-      parsedRating: rating,
-      isFallbackMode,
-      currentUserId,
-      currentSupportItem
-    });
 
     if (!rating) return;
 
     setStars(rating);
 
     if (isFallbackMode || !currentUserId || !currentSupportItem) {
-      console.log("support.js: rating skipped in fallback mode", rating);
       return;
     }
 
     try {
       const affirmationId = getCurrentAffirmationId();
 
-      console.log("support.js: submitRating affirmationId", affirmationId);
 
       if (!affirmationId) {
-        console.log("support.js: no affirmationId found for rating");
-        return;
+          return;
       }
 
       const fetchFn = getFetchFn();
@@ -456,13 +442,11 @@
       });
 
       const txt = await res.text();
-      console.log("support.js: rating raw response", res.status, txt.slice(0, 200));
 
       if (!res.ok) {
         throw new Error(`/api/affirmations/rate failed ${res.status} ${txt}`);
       }
 
-      console.log("support.js: rating saved", rating);
     } catch (error) {
       console.error("support.js: rating failed", error);
     }
@@ -522,7 +506,39 @@
     currentUserId = await resolveCurrentUserId();
 
     if (!currentUserId) {
-      renderFallbackLine();
+      renderFallbackLine(fallbackMessage());
+      return;
+    }
+
+    // --- Insights path: render affirmation passed via sessionStorage ---
+    // When arriving from the Insights "Practice" button with source=monthly_insight
+    // and an affirmationId, the backend /api/support/daytime-reset does not handle
+    // that source+affirmationId combination and returns 404. Instead we use the
+    // affirmation object stored by emotion-dashboard.js at click time.
+    if (params.source === "monthly_insight" && params.affirmationId) {
+      let rendered = false;
+      try {
+        const raw = sessionStorage.getItem("ig_support_insight_affirmation");
+        const stored = raw ? JSON.parse(raw) : null;
+        if (stored && stored.affirmationId === params.affirmationId && stored.text) {
+          console.log("support.js: rendering insight affirmation from sessionStorage", stored);
+          renderSupportItem({
+            affirmation: { _id: stored.affirmationId, text: stored.text },
+            topEmotion: stored.emotion || "",
+            why: [
+              stored.emotion ? stored.emotion.charAt(0).toUpperCase() + stored.emotion.slice(1) : "",
+              stored.reason
+            ].filter(Boolean).join(" · ") || "Based on your monthly insight"
+          });
+          rendered = true;
+        }
+      } catch (e) {
+        console.warn("support.js: could not read sessionStorage insight affirmation", e);
+      }
+      if (!rendered) {
+        console.warn("support.js: sessionStorage miss for monthly_insight — falling back");
+        renderFallbackLine(fallbackMessage());
+      }
       return;
     }
 
@@ -532,8 +548,7 @@ const supportItem = await fetchDaytimeReset(
   params.affirmationId
 );
     if (!supportItem) {
-      console.log("support.js: no support item returned, using fallback");
-      renderFallbackLine();
+        renderFallbackLine(fallbackMessage());
       return;
     }
 
@@ -542,8 +557,7 @@ const supportItem = await fetchDaytimeReset(
     // Count this as a meaningful action for the daily streak
     if (typeof window.incrementDailyStreak === "function") {
       window.incrementDailyStreak();
-      console.log("support.js: daily streak incremented from reset page");
-    }
+      }
 
     // Re-render weekly streak circles if available
     if (typeof window.igRenderWeeklyStreak === "function") {

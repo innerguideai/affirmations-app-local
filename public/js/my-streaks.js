@@ -6,7 +6,6 @@
 // - Reads completed check-in dates from localStorage["ig-completed-checkin-dates"]
 
 "use strict";
-console.log("[my-streaks] loaded", { href: location.href });
 
 // -----------------------------------------
 // Storage keys
@@ -83,43 +82,6 @@ function readCompletedDates() {
     return Array.from(new Set(cleaned)).sort();
   } catch (_) {
     return [];
-  }
-}
-// DEBUG: dump all streak-related localStorage values
-function debugDumpStreakStorage() {
-  try {
-    console.log("========== STREAK DEBUG START ==========");
-
-    // Log every localStorage key first so we can see the real names in use
-    const allKeys = Object.keys(localStorage);
-    console.log("All localStorage keys:", allKeys);
-
-    // Log only likely streak/auth keys
-    const interestingKeys = allKeys.filter((key) =>
-      key.toLowerCase().includes("streak") ||
-      key.toLowerCase().includes("history") ||
-      key.toLowerCase().includes("emotion") ||
-      key.toLowerCase().includes("auth") ||
-      key.toLowerCase().includes("user")
-    );
-
-    console.log("Interesting localStorage keys:", interestingKeys);
-
-    interestingKeys.forEach((key) => {
-      const rawValue = localStorage.getItem(key);
-      console.log(`[localStorage] ${key}:`, rawValue);
-
-      try {
-        const parsed = JSON.parse(rawValue);
-        console.log(`[parsed] ${key}:`, parsed);
-      } catch (err) {
-        console.log(`[parsed] ${key}: not JSON`);
-      }
-    });
-
-    console.log("=========== STREAK DEBUG END ===========");
-  } catch (err) {
-    console.error("debugDumpStreakStorage failed:", err);
   }
 }
 // -----------------------------------------
@@ -293,14 +255,6 @@ function renderStreakSummary() {
   const longestValue = readInt(LONGEST_KEY);
   const last = readStr(LAST_DATE_KEY);
 
-  console.log("[my-streaks][summary]", {
-    STREAK_KEY,
-    dailyValue,
-    LONGEST_KEY,
-    longestValue,
-    LAST_DATE_KEY,
-    last,
-  });
 
   if (daily) daily.textContent = String(dailyValue);
   if (longest) longest.textContent = String(longestValue);
@@ -326,26 +280,11 @@ function renderMonthCalendar() {
   const cells = buildMonthGrid(visibleMonthDate);
   const completedDates = readCompletedDates();
 
-  console.log("[my-streaks][calendar] visibleMonth", {
-    label: getMonthLabel(visibleMonthDate),
-    year: visibleMonthDate.getFullYear(),
-    monthIndex: visibleMonthDate.getMonth(),
-    monthNumber: visibleMonthDate.getMonth() + 1,
-    completedDates,
-  });
   grid.innerHTML = "";
 
   cells.forEach((cell) => {
     const cellEl = document.createElement("div");
     if (cell.type === "day") {
-      console.log("[my-streaks][calendar][cell]", {
-        dateKey: cell.dateKey,
-        dayNumber: cell.dayNumber,
-        isToday: cell.isToday,
-        isFuture: cell.isFuture,
-        isComplete: cell.isComplete,
-        runType: cell.runType,
-      });
     }
     if (cell.type === "blank") {
       cellEl.className = "streak-day streak-day-blank";
@@ -387,10 +326,6 @@ function renderMonthCalendar() {
     grid.appendChild(cellEl);
   });
 
-  console.log("[my-streaks] calendar rendered", {
-    month: getMonthLabel(visibleMonthDate),
-    cells: cells.length,
-  });
 }
 
 function renderCalendarSection() {
@@ -402,7 +337,6 @@ function renderCalendarSection() {
 // Visibility
 // -----------------------------------------
 function showGate() {
-  console.log("[my-streaks] showGate()");
 
   const gate = $("authGateCard");
   const card = $("streaksCard");
@@ -412,7 +346,6 @@ function showGate() {
 }
 
 function showStreaks() {
-  console.log("[my-streaks] showStreaks()");
 
   const gate = $("authGateCard");
   const card = $("streaksCard");
@@ -470,19 +403,12 @@ function debugStreakState() {
   const rawLast = readStr(LAST_DATE_KEY);
   const completedDates = readCompletedDates();
 
-  console.log("[my-streaks][debug] raw:", {
-    rawDaily,
-    rawLongest,
-    rawLast,
-    completedDates,
-  });
 }
 
 // -----------------------------------------
 // Init
 // -----------------------------------------
 async function init() {
-  console.log("[my-streaks] init start");
 
   const status = $("statusLine");
   if (status) {
@@ -492,11 +418,6 @@ async function init() {
 
   const ok = await canViewStreaks();
 
-  console.log("[my-streaks] canViewStreaks =", ok, {
-    hasCurrentUser: !!readStr("currentUser"),
-    hasCurrentUserId: !!readStr("currentUserId"),
-    isGuestLocal: isGuestLocal(),
-  });
 
   if (status) status.hidden = true;
 
@@ -505,8 +426,6 @@ async function init() {
     return;
   }
 
-  debugDumpStreakStorage();
-  debugStreakState();
   showStreaks();
 }
 

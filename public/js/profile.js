@@ -3,8 +3,7 @@
 
 /* =============== 0) Small helpers =============== */
 
-const API = "http://54.221.158.219:3000";
-console.log("[profile] API base =", API || "(same-origin)");
+const API = "https://api-b.innerguideai.com";
 
 // JWT-aware fetch wrapper: works for iOS (Bearer) + Web (cookies)
 const apiFetch = (path, options = {}) => {
@@ -38,7 +37,6 @@ function applyWelcomeFromCache() {
     const el = document.getElementById("welcomeName");
     if (el && name && name.toLowerCase() !== "friend") {
       el.textContent = name;
-      console.log("[profile] welcome (cache):", name);
     }
   } catch (e) {
     console.warn("[profile] welcome cache failed:", e?.message || e);
@@ -92,7 +90,6 @@ async function getCurrentUser() {
         : "";
       const minimal = { _id: cid, id: cid, firstName };
       setCachedUser(minimal);
-      console.log("[profile] using fallback currentUserId:", cid);
       return minimal;
     }
   } catch { /* ignore */ }
@@ -129,7 +126,6 @@ function updateStarDisplay(rating) {
 async function updateButtonStateByCount() {
   try {
     if (!currentFeeling) {
-      console.log("❌ No currentFeeling set. Aborting.");
       return;
     }
     const user = await getCurrentUser();
@@ -142,7 +138,6 @@ async function updateButtonStateByCount() {
       `/api/affirmations/count?emotion=${encodeURIComponent(currentFeeling)}&userId=${encodeURIComponent(user._id)}`
     );
     const { count = 0 } = await res.json();
-    console.log("📊 Affirmation count for", currentFeeling, "=", count);
 
     const nextBtn = document.getElementById("nextBtn");
     const newBtn  = document.getElementById("newBtn");
@@ -173,7 +168,6 @@ async function fetchAffirmations() {
 
   const feeling = (input?.value || "").trim().toLowerCase();
   if (!feeling) {
-    console.log("❌ No feeling entered. Aborting.");
     return;
   }
 
@@ -193,7 +187,6 @@ if (!user?._id) {
       `/api/affirmations/count?emotion=${encodeURIComponent(feeling)}&userId=${encodeURIComponent(user._id)}`
     );
     const { count = 0 } = (await countRes.json()) || {};
-    console.log("📊 Affirmation count:", count);
 
     // 2) Choose endpoint
     const useGPT = count <= 2;
@@ -230,7 +223,6 @@ if (!user?._id) {
         const savedRating = Number(currentAffirmation.rating) || 0;
         updateStarDisplay(savedRating);
       }
-      console.log("✅ Affirmation shown.");
     } else {
       if (card) card.innerText = "No affirmation found.";
     }
@@ -244,13 +236,11 @@ if (!user?._id) {
 
 async function getNextAffirmation() {
   if (__nextInFlight) {
-    console.log("[next] ignored (in flight)");
     return;
   }
   __nextInFlight = true;
 
   try {
-    console.log("[wire] nextBtn clicked");
 
     if (!currentFeeling) {
       console.warn("[next] no currentFeeling; ignoring");
@@ -263,7 +253,6 @@ async function getNextAffirmation() {
       return;
     }
 
-    console.log("🔄 Fetching next affirmation for:", currentFeeling, "excluding IDs:", shownIds);
 
     const res = await apiFetch("/api/affirmations", {
       method: "POST",
@@ -281,7 +270,6 @@ async function getNextAffirmation() {
       document.getElementById("starRating")?.classList.add("hidden");
       document.getElementById("nextBtn")?.classList.add("hidden");
       document.getElementById("newBtn")?.classList.remove("hidden");
-      console.log("ℹ️ No more DB affirmations. Showing New AI button.");
       return;
     }
 
@@ -291,7 +279,6 @@ async function getNextAffirmation() {
     }
 
     const data = await res.json();
-    console.log("🧪 Raw response:", data);
 
     if (data?.affirmation?.text) {
       currentAffirmation = data.affirmation;
@@ -309,14 +296,12 @@ async function getNextAffirmation() {
       document.getElementById("nextBtn")?.classList.remove("hidden");
       document.getElementById("newBtn")?.classList.add("hidden");
 
-      console.log("✅ Next DB affirmation shown.");
     } else {
       const card = document.getElementById("affirmationCard");
       card && (card.innerText = "You’ve seen all saved affirmations for this feeling.");
       document.getElementById("starRating")?.classList.add("hidden");
       document.getElementById("nextBtn")?.classList.add("hidden");
       document.getElementById("newBtn")?.classList.remove("hidden");
-      console.log("ℹ️ No more DB affirmations (empty payload). Showing New AI button.");
     }
   } catch (err) {
     console.error("❌ Error in getNextAffirmation:", err);
@@ -332,7 +317,6 @@ window.getNextAffirmation = getNextAffirmation;
 
 async function fetchGPTAffirmation() {
   if (__newAIInFlight) {
-    console.log("[gpt] New AI ignored (in flight)");
     return;
   }
   __newAIInFlight = true;
@@ -378,7 +362,6 @@ async function fetchGPTAffirmation() {
         await updateButtonStateByCount();
       }
 
-      console.log("✅ ChatGPT affirmation served; DB cycle reset.");
     }
   } catch (err) {
     console.error("❌ GPT fetch failed in fetchGPTAffirmation()", err);
@@ -430,12 +413,10 @@ async function rateAffirmation(stars) {
     });
 
     const txt = await res.text();
-    console.log("[rate] HTTP", res.status, txt.slice(0, 200));
     if (!res.ok) throw new Error(`Failed to rate: ${res.status} ${txt}`);
 
     let data = {};
     try { data = txt ? JSON.parse(txt) : {}; } catch {}
-    console.log("[rate] saved:", data);
   } catch (err) {
     console.error("[rate] error:", err);
   }
@@ -511,7 +492,6 @@ async function loadTopEmotions() {
     }
     const { topEmotions = [] } = await res.json();
     if (!topEmotions.length) {
-      console.log("🔕 No top emotions to display");
       return;
     }
 
@@ -522,7 +502,6 @@ async function loadTopEmotions() {
         body: JSON.stringify({ emotion, userId: user._id }),
       });
       if (!affRes.ok) {
-        console.log(`ℹ️ No DB affirmation for "${emotion}" (status ${affRes.status}). Skipping.`);
         continue;
       }
       const { affirmation: aff } = await affRes.json();
@@ -567,7 +546,6 @@ window.addEventListener("DOMContentLoaded", () => {
       if (el) {
         e.preventDefault();
         if (hasInline) return; // let inline onclick handle it
-        console.log("[wire] submitEmotion clicked");
         fetchAffirmations();
         return;
       }
@@ -579,7 +557,6 @@ window.addEventListener("DOMContentLoaded", () => {
       if (el) {
         e.preventDefault();
         if (hasInline) return;
-        console.log("[wire] nextBtn clicked");
         getNextAffirmation();
         return;
       }
@@ -591,7 +568,6 @@ window.addEventListener("DOMContentLoaded", () => {
       if (el) {
         e.preventDefault();
         if (hasInline) return;
-        console.log("[wire] newBtn clicked");
         fetchGPTAffirmation();
         return;
       }

@@ -113,6 +113,10 @@
 	      object-position: center 24%;
 	    }
 
+	    .theme-tile[data-theme="ig-theme-practical"] .theme-img {
+	      object-position: center 20%;
+	    }
+
     .theme-overlay {
       position: absolute;
       inset: 0;
@@ -334,6 +338,23 @@
             </button>
           </div>
         </article>
+
+        <article class="theme-tile" data-theme="ig-theme-practical">
+          <img
+            class="theme-img"
+            src="/images/practical.jpg"
+            alt="Practical theme preview"
+          />
+          <div class="theme-overlay">
+            <div class="theme-text">
+              <p class="theme-name">Practical</p>
+              <p class="theme-desc">Calm and focused</p>
+            </div>
+            <button class="theme-action" type="button" data-use="ig-theme-practical">
+              Use
+            </button>
+          </div>
+        </article>
       </section>
     </section>
   </main>
@@ -349,7 +370,8 @@
         "ig-theme-spring",
         "ig-theme-cblossom",
         "ig-theme-summer",
-        "ig-theme-zen"
+        "ig-theme-zen",
+        "ig-theme-practical"
       ];
 
       function getSavedTheme() {
