@@ -728,9 +728,99 @@ async function igTrackEmotionForSupport(feeling) {
 
     if (result.hit) {
       igShowSupportBanner(result.emotion, userId);
+      igPopulateSupportJourneyCta(result.emotion, userId, result.count);
     }
   } catch (e) {
     console.warn("[support] track error:", e);
+  }
+}
+
+// -------------------------------
+// Support -> Journey recommendation CTA
+// Reuses GET /api/journeys/eligible (already computes matched Journey +
+// whether it's already running as exploratory) and POST /start or
+// /promote. Separate from igShowSupportBanner on purpose — the existing
+// banner copy/advice always shows immediately and unchanged; this is an
+// additive async enhancement layered on top, never blocking it.
+// -------------------------------
+async function igPopulateSupportJourneyCta(emotion, userId, occurrences) {
+  const ctaWrap = document.getElementById("supportJourneyCta");
+  const ctaBtn = document.getElementById("supportJourneyCtaBtn");
+  const ctaMsg = document.getElementById("supportJourneyCtaMsg");
+  if (!ctaWrap || !ctaBtn || !ctaMsg) return;
+
+  ctaWrap.classList.add("hidden");
+  ctaBtn.classList.remove("hidden");
+  ctaBtn.disabled = false;
+  ctaBtn.onclick = null;
+  ctaMsg.classList.add("hidden");
+  ctaMsg.textContent = "";
+
+  if (!userId || userId === "guest") return; // Journeys require an account
+
+  try {
+    const res = await apiFetch("/api/journeys/eligible");
+    if (!res.ok) return;
+    const data = await res.json();
+    const match = (data.eligible || []).find((e) => e.matchedEmotion === emotion);
+    if (!match) return;
+
+    if (match.alreadyActiveAsExploratory) {
+      ctaBtn.textContent = "Make this your prescribed Journey";
+      ctaBtn.onclick = () =>
+        igStartOrPromoteJourney({ mode: "promote", instanceId: match.instanceId, emotion, occurrences, ctaBtn, ctaMsg });
+    } else {
+      ctaBtn.textContent = `Start ${match.title} Journey`;
+      ctaBtn.onclick = () =>
+        igStartOrPromoteJourney({ mode: "start", journeyId: match.journeyId, emotion, occurrences, ctaBtn, ctaMsg });
+    }
+
+    ctaWrap.classList.remove("hidden");
+  } catch (e) {
+    console.warn("[support] journey eligibility check failed:", e);
+  }
+}
+
+async function igStartOrPromoteJourney({ mode, journeyId, instanceId, emotion, occurrences, ctaBtn, ctaMsg }) {
+  try {
+    ctaBtn.disabled = true;
+
+    const url =
+      mode === "promote"
+        ? `/api/journeys/${encodeURIComponent(instanceId)}/promote`
+        : `/api/journeys/${encodeURIComponent(journeyId)}/start`;
+
+    const body =
+      mode === "promote"
+        ? { emotion, occurrences }
+        : { trigger: { source: "recommended", emotion, occurrences } };
+
+    const res = await apiFetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      // Prescribed slot already taken, etc. — do not replace it; show the
+      // backend's own message plus a link, same overlay stays open.
+      ctaBtn.classList.add("hidden");
+      ctaMsg.textContent = data.error || "Could not start this Journey.";
+      ctaMsg.appendChild(document.createTextNode(" "));
+      const link = document.createElement("a");
+      link.href = "/journeys.html";
+      link.textContent = "Go to Journeys";
+      ctaMsg.appendChild(link);
+      ctaMsg.classList.remove("hidden");
+      return;
+    }
+
+    window.location.href = "/journeys.html";
+  } catch (e) {
+    ctaBtn.disabled = false;
+    console.warn("[support] journey start/promote failed:", e);
   }
 }
 
@@ -996,8 +1086,11 @@ async function fetchAffirmations() {
   }
 
   try {
-    // Support tracking (always)
-    await igTrackEmotionForSupport(feeling);
+    // Support tracking — only on the original submission, not on refinement
+    // re-fetches, to avoid inflating the "seen 5x in 72h" counter.
+    if (!isRefinement) {
+      await igTrackEmotionForSupport(feeling);
+    }
 
     // -------------------------
     // Guest: DB-first, auto-AI only when DB is empty

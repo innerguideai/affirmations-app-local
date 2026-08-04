@@ -770,6 +770,45 @@ border: 1px solid var(--theme-border-soft);
   color: var(--honeydew);
 }
 
+.support-journey-cta {
+  margin: 14px 0;
+}
+
+.support-journey-cta-btn {
+  display: block;
+  width: 100%;
+  background: var(--peach);
+  color: var(--gunmetal);
+  border: none;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.support-journey-cta-btn:active {
+  opacity: 0.85;
+}
+
+.support-journey-cta-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.support-journey-cta-msg {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--honeydew);
+  text-align: center;
+}
+
+.support-journey-cta-msg a {
+  color: var(--peach);
+  font-weight: 700;
+}
+
 /* ============================================================
    LEGACY SUPPORT BANNER (profile inline banner, pre-overlay)
    ============================================================ */

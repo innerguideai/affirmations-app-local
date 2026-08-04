@@ -373,6 +373,15 @@
 
   <p id="supportOverlayAction" class="support-action-line"></p>
 
+  <!-- F-Journeys: primary CTA when the detected pattern matches an eligible
+       Journey. Hidden by default; populated by igPopulateSupportJourneyCta
+       in profile.affirmations.js. Existing recommendations below stay as-is
+       either way. -->
+  <div id="supportJourneyCta" class="support-journey-cta hidden">
+    <button id="supportJourneyCtaBtn" type="button" class="support-journey-cta-btn"></button>
+    <p id="supportJourneyCtaMsg" class="support-journey-cta-msg hidden"></p>
+  </div>
+
   <div class="support-recommendations">
     <div class="support-recommendations-title">Recommendations:</div>
     <ul class="support-recommendations-list">
